@@ -179,7 +179,7 @@ var_name2long_name={
 # Create inverse dictionary
 def invert_dict(d):
     return dict([(v,k) for k,v in d.items()])
-var_long_name2name=invert_dict(var_name2long_name)
+long_name2var_name=invert_dict(var_name2long_name)
 
 #==========================================================================
 
