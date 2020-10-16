@@ -2857,7 +2857,7 @@ class TimeFilter(object):
                 'fileout1: {0.fileout1!s} \n'+h2b
             print(ss.format(self))
         # Extract input data
-        time_constraint=set_time_constraint(timein1,timein2,calendar=self.calendar,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.timein1,self.timein2,calendar=self.calendar,verbose=self.verbose)
         xx1=self.data_in.extract(time_constraint)
         xx1=xx1.concatenate_cube()
         self.data_current=xx1
