@@ -1,0 +1,2563 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module data_analysis</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>data_analysis</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/gpfs/home/e058/home/PythonScripts/py36/data_analysis.py">/gpfs/home/e058/home/PythonScripts/py36/data_analysis.py</a></font></td></tr></table>
+    <p><tt>Data&nbsp;analysis&nbsp;module&nbsp;using&nbsp;iris.<br>
+&nbsp;<br>
+2018-04-25.&nbsp;New&nbsp;version&nbsp;for&nbsp;iris&nbsp;2.<br>
+&nbsp;<br>
+Classes&nbsp;that&nbsp;provide&nbsp;iris&nbsp;data&nbsp;i/o&nbsp;wrappers&nbsp;to&nbsp;data&nbsp;analysis&nbsp;methods,<br>
+often&nbsp;also&nbsp;using&nbsp;the&nbsp;iris&nbsp;module,&nbsp;for&nbsp;analysis&nbsp;of&nbsp;meteorological&nbsp;and<br>
+oceanographic&nbsp;gridded&nbsp;data.<br>
+&nbsp;<br>
+Author:&nbsp;Adrian&nbsp;Matthews<br>
+&nbsp;<br>
+Create&nbsp;documentation&nbsp;with&nbsp;pydoc&nbsp;-w&nbsp;data_analysis<br>
+&nbsp;<br>
+Programming&nbsp;style:<br>
+&nbsp;<br>
+Object&nbsp;oriented!<br>
+&nbsp;<br>
+Class&nbsp;methods&nbsp;typically&nbsp;set&nbsp;an&nbsp;attribute(s)&nbsp;of&nbsp;the&nbsp;class&nbsp;instance.<br>
+They&nbsp;typically&nbsp;do&nbsp;not&nbsp;return&nbsp;an&nbsp;argument.<br>
+&nbsp;<br>
+Printed&nbsp;output&nbsp;and&nbsp;information:<br>
+&nbsp;<br>
+The&nbsp;__init__&nbsp;method&nbsp;of&nbsp;each&nbsp;class&nbsp;has&nbsp;a&nbsp;'verbose'&nbsp;keyword&nbsp;argument.<br>
+&nbsp;<br>
+verbose=False&nbsp;(or&nbsp;0)&nbsp;suppresses&nbsp;printed&nbsp;output<br>
+&nbsp;<br>
+verbose=True&nbsp;(or&nbsp;1)&nbsp;prints&nbsp;limited&nbsp;output&nbsp;(typically&nbsp;a&nbsp;statement&nbsp;that&nbsp;a<br>
+particular&nbsp;class&nbsp;attribute&nbsp;has&nbsp;been&nbsp;created)<br>
+&nbsp;<br>
+verbose=2&nbsp;prints&nbsp;extended&nbsp;output&nbsp;(typically&nbsp;the&nbsp;value&nbsp;of&nbsp;that&nbsp;class<br>
+attribute).</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="copy.html">copy</a><br>
+<a href="datetime.html">datetime</a><br>
+<a href="info.html">info</a><br>
+</td><td width="25%" valign=top><a href="mypaths.html">mypaths</a><br>
+<a href="os.html">os</a><br>
+<a href="pdb.html">pdb</a><br>
+</td><td width="25%" valign=top><a href="pickle.html">pickle</a><br>
+<a href="random.html">random</a><br>
+<a href="shutil.html">shutil</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#object">__builtin__.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="data_analysis.html#AnnualCycle">AnnualCycle</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#CCEWLagrangian">CCEWLagrangian</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#CombineLatitudes">CombineLatitudes</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#CombineLevels">CombineLevels</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#CubeDiagnostics">CubeDiagnostics</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#DataConverter">DataConverter</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#Glider">Glider</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#GliderMission">GliderMission</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#InterpolateDefunct">InterpolateDefunct</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#ModifySource">ModifySource</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#Planet">Planet</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#SpatialSubset">SpatialSubset</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#TimeAverageDefunct">TimeAverageDefunct</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#TimeDomStats">TimeDomStats</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#TimeDomain">TimeDomain</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#TimeFilter">TimeFilter</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#WheelerKiladis">WheelerKiladis</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#Wind">Wind</a>
+</font></dt><dt><font face="helvetica, arial"><a href="data_analysis.html#XYGrid">XYGrid</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="exceptions.html#UserWarning">exceptions.UserWarning</a>(<a href="exceptions.html#Warning">exceptions.Warning</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="data_analysis.html#ToDoError">ToDoError</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AnnualCycle">class <strong>AnnualCycle</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Calculate&nbsp;and&nbsp;subtract&nbsp;annual&nbsp;cycle.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;anncycle.py<br>
+&nbsp;<br>
+Assumes&nbsp;input&nbsp;data&nbsp;has&nbsp;equally&nbsp;spaced&nbsp;time&nbsp;intervals.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;<br>
+self.<strong>frequency</strong>&nbsp;:&nbsp;string&nbsp;to&nbsp;denote&nbsp;frequency&nbsp;of&nbsp;input&nbsp;(and&nbsp;output)<br>
+data,&nbsp;e.g.,&nbsp;'d'&nbsp;for&nbsp;daily&nbsp;data.<br>
+&nbsp;<br>
+self.<strong>year1</strong>&nbsp;and&nbsp;self.<strong>year2</strong>&nbsp;:&nbsp;integers.&nbsp;&nbsp;The&nbsp;annual&nbsp;cycle&nbsp;will&nbsp;be<br>
+calculated&nbsp;using&nbsp;input&nbsp;data&nbsp;from&nbsp;0000:00&nbsp;UTC&nbsp;1&nbsp;Jan&nbsp;self.<strong>year1</strong>&nbsp;to<br>
+2359:59&nbsp;31&nbsp;Dec&nbsp;self.<strong>year2</strong>.<br>
+&nbsp;<br>
+self.<strong>data_in</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;list&nbsp;of&nbsp;all&nbsp;input&nbsp;data.<br>
+&nbsp;<br>
+self.<strong>data_anncycle_raw</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;'raw'&nbsp;annual&nbsp;cycle.&nbsp;&nbsp;The<br>
+data&nbsp;for&nbsp;e.g.&nbsp;5&nbsp;Jan&nbsp;is&nbsp;a&nbsp;simple&nbsp;mean&nbsp;of&nbsp;all&nbsp;the&nbsp;input&nbsp;data&nbsp;for&nbsp;5<br>
+Jan.<br>
+&nbsp;<br>
+self.<strong>kmin</strong>&nbsp;:&nbsp;integer&nbsp;&gt;=1.&nbsp;Typical&nbsp;value&nbsp;is&nbsp;5.&nbsp;Minimum&nbsp;number&nbsp;of<br>
+valid&nbsp;input&nbsp;data&nbsp;values&nbsp;needed&nbsp;at&nbsp;a&nbsp;particular&nbsp;grid&nbsp;point&nbsp;on&nbsp;a<br>
+particular&nbsp;day&nbsp;of&nbsp;the&nbsp;year,&nbsp;for&nbsp;the&nbsp;raw&nbsp;annual&nbsp;cycle&nbsp;to&nbsp;be<br>
+calculated&nbsp;at&nbsp;that&nbsp;grid&nbsp;point&nbsp;and&nbsp;that&nbsp;day&nbsp;of&nbsp;year.&nbsp;If&nbsp;less&nbsp;than<br>
+kmin&nbsp;data&nbsp;values&nbsp;are&nbsp;available,&nbsp;the&nbsp;annual&nbsp;cycle&nbsp;at&nbsp;that&nbsp;grid<br>
+point&nbsp;and&nbsp;that&nbsp;day&nbsp;of&nbsp;year&nbsp;is&nbsp;set&nbsp;to&nbsp;the&nbsp;mean&nbsp;value&nbsp;of&nbsp;the&nbsp;whole<br>
+global&nbsp;annual&nbsp;cycle.&nbsp;If&nbsp;only&nbsp;a&nbsp;small&nbsp;fraction&nbsp;(see&nbsp;self.<strong>frac_crit</strong>)<br>
+of&nbsp;the&nbsp;raw&nbsp;annual&nbsp;cycle&nbsp;values&nbsp;at&nbsp;a&nbsp;grid&nbsp;point&nbsp;are&nbsp;set&nbsp;to&nbsp;this<br>
+mean&nbsp;value,&nbsp;this&nbsp;will&nbsp;have&nbsp;an&nbsp;insignificant&nbsp;effect&nbsp;on&nbsp;the&nbsp;smoothed<br>
+annual&nbsp;cycle&nbsp;calculated&nbsp;in&nbsp;<a href="#AnnualCycle-f_anncycle_smooth">f_anncycle_smooth</a>().<br>
+&nbsp;<br>
+self.<strong>detrend</strong>&nbsp;:&nbsp;Boolean.&nbsp;If&nbsp;true,&nbsp;calculate&nbsp;the&nbsp;temporal&nbsp;linear<br>
+trend&nbsp;over&nbsp;the&nbsp;whole&nbsp;period&nbsp;and&nbsp;remove&nbsp;this&nbsp;along&nbsp;with&nbsp;the&nbsp;mean<br>
+and&nbsp;annual&nbsp;cycle.<br>
+&nbsp;<br>
+self.<strong>frac_crit</strong>:&nbsp;float.&nbsp;Currently&nbsp;hard&nbsp;set&nbsp;to&nbsp;0.01.&nbsp;If&nbsp;greater&nbsp;than<br>
+self.<strong>frac_crit</strong>&nbsp;of&nbsp;grid&nbsp;points&nbsp;have&nbsp;missing&nbsp;data&nbsp;in&nbsp;the&nbsp;raw&nbsp;annual<br>
+cycle,&nbsp;raise&nbsp;<a href="exceptions.html#UserWarning">UserWarning</a>.&nbsp;&nbsp;If&nbsp;this&nbsp;happens,&nbsp;examine&nbsp;carefully&nbsp;and<br>
+recode&nbsp;accordingly.<br>
+&nbsp;<br>
+self.<strong>data_anncycle_smooth</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;smoothed&nbsp;annual&nbsp;cycle.<br>
+Calculated&nbsp;from&nbsp;mean&nbsp;plus&nbsp;first&nbsp;self.<strong>nharm</strong>&nbsp;annual&nbsp;harmonics&nbsp;of<br>
+self.<strong>data_anncycle_raw</strong>.<br>
+&nbsp;<br>
+self.<strong>nharm</strong>&nbsp;:&nbsp;integer&nbsp;number&nbsp;of&nbsp;annual&nbsp;harmonics&nbsp;to&nbsp;retain&nbsp;for<br>
+smoothed&nbsp;annual&nbsp;cycle.<br>
+&nbsp;<br>
+self.<strong>data_anncycle_rm</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;list&nbsp;of&nbsp;anomaly&nbsp;data&nbsp;with&nbsp;annual<br>
+cycle&nbsp;subtracted.<br>
+&nbsp;<br>
+self.<strong>file_data_in</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file(s)&nbsp;of&nbsp;input&nbsp;data.&nbsp;&nbsp;Contains&nbsp;a<br>
+wild&nbsp;card&nbsp;????&nbsp;character,&nbsp;which&nbsp;will&nbsp;be&nbsp;replaced&nbsp;by,&nbsp;e.g.,&nbsp;year<br>
+numbers&nbsp;(if&nbsp;self.<strong>outfile_frequency</strong>&nbsp;is&nbsp;'year').<br>
+&nbsp;<br>
+self.<strong>file_anncycle_mm</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file&nbsp;of&nbsp;linear&nbsp;trend<br>
+gradient&nbsp;mm.<br>
+&nbsp;<br>
+self.<strong>file_anncycle_cc</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file&nbsp;of&nbsp;linear&nbsp;trend<br>
+intercept&nbsp;cc.<br>
+&nbsp;<br>
+self.<strong>file_anncycle_raw</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file&nbsp;of&nbsp;raw&nbsp;annual&nbsp;cycle.<br>
+&nbsp;<br>
+self.<strong>file_anncycle_smooth</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file&nbsp;of&nbsp;smoothed&nbsp;annual<br>
+cycle.<br>
+&nbsp;<br>
+self.<strong>file_anncycle_rm</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file(s)&nbsp;of&nbsp;data&nbsp;with<br>
+smoothed&nbsp;annual&nbsp;cycle&nbsp;subtracted.&nbsp;&nbsp;Contains&nbsp;a&nbsp;wild&nbsp;card&nbsp;????<br>
+character,&nbsp;which&nbsp;will&nbsp;be&nbsp;replaced&nbsp;by,&nbsp;e.g.,&nbsp;year&nbsp;numbers&nbsp;(if<br>
+self.<strong>outfile_frequency</strong>&nbsp;is&nbsp;'year').<br>
+&nbsp;<br>
+self.<strong>time1</strong>:&nbsp;If&nbsp;False,&nbsp;calculate&nbsp;anomalies&nbsp;from&nbsp;annual&nbsp;cycle&nbsp;from<br>
+beginning&nbsp;of&nbsp;data&nbsp;set.&nbsp;&nbsp;If&nbsp;datetime.datetime&nbsp;<a href="__builtin__.html#object">object</a>,&nbsp;calculate<br>
+anomalies&nbsp;from&nbsp;annual&nbsp;cycle&nbsp;from&nbsp;this&nbsp;time.<br>
+&nbsp;<br>
+self.<strong>time2</strong>:&nbsp;If&nbsp;False,&nbsp;calculate&nbsp;anomalies&nbsp;from&nbsp;annual&nbsp;cycle&nbsp;up&nbsp;to<br>
+end&nbsp;of&nbsp;data&nbsp;set.&nbsp;&nbsp;If&nbsp;datetime.datetime&nbsp;<a href="__builtin__.html#object">object</a>,&nbsp;calculate&nbsp;anomalies<br>
+from&nbsp;annual&nbsp;cycle&nbsp;up&nbsp;to&nbsp;this&nbsp;time.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="AnnualCycle-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source','var_name','level',<br>
+'basedir','year1','year2','time1','time2','nharm','detrend'.</tt></dd></dl>
+
+<dl><dt><a name="AnnualCycle-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AnnualCycle-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AnnualCycle-f_anncycle_raw"><strong>f_anncycle_raw</strong></a>(self)</dt><dd><tt>Create&nbsp;raw&nbsp;annual&nbsp;cycle&nbsp;and&nbsp;write&nbsp;to&nbsp;file.<br>
+&nbsp;<br>
+The&nbsp;raw&nbsp;annual&nbsp;cycle&nbsp;consists&nbsp;of&nbsp;a&nbsp;value&nbsp;for&nbsp;each&nbsp;time&nbsp;(e.g.,<br>
+day)&nbsp;of&nbsp;the&nbsp;year&nbsp;by&nbsp;averaging&nbsp;over&nbsp;all&nbsp;years,&nbsp;e.g.,&nbsp;creates&nbsp;a<br>
+value&nbsp;for&nbsp;1&nbsp;Jan&nbsp;by&nbsp;averaging&nbsp;over&nbsp;all&nbsp;the&nbsp;1&nbsp;Jan&nbsp;days&nbsp;from&nbsp;all<br>
+the&nbsp;year.<br>
+&nbsp;<br>
+This&nbsp;will&nbsp;be&nbsp;assigned&nbsp;to&nbsp;year&nbsp;1,&nbsp;i.e.&nbsp;AD&nbsp;1.&nbsp;&nbsp;NB&nbsp;year&nbsp;1&nbsp;is&nbsp;not<br>
+a&nbsp;leap&nbsp;year.<br>
+&nbsp;<br>
+Ignores&nbsp;29&nbsp;Feb&nbsp;in&nbsp;leap&nbsp;years.&nbsp;Hence,&nbsp;final&nbsp;annual&nbsp;cycle&nbsp;has<br>
+exactly&nbsp;365&nbsp;days&nbsp;of&nbsp;data.<br>
+&nbsp;<br>
+Accounts&nbsp;for&nbsp;missing&nbsp;data.&nbsp;See&nbsp;documentation&nbsp;of&nbsp;self.<strong>kmin</strong>&nbsp;and<br>
+self.<strong>frac_crit</strong>&nbsp;in&nbsp;class&nbsp;docstring&nbsp;for&nbsp;explanation.<br>
+&nbsp;<br>
+Create&nbsp;data_anncycle_raw&nbsp;attribute.<br>
+&nbsp;<br>
+Note&nbsp;for&nbsp;future&nbsp;coding:&nbsp;First&nbsp;attempt&nbsp;at&nbsp;this,&nbsp;code&nbsp;was&nbsp;slow<br>
+as&nbsp;it&nbsp;looped&nbsp;over&nbsp;each&nbsp;day&nbsp;of&nbsp;the&nbsp;year,&nbsp;and&nbsp;reads&nbsp;in&nbsp;all&nbsp;data<br>
+(e.g.,&nbsp;1&nbsp;Jan's)&nbsp;for&nbsp;that&nbsp;day&nbsp;and&nbsp;averages&nbsp;over&nbsp;them.</tt></dd></dl>
+
+<dl><dt><a name="AnnualCycle-f_anncycle_smooth"><strong>f_anncycle_smooth</strong></a>(self)</dt><dd><tt>Calculate&nbsp;smoothed&nbsp;annual&nbsp;cycle.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;created&nbsp;from&nbsp;the&nbsp;mean&nbsp;and&nbsp;first&nbsp;self.<strong>nharm</strong>&nbsp;annual<br>
+harmonics&nbsp;of&nbsp;the&nbsp;raw&nbsp;annual&nbsp;cycle.<br>
+&nbsp;<br>
+f(t_i)=&nbsp;\overline&nbsp;f&nbsp;+&nbsp;\Sum_{k=1}^\{nharm}&nbsp;A_k&nbsp;\cos&nbsp;\omega_k&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;B_k&nbsp;\sin&nbsp;\omega_k&nbsp;t<br>
+&nbsp;<br>
+\omega_k&nbsp;=&nbsp;2\pi&nbsp;k&nbsp;/&nbsp;T<br>
+&nbsp;<br>
+A_k&nbsp;=&nbsp;2/N&nbsp;\Sum_{k=1}^\{N}&nbsp;f(t_i)&nbsp;\cos&nbsp;\omega_k&nbsp;t_i<br>
+&nbsp;<br>
+B_k&nbsp;=&nbsp;2/N&nbsp;\Sum_{k=1}^\{N}&nbsp;f(t_i)&nbsp;\sin&nbsp;\omega_k&nbsp;t_i<br>
+&nbsp;<br>
+Create&nbsp;data_mean,&nbsp;data_anncycle_smooth&nbsp;attributes.<br>
+Create&nbsp;data_anncycle_smooth_leap&nbsp;attribute&nbsp;if&nbsp;calendar&nbsp;is&nbsp;gregorian.</tt></dd></dl>
+
+<dl><dt><a name="AnnualCycle-f_read_anncycle_raw"><strong>f_read_anncycle_raw</strong></a>(self)</dt><dd><tt>Read&nbsp;previously&nbsp;created&nbsp;raw&nbsp;annual&nbsp;cycle.<br>
+&nbsp;<br>
+Create&nbsp;data_anncycle_raw&nbsp;attribute.</tt></dd></dl>
+
+<dl><dt><a name="AnnualCycle-f_read_anncycle_smooth"><strong>f_read_anncycle_smooth</strong></a>(self)</dt><dd><tt>Read&nbsp;previously&nbsp;calculated&nbsp;smoothed&nbsp;annual&nbsp;cycle.<br>
+&nbsp;<br>
+Create&nbsp;data_anncycle_smooth&nbsp;and&nbsp;data_anncycle_smooth_leap<br>
+attributes.</tt></dd></dl>
+
+<dl><dt><a name="AnnualCycle-f_read_subtract_anncycle"><strong>f_read_subtract_anncycle</strong></a>(self)</dt><dd><tt>Read&nbsp;previously&nbsp;calculatedanomaly&nbsp;data&nbsp;(annual&nbsp;cycle&nbsp;subtracted).<br>
+&nbsp;<br>
+Create&nbsp;data_anncycle_rm&nbsp;attribute.</tt></dd></dl>
+
+<dl><dt><a name="AnnualCycle-f_read_trend"><strong>f_read_trend</strong></a>(self)</dt><dd><tt>Read&nbsp;previously&nbsp;created&nbsp;linear&nbsp;trend.<br>
+&nbsp;<br>
+Create&nbsp;mm&nbsp;and&nbsp;cc&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="AnnualCycle-f_subtract_anncycle"><strong>f_subtract_anncycle</strong></a>(self)</dt><dd><tt>Subtract&nbsp;(trend&nbsp;and)&nbsp;smoothed&nbsp;annual&nbsp;cycle&nbsp;from&nbsp;input&nbsp;data&nbsp;to&nbsp;create&nbsp;anomaly&nbsp;data.<br>
+&nbsp;<br>
+Read&nbsp;in&nbsp;input&nbsp;data&nbsp;and&nbsp;process&nbsp;and&nbsp;write&nbsp;output&nbsp;data&nbsp;(anomaly<br>
+with&nbsp;(trend&nbsp;and)&nbsp;smoothed&nbsp;annual&nbsp;cycle&nbsp;subtracted)&nbsp;in&nbsp;chunks&nbsp;of<br>
+outfile_frequency,&nbsp;e.g.,&nbsp;'year'.<br>
+&nbsp;<br>
+Makes&nbsp;allowance&nbsp;for&nbsp;input&nbsp;data&nbsp;not&nbsp;having&nbsp;to&nbsp;start&nbsp;on&nbsp;1&nbsp;Jan&nbsp;or<br>
+end&nbsp;on&nbsp;31&nbsp;Dec.<br>
+&nbsp;<br>
+Create&nbsp;data_anncycle_rm&nbsp;attribute.</tt></dd></dl>
+
+<dl><dt><a name="AnnualCycle-f_trend"><strong>f_trend</strong></a>(self)</dt><dd><tt>Calculate&nbsp;and&nbsp;save&nbsp;temporal&nbsp;linear&nbsp;trend&nbsp;over&nbsp;whole&nbsp;time&nbsp;period.<br>
+&nbsp;<br>
+Create&nbsp;mm&nbsp;and&nbsp;cc&nbsp;attributes.<br>
+&nbsp;<br>
+N.B.,&nbsp;calculcation&nbsp;of&nbsp;the&nbsp;linear&nbsp;trend&nbsp;at&nbsp;each&nbsp;grid&nbsp;point&nbsp;of<br>
+(typically)&nbsp;decades&nbsp;of&nbsp;daily&nbsp;(or&nbsp;sub-daily)&nbsp;data&nbsp;would&nbsp;either<br>
+require&nbsp;unfeasible&nbsp;memory&nbsp;(to&nbsp;load&nbsp;in&nbsp;the&nbsp;entire&nbsp;data&nbsp;set)<br>
+and/or&nbsp;would&nbsp;be&nbsp;computationally&nbsp;inefficient&nbsp;(by&nbsp;e.g.,&nbsp;loop<br>
+over&nbsp;longitude&nbsp;and&nbsp;latitude,&nbsp;and&nbsp;reading&nbsp;in&nbsp;the&nbsp;full&nbsp;time<br>
+series&nbsp;for&nbsp;each&nbsp;grid&nbsp;point).<br>
+&nbsp;<br>
+Hence,&nbsp;a&nbsp;pragmatic&nbsp;approach&nbsp;is&nbsp;taken&nbsp;here.<br>
+&nbsp;<br>
+First,&nbsp;individual&nbsp;annual&nbsp;means&nbsp;are&nbsp;calculated,&nbsp;for&nbsp;each&nbsp;year<br>
+between&nbsp;self.<strong>year1</strong>&nbsp;and&nbsp;self.<strong>year2</strong>.&nbsp;Note&nbsp;that&nbsp;this&nbsp;must&nbsp;be&nbsp;done<br>
+independently&nbsp;of&nbsp;(and&nbsp;before)&nbsp;running&nbsp;anncycle.py,&nbsp;using<br>
+mean.py.&nbsp;These&nbsp;should&nbsp;be&nbsp;calculated&nbsp;using&nbsp;time&nbsp;domains&nbsp;with<br>
+id's&nbsp;of&nbsp;the&nbsp;form&nbsp;annYYYY,&nbsp;e.g.,&nbsp;ann1979.<br>
+&nbsp;<br>
+Hence,&nbsp;we&nbsp;then&nbsp;have&nbsp;a&nbsp;manageable&nbsp;number&nbsp;(typically&nbsp;10-50)&nbsp;of<br>
+individual&nbsp;annual&nbsp;mean&nbsp;fields&nbsp;(maps).&nbsp;These&nbsp;are&nbsp;read&nbsp;into<br>
+memory,&nbsp;combined&nbsp;into&nbsp;a&nbsp;single&nbsp;cube,&nbsp;and&nbsp;the&nbsp;linear&nbsp;trend<br>
+calculated&nbsp;at&nbsp;each&nbsp;grid&nbsp;point.<br>
+&nbsp;<br>
+The&nbsp;temporal&nbsp;linear&nbsp;trend&nbsp;is&nbsp;stored&nbsp;as&nbsp;maps&nbsp;self.<strong>mm</strong>&nbsp;and<br>
+self.<strong>cc</strong>,&nbsp;to&nbsp;be&nbsp;used&nbsp;in&nbsp;an&nbsp;equation&nbsp;of&nbsp;the&nbsp;form&nbsp;yy&nbsp;=&nbsp;mm&nbsp;*&nbsp;time<br>
++&nbsp;cc.&nbsp;The&nbsp;trend&nbsp;time&nbsp;axis&nbsp;here&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;in&nbsp;the&nbsp;input<br>
+data,&nbsp;i.e.,&nbsp;time=0&nbsp;corresponds&nbsp;to&nbsp;the&nbsp;base&nbsp;time&nbsp;in&nbsp;the&nbsp;time<br>
+coordinate&nbsp;of&nbsp;the&nbsp;input&nbsp;data,&nbsp;The&nbsp;constant&nbsp;cc&nbsp;corresponds&nbsp;to<br>
+the&nbsp;value&nbsp;of&nbsp;the&nbsp;trend&nbsp;line&nbsp;at&nbsp;time=0.<br>
+&nbsp;<br>
+Later,&nbsp;in&nbsp;f_subtract_anncycle,&nbsp;the&nbsp;value&nbsp;yy&nbsp;is&nbsp;calculated&nbsp;and<br>
+subtracted&nbsp;first,&nbsp;then&nbsp;the&nbsp;annual&nbsp;harmonics&nbsp;are<br>
+subtracted.&nbsp;Note&nbsp;that&nbsp;the&nbsp;trend&nbsp;will&nbsp;include&nbsp;the&nbsp;time&nbsp;mean,&nbsp;so<br>
+if&nbsp;the&nbsp;trend&nbsp;is&nbsp;subtracted,&nbsp;the&nbsp;time&nbsp;mean&nbsp;is&nbsp;not&nbsp;subtracted<br>
+again&nbsp;when&nbsp;the&nbsp;annual&nbsp;harmonics&nbsp;are&nbsp;subtracted.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="CCEWLagrangian">class <strong>CCEWLagrangian</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Lagrangian&nbsp;database&nbsp;of&nbsp;convectively&nbsp;coupled&nbsp;equatorial&nbsp;waves<br>
+&nbsp;<br>
+Follows&nbsp;methodology&nbsp;of&nbsp;Baranowski&nbsp;et&nbsp;al.&nbsp;(2016).<br>
+&nbsp;<br>
+Baranowski&nbsp;DB,&nbsp;Flatau&nbsp;MK,&nbsp;Flatau&nbsp;PJ,&nbsp;Matthews&nbsp;AJ,&nbsp;2016:&nbsp;Impact&nbsp;of<br>
+atmospheric&nbsp;convectively-coupled&nbsp;Kelvin&nbsp;waves&nbsp;on&nbsp;upper&nbsp;ocean<br>
+variability.&nbsp;J.&nbsp;Geophys.&nbsp;Res.,&nbsp;121,&nbsp;2045-2059,&nbsp;doi:<br>
+10.1002/2015JD024150.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;ccew_lagrangian.py.<br>
+&nbsp;<br>
+Selected&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>wave_type</strong>&nbsp;:&nbsp;string&nbsp;denoting&nbsp;type&nbsp;of&nbsp;equatorial&nbsp;wave&nbsp;the<br>
+Lagrangian&nbsp;data&nbsp;base&nbsp;will&nbsp;be&nbsp;calculated&nbsp;for,&nbsp;e.g.,&nbsp;'EK'&nbsp;for<br>
+equatorial&nbsp;Kelvin&nbsp;wave.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="CCEWLagrangian-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source','var_name','level',<br>
+'basedir','filepre',&nbsp;'time1',&nbsp;'time2',&nbsp;'lat1',&nbsp;'lat2'.</tt></dd></dl>
+
+<dl><dt><a name="CCEWLagrangian-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CCEWLagrangian-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CCEWLagrangian-f_create_time_domain"><strong>f_create_time_domain</strong></a>(self, tdomain_params)</dt><dd><tt>Create&nbsp;time&nbsp;domain&nbsp;from&nbsp;Lagrangian&nbsp;data&nbsp;base&nbsp;of&nbsp;CCEWs.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;<br>
+tdomain_params&nbsp;:&nbsp;Dictionary&nbsp;of&nbsp;parameters&nbsp;used&nbsp;to&nbsp;select&nbsp;dates<br>
+from&nbsp;the&nbsp;CCEW&nbsp;Lagrangian&nbsp;event&nbsp;data&nbsp;base,&nbsp;that&nbsp;then&nbsp;go&nbsp;into<br>
+the&nbsp;time&nbsp;domain.&nbsp;Keys&nbsp;are:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'lonc'&nbsp;:&nbsp;float&nbsp;or&nbsp;int,&nbsp;longitude&nbsp;that&nbsp;the&nbsp;CCEW&nbsp;events&nbsp;must<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cross,&nbsp;e.g.,&nbsp;90.0.&nbsp;The&nbsp;time&nbsp;that&nbsp;goes&nbsp;into&nbsp;the&nbsp;time&nbsp;domain<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;each&nbsp;event&nbsp;is&nbsp;the&nbsp;time&nbsp;the&nbsp;CCEW&nbsp;crosses&nbsp;longitude<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lonc.&nbsp;Value&nbsp;of&nbsp;lonc&nbsp;must&nbsp;be&nbsp;set.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'threshold'&nbsp;:&nbsp;float&nbsp;or&nbsp;False,&nbsp;optional&nbsp;threshold&nbsp;value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;must&nbsp;be&nbsp;exceeded&nbsp;by&nbsp;CCEW&nbsp;as&nbsp;it&nbsp;passes&nbsp;through&nbsp;lonc,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;e.g.,&nbsp;0.2.&nbsp;Set&nbsp;to&nbsp;False&nbsp;to&nbsp;disable.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'threshold_units'&nbsp;:&nbsp;string,&nbsp;units&nbsp;of&nbsp;data&nbsp;for&nbsp;threshold,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;e.g.,&nbsp;'mm&nbsp;hr-1'.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'min_lon_extent'&nbsp;:&nbsp;float&nbsp;or&nbsp;False,&nbsp;optional&nbsp;minimum<br>
+&nbsp;&nbsp;&nbsp;&nbsp;longitudinal&nbsp;extent&nbsp;that&nbsp;the&nbsp;CCEW&nbsp;event&nbsp;must&nbsp;extend&nbsp;over,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;e.g.,&nbsp;20.0.&nbsp;This&nbsp;is&nbsp;split&nbsp;equally&nbsp;either&nbsp;side&nbsp;of&nbsp;lonc.&nbsp;For<br>
+&nbsp;&nbsp;&nbsp;&nbsp;example,&nbsp;if&nbsp;lonc&nbsp;is&nbsp;90,&nbsp;and&nbsp;min_lon_extent&nbsp;is&nbsp;20,&nbsp;then&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;included&nbsp;in&nbsp;the&nbsp;time&nbsp;domain,&nbsp;the&nbsp;CCEW&nbsp;event&nbsp;must&nbsp;extend<br>
+&nbsp;&nbsp;&nbsp;&nbsp;between&nbsp;at&nbsp;least&nbsp;80&nbsp;and&nbsp;100&nbsp;degrees&nbsp;east.&nbsp;Set&nbsp;to&nbsp;False&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;disable.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'round_to_nearest_time'&nbsp;:&nbsp;string&nbsp;of&nbsp;False.&nbsp;If&nbsp;False,&nbsp;pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;datetime&nbsp;of&nbsp;crossing&nbsp;lonc&nbsp;to&nbsp;time&nbsp;domain&nbsp;at&nbsp;full<br>
+&nbsp;&nbsp;&nbsp;&nbsp;resolution,&nbsp;e.g.,&nbsp;3&nbsp;hour&nbsp;resolution.&nbsp;If&nbsp;'d',&nbsp;then&nbsp;round<br>
+&nbsp;&nbsp;&nbsp;&nbsp;datetime&nbsp;to&nbsp;nearest&nbsp;day&nbsp;at&nbsp;00&nbsp;UTC.&nbsp;If&nbsp;'6h',&nbsp;then&nbsp;round<br>
+&nbsp;&nbsp;&nbsp;&nbsp;datetime&nbsp;to&nbsp;nearest&nbsp;00,&nbsp;06,&nbsp;12,&nbsp;18&nbsp;UTC.</tt></dd></dl>
+
+<dl><dt><a name="CCEWLagrangian-f_events"><strong>f_events</strong></a>(self, event_params)</dt><dd><tt>Create&nbsp;Lagrangian&nbsp;database&nbsp;of&nbsp;CCEW&nbsp;events.<br>
+&nbsp;<br>
+Argument:<br>
+&nbsp;<br>
+event_params&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;for&nbsp;construction&nbsp;of<br>
+Lagrangian&nbsp;data&nbsp;base&nbsp;of&nbsp;CCEW&nbsp;events.&nbsp;These&nbsp;include:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'threshold'&nbsp;:&nbsp;float,&nbsp;threshold&nbsp;data&nbsp;value&nbsp;(typically<br>
+&nbsp;&nbsp;&nbsp;precipitation&nbsp;rate)&nbsp;which&nbsp;must&nbsp;be&nbsp;exceeded&nbsp;by&nbsp;local&nbsp;maxima<br>
+&nbsp;&nbsp;&nbsp;to&nbsp;be&nbsp;included&nbsp;in&nbsp;data_hovmax<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'threshold_units'&nbsp;:&nbsp;string,&nbsp;e.g.,&nbsp;'mm&nbsp;hr-1',&nbsp;of&nbsp;units&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;data<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'traj_min_time_length'&nbsp;:&nbsp;float,&nbsp;minimum&nbsp;length&nbsp;of&nbsp;time&nbsp;that<br>
+&nbsp;&nbsp;&nbsp;a&nbsp;trajectory&nbsp;must&nbsp;last&nbsp;to&nbsp;be&nbsp;included&nbsp;in&nbsp;the&nbsp;data&nbsp;base,<br>
+&nbsp;&nbsp;&nbsp;e.g.,&nbsp;12.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'traj_min_length_units'&nbsp;:&nbsp;string,&nbsp;units&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;traj_min_time_length,&nbsp;e.g.,&nbsp;'h'.&nbsp;Must&nbsp;match&nbsp;units&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;self.<strong>frequency</strong>&nbsp;(i.e.,&nbsp;units&nbsp;of&nbsp;time&nbsp;resolution&nbsp;of&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;source).<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'prune_threshold1'&nbsp;and&nbsp;'prune_threshold2'&nbsp;:&nbsp;floats,&nbsp;used&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;pruning&nbsp;western&nbsp;and&nbsp;eastern&nbsp;ends&nbsp;of&nbsp;raw&nbsp;trajectories&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;take&nbsp;account&nbsp;of&nbsp;over-extension&nbsp;of&nbsp;trajectories&nbsp;based&nbsp;on<br>
+&nbsp;&nbsp;&nbsp;wavenumber-frequency&nbsp;filtered&nbsp;data.&nbsp;More&nbsp;details&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;comments&nbsp;within&nbsp;the&nbsp;function.<br>
+&nbsp;<br>
+Creates&nbsp;attribute&nbsp;&lt;self.<strong>trajectories</strong>&gt;,&nbsp;a&nbsp;dictionary&nbsp;of<br>
+dictionaries&nbsp;containing&nbsp;the&nbsp;Lagrangian&nbsp;trajectories.&nbsp;Keys&nbsp;of<br>
+trajectories&nbsp;are&nbsp;integers&nbsp;from&nbsp;0&nbsp;upwards.<br>
+&nbsp;<br>
+Each&nbsp;entry&nbsp;trajectories[index]&nbsp;is&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;information<br>
+on&nbsp;that&nbsp;trajectory.&nbsp;Keys&nbsp;are:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'npts'&nbsp;:&nbsp;an&nbsp;integer,&nbsp;the&nbsp;number&nbsp;of&nbsp;(time,longitude)&nbsp;points<br>
+&nbsp;&nbsp;&nbsp;on&nbsp;the&nbsp;trajectory.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'time_indices'&nbsp;and&nbsp;'lon_indices'&nbsp;:&nbsp;these&nbsp;are&nbsp;two&nbsp;lists&nbsp;(of<br>
+&nbsp;&nbsp;&nbsp;the&nbsp;length&nbsp;npts&nbsp;and&nbsp;to&nbsp;be&nbsp;paired&nbsp;together)&nbsp;of&nbsp;the&nbsp;time&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;longitude&nbsp;indices&nbsp;of&nbsp;the&nbsp;maxima&nbsp;(the&nbsp;1's)&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;self.<strong>data_hovmax</strong>.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'times'&nbsp;:&nbsp;a&nbsp;list&nbsp;of&nbsp;length&nbsp;npts&nbsp;of&nbsp;datetime.datetime&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;similar&nbsp;objects&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;actual&nbsp;times&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;time_indices.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'lons'&nbsp;:&nbsp;a&nbsp;list&nbsp;of&nbsp;length&nbsp;npts&nbsp;of&nbsp;longitude&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;actual&nbsp;longitudes&nbsp;of&nbsp;the&nbsp;lon_indices.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'tunits'&nbsp;:&nbsp;a&nbsp;CF&nbsp;units&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;of&nbsp;the&nbsp;times&nbsp;units.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'lonunits':&nbsp;a&nbsp;CF&nbsp;units&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;of&nbsp;the&nbsp;longitude&nbsp;units.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'data_vals'&nbsp;:&nbsp;a&nbsp;list&nbsp;of&nbsp;length&nbsp;npts&nbsp;of&nbsp;the&nbsp;data&nbsp;values&nbsp;at<br>
+&nbsp;&nbsp;&nbsp;the&nbsp;points&nbsp;along&nbsp;the&nbsp;trajectory&nbsp;from&nbsp;the&nbsp;WK-filtered<br>
+&nbsp;&nbsp;&nbsp;Hovmoller&nbsp;self.<strong>data_hovWKfilt</strong>.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;'dataunits'&nbsp;:&nbsp;a&nbsp;CF&nbsp;units&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;of&nbsp;the&nbsp;data&nbsp;units&nbsp;(e.g.,&nbsp;mm<br>
+&nbsp;&nbsp;&nbsp;hr-1).</tt></dd></dl>
+
+<dl><dt><a name="CCEWLagrangian-f_read_hovWKfilt"><strong>f_read_hovWKfilt</strong></a>(self)</dt><dd><tt>Read&nbsp;WK&nbsp;filtered&nbsp;2-D&nbsp;time,longitude&nbsp;Hovmoller.<br>
+&nbsp;<br>
+Creates&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>data_hovWKfilt</strong>&nbsp;:&nbsp;input&nbsp;2-D&nbsp;time,longitude&nbsp;Hovmoller&nbsp;of<br>
+equatorial&nbsp;wave-filtered&nbsp;data.</tt></dd></dl>
+
+<dl><dt><a name="CCEWLagrangian-f_read_lagrangian"><strong>f_read_lagrangian</strong></a>(self)</dt><dd><tt>Read&nbsp;CCEW&nbsp;Lagrangian&nbsp;data&nbsp;base<br>
+&nbsp;<br>
+Creates&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>trajectories</strong>&nbsp;:&nbsp;as&nbsp;defined&nbsp;in&nbsp;<a href="#CCEWLagrangian-f_events">f_events</a>()</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="CombineLatitudes">class <strong>CombineLatitudes</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Create&nbsp;a&nbsp;<a href="#CombineLatitudes">CombineLatitudes</a>&nbsp;<a href="__builtin__.html#object">object</a>.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;combine_latitudes.py.<br>
+&nbsp;<br>
+An&nbsp;ad&nbsp;hoc&nbsp;class.&nbsp;Use&nbsp;when&nbsp;filtering&nbsp;data&nbsp;for&nbsp;equatorial<br>
+waves.&nbsp;First&nbsp;use&nbsp;wheelerkiladis.py&nbsp;to:&nbsp;take<br>
+time-latitude-longitude&nbsp;data&nbsp;split&nbsp;and&nbsp;stored&nbsp;by&nbsp;time&nbsp;(e.g.,<br>
+yearly&nbsp;or&nbsp;monthly&nbsp;files),&nbsp;then&nbsp;split&nbsp;this&nbsp;into&nbsp;individual<br>
+latitudes&nbsp;and&nbsp;recombine&nbsp;the&nbsp;time&nbsp;axis&nbsp;to&nbsp;get&nbsp;a&nbsp;single<br>
+time-longitude&nbsp;Hovmollers&nbsp;at&nbsp;each&nbsp;latitude;&nbsp;filter&nbsp;these&nbsp;for&nbsp;a<br>
+particular&nbsp;equatorial&nbsp;wave&nbsp;(e.g.,&nbsp;equatorial&nbsp;Kelvin&nbsp;waves).<br>
+&nbsp;<br>
+Now&nbsp;use&nbsp;this&nbsp;class&nbsp;to&nbsp;recombine&nbsp;the&nbsp;filtered&nbsp;data.&nbsp;Recombine&nbsp;the<br>
+latitudes,&nbsp;and&nbsp;resplit&nbsp;for&nbsp;storage&nbsp;by&nbsp;time&nbsp;(into&nbsp;yearly&nbsp;or&nbsp;monthly<br>
+files&nbsp;again).&nbsp;Hence,&nbsp;this&nbsp;process&nbsp;creates&nbsp;a&nbsp;new&nbsp;"source"&nbsp;of&nbsp;data.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;<br>
+self.<strong>source1</strong>&nbsp;:&nbsp;source&nbsp;of&nbsp;original&nbsp;data,&nbsp;e.g.,<br>
+'erainterim_plev_6h'.&nbsp;The&nbsp;output&nbsp;from&nbsp;wheelerkiladis.py&nbsp;is&nbsp;stored<br>
+in&nbsp;the&nbsp;'processed'&nbsp;directory&nbsp;of&nbsp;this&nbsp;source.<br>
+&nbsp;<br>
+self.<strong>source2</strong>:&nbsp;source&nbsp;for&nbsp;the&nbsp;recombined&nbsp;data,&nbsp;e.g.,<br>
+'erainterimEK1_plev_6h'.<br>
+&nbsp;<br>
+self.<strong>file_hovWKfilt</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;files&nbsp;of&nbsp;input&nbsp;data.&nbsp;Contains<br>
+the&nbsp;string&nbsp;'LATITUDE',&nbsp;which&nbsp;will&nbsp;be&nbsp;replaced&nbsp;by&nbsp;individual<br>
+latitudes.<br>
+&nbsp;<br>
+self.<strong>file_data_out</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file(s)&nbsp;of&nbsp;output<br>
+data.&nbsp;Contains&nbsp;a&nbsp;wild&nbsp;card&nbsp;*&nbsp;character,&nbsp;which&nbsp;will&nbsp;be&nbsp;replaced&nbsp;by,<br>
+e.g.,&nbsp;year&nbsp;numbers&nbsp;(if&nbsp;self.<strong>outfile_frequency</strong>&nbsp;is&nbsp;'year').<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="CombineLatitudes-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source1',&nbsp;'source2',&nbsp;'level',<br>
+'latitudes',&nbsp;'basedir','filepre','var_name',&nbsp;<br>
+'wave_type,&nbsp;''time1',&nbsp;'time2'</tt></dd></dl>
+
+<dl><dt><a name="CombineLatitudes-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CombineLatitudes-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CombineLatitudes-f_combine_latitudes"><strong>f_combine_latitudes</strong></a>(self)</dt><dd><tt>Combine&nbsp;multi-latitude&nbsp;data&nbsp;into&nbsp;single&nbsp;cube.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="CombineLevels">class <strong>CombineLevels</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Create&nbsp;a&nbsp;<a href="#CombineLevels">CombineLevels</a>&nbsp;<a href="__builtin__.html#object">object</a>.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;combine_levels.py.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;<br>
+self.<strong>subdir</strong>&nbsp;:&nbsp;'std',&nbsp;data&nbsp;has&nbsp;time&nbsp;dimension.&nbsp;Process&nbsp;for&nbsp;each&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'processed',&nbsp;data&nbsp;is&nbsp;time-invariant,&nbsp;e.g.,&nbsp;time&nbsp;mean<br>
+&nbsp;<br>
+self.<strong>file_data</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file(s)&nbsp;of&nbsp;input&nbsp;data.&nbsp;If&nbsp;input<br>
+data&nbsp;has&nbsp;a&nbsp;time&nbsp;dimension,&nbsp;contains&nbsp;a&nbsp;wild&nbsp;card&nbsp;*&nbsp;character,&nbsp;which<br>
+will&nbsp;be&nbsp;replaced&nbsp;by,&nbsp;e.g.,&nbsp;year&nbsp;numbers&nbsp;(if&nbsp;self.<strong>outfile_frequency</strong><br>
+is&nbsp;'year').<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="CombineLevels-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source','levels',<br>
+'basedir','subdir','filepre','var_name'</tt></dd></dl>
+
+<dl><dt><a name="CombineLevels-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CombineLevels-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CombineLevels-f_combine_levels"><strong>f_combine_levels</strong></a>(self)</dt><dd><tt>Combine&nbsp;multi-level&nbsp;data&nbsp;into&nbsp;single&nbsp;cube.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="CubeDiagnostics">class <strong>CubeDiagnostics</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#CubeDiagnostics">CubeDiagnostics</a>&nbsp;<a href="__builtin__.html#object">object</a>.<br>
+&nbsp;<br>
+An&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;to&nbsp;calculate&nbsp;physical&nbsp;diagnostics&nbsp;of&nbsp;data,&nbsp;e.g.,<br>
+calculate&nbsp;the&nbsp;mixed&nbsp;layer&nbsp;depth&nbsp;using&nbsp;a&nbsp;particular&nbsp;method,&nbsp;from&nbsp;a<br>
+cube&nbsp;of&nbsp;conservative&nbsp;temperature.<br>
+&nbsp;<br>
+NB&nbsp;There&nbsp;are&nbsp;no&nbsp;generic&nbsp;diagnostics&nbsp;here,&nbsp;such&nbsp;as&nbsp;calculation&nbsp;of<br>
+the&nbsp;x-derivative&nbsp;(which&nbsp;could&nbsp;be&nbsp;applied&nbsp;to&nbsp;a&nbsp;cube&nbsp;of&nbsp;any<br>
+spatially&nbsp;varying&nbsp;quantity).&nbsp;&nbsp;Instead,&nbsp;reserve&nbsp;this&nbsp;class&nbsp;to<br>
+contain&nbsp;methods&nbsp;that&nbsp;only&nbsp;work&nbsp;on&nbsp;specific&nbsp;physical&nbsp;quantities,<br>
+such&nbsp;as&nbsp;the&nbsp;above&nbsp;example.<br>
+&nbsp;<br>
+Other&nbsp;examples&nbsp;might&nbsp;be&nbsp;calculating&nbsp;density&nbsp;from&nbsp;pressure&nbsp;and<br>
+temperature&nbsp;using&nbsp;the&nbsp;ideal&nbsp;gas&nbsp;law.<br>
+&nbsp;<br>
+An&nbsp;instance&nbsp;of&nbsp;the&nbsp;class&nbsp;can&nbsp;have&nbsp;attributes&nbsp;such&nbsp;as&nbsp;self.<strong>tsc</strong><br>
+(conservative_temperature),&nbsp;self.<strong>rho</strong>&nbsp;(air_density),&nbsp;etc.&nbsp;&nbsp;These<br>
+will&nbsp;be&nbsp;iris&nbsp;cubes.&nbsp;&nbsp;Each&nbsp;iris&nbsp;cube&nbsp;should&nbsp;have&nbsp;the&nbsp;same&nbsp;dimensions.<br>
+&nbsp;<br>
+After&nbsp;creating&nbsp;an&nbsp;instance&nbsp;of&nbsp;the&nbsp;class,&nbsp;call&nbsp;method&nbsp;<a href="#CubeDiagnostics-f_read_data">f_read_data</a>()<br>
+to&nbsp;lazy&nbsp;read&nbsp;whatever&nbsp;variables&nbsp;(e.g.,&nbsp;'tsc',&nbsp;or&nbsp;'rho'&nbsp;and&nbsp;'ta')<br>
+will&nbsp;be&nbsp;needed&nbsp;later.<br>
+&nbsp;<br>
+Then&nbsp;loop&nbsp;over&nbsp;relevant&nbsp;time&nbsp;blocks&nbsp;in&nbsp;main&nbsp;programme,&nbsp;and&nbsp;call<br>
+desired&nbsp;method&nbsp;from&nbsp;this&nbsp;class,&nbsp;e.g.,&nbsp;<a href="#CubeDiagnostics-f_mld">f_mld</a>().&nbsp;&nbsp;These&nbsp;methods,<br>
+e.g.,&nbsp;<a href="#CubeDiagnostics-f_mld">f_mld</a>()&nbsp;then&nbsp;read&nbsp;and&nbsp;set&nbsp;attributes&nbsp;named&nbsp;after&nbsp;the<br>
+variable&nbsp;name,&nbsp;e.g.,&nbsp;self.<strong>tsc</strong>&nbsp;is&nbsp;an&nbsp;iris&nbsp;cube&nbsp;of&nbsp;tsc,&nbsp;and<br>
+calculate&nbsp;diagnostics,&nbsp;e.g.,&nbsp;self.<strong>mld</strong>&nbsp;is&nbsp;an&nbsp;iris&nbsp;cube&nbsp;of&nbsp;mixed<br>
+layer&nbsp;depth.<br>
+&nbsp;<br>
+It&nbsp;is&nbsp;anticipated&nbsp;that&nbsp;this&nbsp;class&nbsp;will&nbsp;grow&nbsp;over&nbsp;time&nbsp;and&nbsp;will<br>
+eventually&nbsp;be&nbsp;very&nbsp;large,&nbsp;adding&nbsp;more&nbsp;methods&nbsp;as&nbsp;needed.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="CubeDiagnostics-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source','level'<br>
+'basedir'.</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CubeDiagnostics-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_mass_flux_decomposition"><strong>f_mass_flux_decomposition</strong></a>(self)</dt><dd><tt>Calculate&nbsp;mf_lambda&nbsp;and&nbsp;mf_phi&nbsp;at&nbsp;current&nbsp;pressure&nbsp;level.<br>
+&nbsp;<br>
+Based&nbsp;on&nbsp;Schwendike&nbsp;et&nbsp;al.&nbsp;(2014),&nbsp;equation&nbsp;6.<br>
+&nbsp;<br>
+omega_lambda&nbsp;and&nbsp;omega_phi&nbsp;is&nbsp;decomposition&nbsp;of&nbsp;omega&nbsp;into&nbsp;<br>
+eastward&nbsp;and&nbsp;northward&nbsp;overturning&nbsp;circulations<br>
+&nbsp;<br>
+mf_lambda&nbsp;and&nbsp;mf_phi&nbsp;is&nbsp;decomposition&nbsp;of&nbsp;upward&nbsp;mass&nbsp;flux&nbsp;into&nbsp;<br>
+eastward&nbsp;and&nbsp;northward&nbsp;overturning&nbsp;circulations<br>
+&nbsp;<br>
+mg_lambda&nbsp;=&nbsp;-omega_lambda&nbsp;cos&nbsp;phi&nbsp;/&nbsp;g<br>
+mg_phi&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;-omega_phi&nbsp;&nbsp;&nbsp;&nbsp;cos&nbsp;phi&nbsp;/&nbsp;g</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_mld"><strong>f_mld</strong></a>(self, method<font color="#909090">=1</font>, zzsfc<font color="#909090">=1.0</font>, deltatsc<font color="#909090">=1.0</font>)</dt><dd><tt>Calculate&nbsp;mixed&nbsp;layer&nbsp;depth.<br>
+&nbsp;<br>
+Assumes&nbsp;tsc&nbsp;(conservative&nbsp;temperature)&nbsp;has&nbsp;already&nbsp;been<br>
+loaded,&nbsp;in&nbsp;self.<strong>data_in</strong>['tsc_all'].<br>
+&nbsp;<br>
+Choose&nbsp;&lt;method&gt;&nbsp;to&nbsp;calculate&nbsp;mixed&nbsp;layer&nbsp;depth.<br>
+&nbsp;<br>
+Method&nbsp;1&nbsp;(default).&nbsp;&nbsp;For&nbsp;each&nbsp;profile,&nbsp;takes&nbsp;(conservative)<br>
+temperature&nbsp;at&nbsp;the&nbsp;"surface"&nbsp;depth.&nbsp;(default&nbsp;is&nbsp;&lt;zzsfc&gt;&nbsp;of&nbsp;1.0<br>
+m).&nbsp;&nbsp;Finds&nbsp;by&nbsp;linear&nbsp;interpolation&nbsp;the&nbsp;depth&nbsp;z*&nbsp;(zz_star)&nbsp;at&nbsp;which<br>
+the&nbsp;temperature&nbsp;is&nbsp;T*&nbsp;(tsc_star)&nbsp;=&nbsp;&lt;deltatsc&gt;&nbsp;(default&nbsp;of&nbsp;1.0&nbsp;degC)<br>
+below&nbsp;the&nbsp;temperature&nbsp;at&nbsp;&lt;zzsfc&gt;.&nbsp;&nbsp;Saves&nbsp;this&nbsp;as&nbsp;attribute<br>
+self.<strong>mltt</strong>&nbsp;and&nbsp;saves&nbsp;to&nbsp;file.<br>
+&nbsp;<br>
+Linear&nbsp;interpolation&nbsp;details.&nbsp;&nbsp;For&nbsp;each&nbsp;profile,&nbsp;start&nbsp;from<br>
+the&nbsp;surface&nbsp;and&nbsp;go&nbsp;deeper&nbsp;to&nbsp;find&nbsp;z_a&nbsp;(zz_a),&nbsp;the&nbsp;depth&nbsp;at<br>
+which&nbsp;the&nbsp;temperature&nbsp;first&nbsp;falls&nbsp;below&nbsp;T*.&nbsp;&nbsp;Temperature&nbsp;at<br>
+z_a&nbsp;is&nbsp;T_a&nbsp;(tsc_a).&nbsp;&nbsp;The&nbsp;depth&nbsp;immediately&nbsp;before&nbsp;z_a&nbsp;is&nbsp;then<br>
+z_b&nbsp;(zz_b_,&nbsp;with&nbsp;temperature&nbsp;T_b&nbsp;(tsc_b).&nbsp;&nbsp;T*&nbsp;must&nbsp;be&nbsp;in&nbsp;the<br>
+range&nbsp;T_a&nbsp;&lt;&nbsp;T*&nbsp;&lt;&nbsp;T_b,&nbsp;and&nbsp;the&nbsp;desired&nbsp;z*&nbsp;is&nbsp;in&nbsp;the&nbsp;range&nbsp;z_b&nbsp;&lt;<br>
+z*&nbsp;&lt;&nbsp;z_a.&nbsp;&nbsp;From&nbsp;linear&nbsp;interpolation:<br>
+&nbsp;<br>
+z*&nbsp;=&nbsp;T*(z_a&nbsp;-&nbsp;z_b)&nbsp;-&nbsp;(T_b*z_a&nbsp;-&nbsp;T_a*z_b)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----------------------------------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(T_a&nbsp;-&nbsp;T_b)</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_omega_decomposition"><strong>f_omega_decomposition</strong></a>(self)</dt><dd><tt>Calculate&nbsp;omega_lambda&nbsp;and&nbsp;omega_phi&nbsp;at&nbsp;current&nbsp;pressure&nbsp;level.<br>
+&nbsp;<br>
+Based&nbsp;on&nbsp;Schwendike&nbsp;et&nbsp;al.&nbsp;(2014),&nbsp;equations&nbsp;4&nbsp;and&nbsp;5.<br>
+&nbsp;<br>
+psioc_lambda&nbsp;and&nbsp;psioc_phi&nbsp;are&nbsp;components&nbsp;of&nbsp;overturning&nbsp;vector&nbsp;streamfunction.<br>
+&nbsp;<br>
+omega_lambda&nbsp;and&nbsp;omega_phi&nbsp;is&nbsp;decomposition&nbsp;of&nbsp;omega&nbsp;into&nbsp;<br>
+eastward&nbsp;and&nbsp;northward&nbsp;overturning&nbsp;circulations<br>
+&nbsp;<br>
+omega_lambda&nbsp;=&nbsp;(1&nbsp;/&nbsp;a&nbsp;cos&nbsp;phi)&nbsp;d&nbsp;psi_lambda&nbsp;/d&nbsp;lambda<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;"x"&nbsp;component&nbsp;of&nbsp;grad.(psi_lambda,0)<br>
+&nbsp;<br>
+omega_phi&nbsp;=&nbsp;(1&nbsp;/&nbsp;a&nbsp;cos&nbsp;phi)&nbsp;d&nbsp;/&nbsp;d&nbsp;phi&nbsp;(cos&nbsp;phi&nbsp;psi_phi)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;"y"&nbsp;component&nbsp;of&nbsp;grad.(0,psi_phi)</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_overturning_potential"><strong>f_overturning_potential</strong></a>(self)</dt><dd><tt>Calculate&nbsp;mu&nbsp;at&nbsp;current&nbsp;pressure&nbsp;level.<br>
+&nbsp;<br>
+Based&nbsp;on&nbsp;Schwendike&nbsp;et&nbsp;al.&nbsp;(2014),&nbsp;equation&nbsp;1.<br>
+&nbsp;<br>
+mu&nbsp;is&nbsp;minus&nbsp;the&nbsp;inverse&nbsp;Laplacian&nbsp;of&nbsp;omega.</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_overturning_vector_streamfunction"><strong>f_overturning_vector_streamfunction</strong></a>(self)</dt><dd><tt>Calculate&nbsp;(psioc_lambda,psioc_phi)&nbsp;at&nbsp;current&nbsp;pressure&nbsp;level.<br>
+&nbsp;<br>
+Based&nbsp;on&nbsp;Schwendike&nbsp;et&nbsp;al.&nbsp;(2014),&nbsp;between&nbsp;equation&nbsp;1&nbsp;and&nbsp;2.<br>
+&nbsp;<br>
+(psioc_lambda,psioc_phi)&nbsp;is&nbsp;-grad_H(mu).</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_overturning_vector_streamfunction_old"><strong>f_overturning_vector_streamfunction_old</strong></a>(self, method<font color="#909090">=1</font>)</dt><dd><tt>Calculate&nbsp;overturning&nbsp;vector&nbsp;streamfunction&nbsp;at&nbsp;current&nbsp;pressure&nbsp;level.<br>
+&nbsp;<br>
+Do&nbsp;not&nbsp;use&nbsp;this&nbsp;method.&nbsp;Superseded&nbsp;by&nbsp;f_overturning_vector_streamfunction.<br>
+&nbsp;<br>
+Based&nbsp;on&nbsp;Schwendike&nbsp;et&nbsp;al.&nbsp;(2014),&nbsp;equation&nbsp;3.<br>
+&nbsp;<br>
+psioc_lambda&nbsp;and&nbsp;psioc_phi&nbsp;are&nbsp;components&nbsp;of&nbsp;overturning&nbsp;vector&nbsp;streamfunction.<br>
+&nbsp;<br>
+psioc_lambda&nbsp;(p)&nbsp;=&nbsp;-\int_{p_s}^p&nbsp;uwndchi(p')&nbsp;dp'<br>
+psioc_phi&nbsp;(p)&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;-\int_{p_s}^p&nbsp;vwndchi(p')&nbsp;dp'</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_read_data"><strong>f_read_data</strong></a>(self, var_name, level, source<font color="#909090">=False</font>, verbose<font color="#909090">=False</font>)</dt><dd><tt>Lazy&nbsp;read&nbsp;cube(s)&nbsp;of&nbsp;var_name&nbsp;at&nbsp;level&nbsp;for&nbsp;current&nbsp;time&nbsp;block.<br>
+&nbsp;<br>
+Add&nbsp;entry&nbsp;to&nbsp;the&nbsp;dictionary&nbsp;attributes&nbsp;self.<strong>filein</strong>&nbsp;and<br>
+self.<strong>data_in</strong>.</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_sea_water_potential_density"><strong>f_sea_water_potential_density</strong></a>(self, pref<font color="#909090">=0</font>)</dt><dd><tt>Calculate&nbsp;sea&nbsp;water&nbsp;potential&nbsp;density&nbsp;using&nbsp;Gibbs&nbsp;TEOS-10&nbsp;routine.<br>
+&nbsp;<br>
+Assumes&nbsp;tsc&nbsp;(conservative&nbsp;temperature)&nbsp;and&nbsp;sa&nbsp;(absolute<br>
+salinity)&nbsp;hav&nbsp;already&nbsp;been&nbsp;loaded,&nbsp;in<br>
+self.<strong>data_in</strong>['tsc_LEVEL']&nbsp;and&nbsp;self.<strong>data_in</strong>['sa_LEVEL'].<br>
+&nbsp;<br>
+Uses&nbsp;gsw.rho_CT(tsc,sa,pref)&nbsp;where&nbsp;pref&nbsp;is&nbsp;reference&nbsp;sea&nbsp;water<br>
+pressure&nbsp;in&nbsp;dbar.<br>
+&nbsp;<br>
+Choose&nbsp;&lt;method&gt;&nbsp;to&nbsp;calculate&nbsp;mixed&nbsp;layer&nbsp;depth.<br>
+&nbsp;<br>
+Method&nbsp;1&nbsp;(default).&nbsp;&nbsp;Assumes&nbsp;do&nbsp;not&nbsp;have&nbsp;explicit&nbsp;values&nbsp;of<br>
+swp,&nbsp;but&nbsp;tsc&nbsp;and&nbsp;sa&nbsp;are&nbsp;on&nbsp;a&nbsp;grid&nbsp;with&nbsp;a&nbsp;depth&nbsp;axis&nbsp;(in&nbsp;m).<br>
+Depth&nbsp;in&nbsp;m&nbsp;is&nbsp;sufficiently&nbsp;close&nbsp;to&nbsp;sea&nbsp;water&nbsp;pressure&nbsp;in&nbsp;dbar<br>
+to&nbsp;use&nbsp;directly,&nbsp;when&nbsp;only&nbsp;considering&nbsp;shallow&nbsp;depths.<br>
+&nbsp;<br>
+Method&nbsp;2.&nbsp;&nbsp;Assumes&nbsp;swp&nbsp;has&nbsp;already&nbsp;been&nbsp;loaded,&nbsp;in<br>
+self.<strong>data_in</strong>['swp_LEVEL'],&nbsp;and&nbsp;uses&nbsp;this&nbsp;in&nbsp;the&nbsp;calculation&nbsp;of<br>
+sea&nbsp;water&nbsp;potential&nbsp;density.</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_specific_humidity"><strong>f_specific_humidity</strong></a>(self)</dt><dd><tt>Calculate&nbsp;specific&nbsp;humidity&nbsp;from&nbsp;relative&nbsp;humidity&nbsp;and&nbsp;temperature.<br>
+&nbsp;<br>
+Assumes&nbsp;ta&nbsp;(air&nbsp;temperature)&nbsp;and&nbsp;rhum&nbsp;(relative&nbsp;humidity)&nbsp;on<br>
+pressure&nbsp;level&nbsp;self.<strong>level</strong>&nbsp;have&nbsp;already&nbsp;been&nbsp;loaded,&nbsp;in<br>
+self.<strong>data_in</strong>['ta_LEVEL']&nbsp;and&nbsp;self.<strong>data_in</strong>['rhum_LEVEL'].<br>
+&nbsp;<br>
+Use&nbsp;Clausius-Clapeyron&nbsp;relation&nbsp;(COARE&nbsp;algorithm)&nbsp;to&nbsp;calculate<br>
+specific&nbsp;humidity.&nbsp;&nbsp;Follows&nbsp;the&nbsp;saturation&nbsp;specific&nbsp;humidity<br>
+computation&nbsp;in&nbsp;the&nbsp;COARE&nbsp;Fortran&nbsp;code&nbsp;v2.5b.<br>
+&nbsp;<br>
+Reference&nbsp;is<br>
+https://woodshole.er.usgs.gov/operations/sea-mat/air_sea-html/qsat.html</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_vrtbudget"><strong>f_vrtbudget</strong></a>(self, level_below, level, level_above)</dt><dd><tt>Calculate&nbsp;and&nbsp;save&nbsp;terms&nbsp;in&nbsp;vorticity&nbsp;budget&nbsp;at&nbsp;pressure&nbsp;level.<br>
+&nbsp;<br>
+Assumes&nbsp;input&nbsp;data&nbsp;has&nbsp;already&nbsp;been&nbsp;loaded&nbsp;for&nbsp;current&nbsp;time<br>
+block,&nbsp;using&nbsp;<a href="#CubeDiagnostics-f_read_data">f_read_data</a>(),&nbsp;in:<br>
+&nbsp;<br>
+self.<strong>data_in</strong>['uwnd_&lt;level_below&gt;']<br>
+self.<strong>data_in</strong>['uwnd_&lt;level&gt;']<br>
+self.<strong>data_in</strong>['uwnd_&lt;level_above&gt;']<br>
+self.<strong>data_in</strong>['vwnd_&lt;level_below&gt;']<br>
+self.<strong>data_in</strong>['vwnd_&lt;level&gt;']<br>
+self.<strong>data_in</strong>['vwnd_&lt;level_above&gt;']<br>
+self.<strong>data_in</strong>['vrt_&lt;level_below&gt;']<br>
+self.<strong>data_in</strong>['vrt_&lt;level&gt;']<br>
+self.<strong>data_in</strong>['vrt_&lt;level_above&gt;']<br>
+self.<strong>data_in</strong>['omega_&lt;level&gt;']<br>
+self.<strong>data_in</strong>['div_&lt;level&gt;']<br>
+&nbsp;<br>
+Calculate&nbsp;and&nbsp;create&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>south2north</strong>:&nbsp;True&nbsp;if&nbsp;latitude&nbsp;coordinate&nbsp;of&nbsp;input&nbsp;data<br>
+(taken&nbsp;as&nbsp;self.<strong>data_in</strong>['uwnd_&lt;level&gt;'])&nbsp;runs&nbsp;from&nbsp;south&nbsp;to<br>
+north,&nbsp;False&nbsp;otherwise.&nbsp;&nbsp;The&nbsp;windspharm&nbsp;methods&nbsp;(horizontal<br>
+gradients&nbsp;and&nbsp;calculation&nbsp;of&nbsp;ff&nbsp;and&nbsp;beta)&nbsp;need&nbsp;cubes&nbsp;to&nbsp;run<br>
+from&nbsp;north&nbsp;to&nbsp;south,&nbsp;and&nbsp;convert&nbsp;them&nbsp;if&nbsp;they&nbsp;do&nbsp;not.&nbsp;&nbsp;Cube<br>
+output&nbsp;from&nbsp;windspharm&nbsp;running&nbsp;from&nbsp;north&nbsp;to&nbsp;south&nbsp;can&nbsp;then<br>
+not&nbsp;be&nbsp;combined&nbsp;(added)&nbsp;with&nbsp;cubes&nbsp;running&nbsp;from&nbsp;south&nbsp;to<br>
+north.&nbsp;&nbsp;So&nbsp;convert&nbsp;cube&nbsp;output&nbsp;from&nbsp;windspharm&nbsp;to&nbsp;run&nbsp;from<br>
+south&nbsp;to&nbsp;north&nbsp;if&nbsp;self.<strong>south2north</strong>&nbsp;is&nbsp;True.<br>
+&nbsp;<br>
+self.<strong>dvrtdt</strong>&nbsp;(d&nbsp;zeta/dt)&nbsp;by&nbsp;centred&nbsp;differences<br>
+&nbsp;<br>
+self.<strong>m_uwnd_dvrtdx</strong>&nbsp;(-u&nbsp;d&nbsp;zeta/dx)<br>
+self.<strong>m_vwnd_dvrtdy</strong>&nbsp;(-v&nbsp;d&nbsp;zeta/dy)<br>
+self.<strong>m_omega_dvrtdp</strong>&nbsp;(-omega&nbsp;d&nbsp;zeta/dp)<br>
+&nbsp;<br>
+self.<strong>m_vrt_div</strong>&nbsp;(-zeta&nbsp;D)<br>
+self.<strong>m_ff_div</strong>&nbsp;(-fD)<br>
+&nbsp;<br>
+self.<strong>m_beta_vwnd</strong>&nbsp;(-beta&nbsp;v)<br>
+&nbsp;<br>
+self.<strong>m_domegadx_dvwnddp</strong>&nbsp;(-d&nbsp;omega/dx&nbsp;*&nbsp;dv/dp)<br>
+self.<strong>domegady_duwnddp</strong>&nbsp;(d&nbsp;omega/dy&nbsp;*&nbsp;du/dp)<br>
+&nbsp;<br>
+self.<strong>source_dvrtdt</strong>&nbsp;(-u&nbsp;d&nbsp;zeta/dx&nbsp;-v&nbsp;d&nbsp;zeta/dy&nbsp;-omega&nbsp;d&nbsp;zeta/dp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-zeta&nbsp;D&nbsp;-fD&nbsp;-beta&nbsp;v<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;d&nbsp;omega/dx&nbsp;*&nbsp;dv/dp&nbsp;+d&nbsp;omega/dy&nbsp;*&nbsp;du/dp)<br>
+&nbsp;<br>
+self.<strong>res_dvrtdt</strong>&nbsp;:&nbsp;d&nbsp;zeta/dt&nbsp;=&nbsp;source&nbsp;+&nbsp;residual<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;residual&nbsp;=&nbsp;d&nbsp;zeta/dt&nbsp;-&nbsp;source<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;residual&nbsp;is&nbsp;the&nbsp;missing&nbsp;source&nbsp;needed&nbsp;to&nbsp;create<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;actual&nbsp;vorticity&nbsp;tendency</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_vrtbudget_combine"><strong>f_vrtbudget_combine</strong></a>(self)</dt><dd><tt>Combine&nbsp;terms&nbsp;in&nbsp;the&nbsp;vorticity&nbsp;budget.<br>
+&nbsp;<br>
+Read&nbsp;in&nbsp;individual&nbsp;vorticity&nbsp;budget&nbsp;terms,&nbsp;previously<br>
+calculated&nbsp;using&nbsp;<a href="#CubeDiagnostics-f_vrtbudget">f_vrtbudget</a>().&nbsp;&nbsp;Combine&nbsp;them&nbsp;together&nbsp;into<br>
+physically&nbsp;useful&nbsp;groups.<br>
+&nbsp;<br>
+Calculate&nbsp;and&nbsp;create&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>vrt_horiz_adv</strong>&nbsp;:&nbsp;-u&nbsp;d&nbsp;zeta/dx&nbsp;-v&nbsp;d&nbsp;zeta/dy<br>
+&nbsp;<br>
+self.<strong>vrt_stretch</strong>&nbsp;:&nbsp;-zeta&nbsp;D&nbsp;-&nbsp;fD<br>
+&nbsp;<br>
+self.<strong>vrt_tilt</strong>&nbsp;:&nbsp;-&nbsp;d&nbsp;omega/dx&nbsp;*&nbsp;dv/dp&nbsp;+d&nbsp;omega/dy&nbsp;*&nbsp;du/dp</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_vwndptap"><strong>f_vwndptap</strong></a>(self)</dt><dd><tt>Calculate&nbsp;v'T'&nbsp;from&nbsp;anomalous&nbsp;vwnd&nbsp;and&nbsp;ta.<br>
+&nbsp;<br>
+Assumes&nbsp;anomalous&nbsp;vwnd&nbsp;(northward&nbsp;wind)&nbsp;and&nbsp;ta&nbsp;(air&nbsp;temperature)&nbsp;on<br>
+level&nbsp;self.<strong>level</strong>&nbsp;have&nbsp;already&nbsp;been&nbsp;loaded,&nbsp;in<br>
+self.<strong>data_in</strong>['vwnd_LEVEL']&nbsp;and&nbsp;self.<strong>data_in</strong>['ta_LEVEL'].<br>
+&nbsp;<br>
+vwndptap&nbsp;(v'T')&nbsp;=&nbsp;v'&nbsp;*&nbsp;T'</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DataConverter">class <strong>DataConverter</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Converter&nbsp;to&nbsp;iris-friendly&nbsp;standard&nbsp;format&nbsp;netcdf&nbsp;files.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;preprocess.py.<br>
+&nbsp;<br>
+Using&nbsp;iris,&nbsp;read&nbsp;in&nbsp;data&nbsp;from&nbsp;different&nbsp;sources.&nbsp;&nbsp;Convert&nbsp;to<br>
+standard&nbsp;cube&nbsp;format&nbsp;and&nbsp;file&nbsp;format.&nbsp;&nbsp;Write&nbsp;to&nbsp;new&nbsp;netcdf&nbsp;file.<br>
+&nbsp;<br>
+Code&nbsp;is&nbsp;flexible&nbsp;to&nbsp;allow&nbsp;for&nbsp;new&nbsp;input&nbsp;data&nbsp;sources.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;<br>
+self.<strong>basedir</strong>&nbsp;:&nbsp;string&nbsp;name&nbsp;of&nbsp;base&nbsp;directory&nbsp;for&nbsp;all&nbsp;data<br>
+&nbsp;<br>
+self.<strong>source</strong>&nbsp;:&nbsp;string&nbsp;name&nbsp;of&nbsp;data&nbsp;source,&nbsp;e.g.,&nbsp;'ncepdoe_plev_d',<br>
+'ncepdoe_plev_6h',&nbsp;'ncepdoe_sfc_6h',&nbsp;'olrcdr_toa_d'&nbsp;etc.&nbsp;&nbsp;There<br>
+is&nbsp;a&nbsp;different&nbsp;source&nbsp;for&nbsp;each&nbsp;different&nbsp;combination&nbsp;of&nbsp;source<br>
+data&nbsp;set&nbsp;(e.g.,&nbsp;NCEP-DOE&nbsp;reanalysis),&nbsp;type&nbsp;of&nbsp;level&nbsp;(e.g.,<br>
+pressure&nbsp;level),&nbsp;and&nbsp;frequency&nbsp;of&nbsp;input&nbsp;data&nbsp;(e.g.,&nbsp;daily).&nbsp;&nbsp;The<br>
+string&nbsp;should&nbsp;be&nbsp;in&nbsp;the&nbsp;format<br>
+'&lt;data_source&gt;_&lt;level_type&gt;_&lt;frequency&gt;'.&nbsp;&nbsp;In&nbsp;practice,&nbsp;the&nbsp;source<br>
+attribute&nbsp;is&nbsp;used&nbsp;to&nbsp;set&nbsp;the&nbsp;directory&nbsp;in&nbsp;which&nbsp;the&nbsp;netcdf&nbsp;files<br>
+are&nbsp;stored:<br>
+&nbsp;&nbsp;&nbsp;&lt;self.<strong>basedir</strong>&gt;/&lt;self.<strong>source</strong>&gt;/raw/&nbsp;for&nbsp;original&nbsp;data&nbsp;in&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;original&nbsp;format&nbsp;downloaded&nbsp;from&nbsp;data&nbsp;source&nbsp;web&nbsp;site.&nbsp;&nbsp;Netcdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;files&nbsp;in&nbsp;this&nbsp;directory&nbsp;are&nbsp;the&nbsp;input&nbsp;to&nbsp;<a href="#DataConverter">DataConverter</a><br>
+&nbsp;&nbsp;&nbsp;&lt;self.<strong>basedir</strong>&gt;/&lt;self.<strong>source</strong>&gt;/std/&nbsp;for&nbsp;the&nbsp;converted,&nbsp;standardised<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data,&nbsp;i.e.,&nbsp;the&nbsp;output&nbsp;of&nbsp;<a href="#DataConverter">DataConverter</a><br>
+&nbsp;&nbsp;&nbsp;&lt;self.<strong>basedir</strong>&gt;/&lt;self.<strong>source</strong>&gt;/processed/&nbsp;for&nbsp;any&nbsp;subsequent&nbsp;analysis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;the&nbsp;data,&nbsp;e.g.,&nbsp;time&nbsp;means&nbsp;etc.&nbsp;&nbsp;<a href="#DataConverter">DataConverter</a>&nbsp;does&nbsp;not&nbsp;use&nbsp;this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;directory.<br>
+&nbsp;<br>
+self.<strong>data_source</strong>&nbsp;:&nbsp;string&nbsp;name&nbsp;of&nbsp;data&nbsp;source,&nbsp;e.g.,&nbsp;'ncepdoe',<br>
+'olrcdr',&nbsp;etc.&nbsp;&nbsp;Note&nbsp;that&nbsp;a&nbsp;particular&nbsp;data_source&nbsp;implies&nbsp;a<br>
+particular&nbsp;latitude-longitude&nbsp;grid,&nbsp;e.g.,&nbsp;'ncepdoe'&nbsp;is&nbsp;a&nbsp;73x144<br>
+grid.&nbsp;&nbsp;This&nbsp;is&nbsp;relevant&nbsp;for&nbsp;file&nbsp;sizes&nbsp;and&nbsp;self.<strong>outfile_frequency</strong>.<br>
+&nbsp;<br>
+self.<strong>level_type</strong>&nbsp;:&nbsp;string&nbsp;name&nbsp;of&nbsp;level&nbsp;type,&nbsp;e.g.,&nbsp;'plev',&nbsp;'toa',<br>
+'sfc',&nbsp;'theta',&nbsp;etc.&nbsp;&nbsp;This&nbsp;is&nbsp;determined&nbsp;by&nbsp;self.<strong>source</strong>.<br>
+&nbsp;<br>
+self.<strong>frequency</strong>&nbsp;:&nbsp;string&nbsp;denoting&nbsp;time&nbsp;frequency&nbsp;of&nbsp;data.&nbsp;&nbsp;This&nbsp;is<br>
+used&nbsp;in&nbsp;file&nbsp;names.&nbsp;&nbsp;It&nbsp;is&nbsp;determined&nbsp;by&nbsp;self.<strong>source</strong>.&nbsp;&nbsp;One&nbsp;of:<br>
+&nbsp;&nbsp;&nbsp;'30m'&nbsp;30-min&nbsp;resolution<br>
+&nbsp;&nbsp;&nbsp;'h'&nbsp;hourly<br>
+&nbsp;&nbsp;&nbsp;'3h'&nbsp;3-hourly<br>
+&nbsp;&nbsp;&nbsp;'6h'&nbsp;6-hourly<br>
+&nbsp;&nbsp;&nbsp;'d'&nbsp;daily<br>
+&nbsp;&nbsp;&nbsp;'5d'&nbsp;pentad&nbsp;(5-day)<br>
+&nbsp;&nbsp;&nbsp;'7d'&nbsp;weekly&nbsp;(7-day)<br>
+&nbsp;<br>
+self.<strong>outfile_frequency</strong>&nbsp;:&nbsp;string&nbsp;denoting&nbsp;the&nbsp;time&nbsp;coverage&nbsp;of&nbsp;the<br>
+output&nbsp;netcdf&nbsp;file(s).&nbsp;&nbsp;It&nbsp;is&nbsp;determined&nbsp;by&nbsp;self.<strong>source</strong>.&nbsp;&nbsp;One&nbsp;of:<br>
+&nbsp;&nbsp;&nbsp;'year'&nbsp;for&nbsp;separate&nbsp;files&nbsp;for&nbsp;each&nbsp;year,&nbsp;e.g.,&nbsp;1979,&nbsp;1980<br>
+&nbsp;&nbsp;&nbsp;'month'&nbsp;for&nbsp;separate&nbsp;files&nbsp;for&nbsp;each&nbsp;calendar&nbsp;month,&nbsp;e.g.,&nbsp;197901,&nbsp;197902<br>
+&nbsp;<br>
+self.<strong>var_name</strong>&nbsp;:&nbsp;string&nbsp;name&nbsp;of&nbsp;variable,&nbsp;e.g.,&nbsp;'uwnd'.<br>
+&nbsp;<br>
+self.<strong>raw_name</strong>&nbsp;:&nbsp;string&nbsp;name&nbsp;of&nbsp;variable&nbsp;in&nbsp;the&nbsp;raw&nbsp;input&nbsp;file.<br>
+&nbsp;<br>
+self.<strong>level</strong>&nbsp;:&nbsp;integer&nbsp;single&nbsp;level,&nbsp;e.g.,&nbsp;200&nbsp;for&nbsp;200&nbsp;hPa.&nbsp;&nbsp;Level&nbsp;naming<br>
+convention:<br>
+&nbsp;&nbsp;&nbsp;1000,&nbsp;850,&nbsp;200,&nbsp;etc.&nbsp;for&nbsp;pressure&nbsp;level&nbsp;data&nbsp;(hPa)<br>
+&nbsp;&nbsp;&nbsp;350,&nbsp;360,&nbsp;etc.&nbsp;for&nbsp;theta&nbsp;level&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;0&nbsp;for&nbsp;top&nbsp;of&nbsp;atmosphere,&nbsp;e.g.,&nbsp;olr<br>
+&nbsp;&nbsp;&nbsp;1&nbsp;for&nbsp;surface,&nbsp;e.g.,&nbsp;sst<br>
+&nbsp;&nbsp;&nbsp;Note&nbsp;there&nbsp;is&nbsp;no&nbsp;ambiguity&nbsp;between&nbsp;eg&nbsp;a&nbsp;350&nbsp;K&nbsp;theta&nbsp;level,&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;a&nbsp;350&nbsp;hPa&nbsp;pressure&nbsp;level,&nbsp;because&nbsp;of&nbsp;the&nbsp;self.<strong>level_type</strong><br>
+&nbsp;&nbsp;&nbsp;attribute,&nbsp;which&nbsp;is&nbsp;determined&nbsp;by&nbsp;self.<strong>source</strong>.<br>
+&nbsp;<br>
+self.<strong>cube</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;data.&nbsp;&nbsp;This&nbsp;is&nbsp;the&nbsp;most&nbsp;important<br>
+attribute&nbsp;of&nbsp;<a href="#DataConverter">DataConverter</a>.&nbsp;The&nbsp;purpose&nbsp;of&nbsp;<a href="#DataConverter">DataConverter</a>&nbsp;is&nbsp;to<br>
+convert&nbsp;self.<strong>cube</strong>&nbsp;to&nbsp;standard&nbsp;form&nbsp;and&nbsp;write&nbsp;it&nbsp;as&nbsp;a&nbsp;netcdf&nbsp;file.<br>
+&nbsp;<br>
+self.<strong>file_mask</strong>&nbsp;and&nbsp;self.<strong>mask</strong>.&nbsp;&nbsp;Default&nbsp;values&nbsp;are&nbsp;False.&nbsp;&nbsp;If&nbsp;the<br>
+data&nbsp;is&nbsp;to&nbsp;be&nbsp;masked&nbsp;(e.g.,&nbsp;SST&nbsp;data&nbsp;to&nbsp;be&nbsp;masked&nbsp;with&nbsp;a&nbsp;land-sea<br>
+mask),&nbsp;then&nbsp;file_mask&nbsp;is&nbsp;the&nbsp;path&nbsp;name&nbsp;for&nbsp;the&nbsp;mask,&nbsp;and&nbsp;mask&nbsp;is<br>
+the&nbsp;array&nbsp;with&nbsp;the&nbsp;mask.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="DataConverter-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source','var_name','level',<br>
+'basedir'.<br>
+&nbsp;<br>
+Optional&nbsp;keywords:&nbsp;'file_mask'.</tt></dd></dl>
+
+<dl><dt><a name="DataConverter-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="DataConverter-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="DataConverter-format_cube"><strong>format_cube</strong></a>(self)</dt><dd><tt>Change&nbsp;cube&nbsp;to&nbsp;standard&nbsp;format.<br>
+&nbsp;<br>
+There&nbsp;a&nbsp;few&nbsp;standard&nbsp;format&nbsp;changes&nbsp;applied&nbsp;to&nbsp;all&nbsp;data&nbsp;sets,<br>
+followed&nbsp;by&nbsp;changes&nbsp;specific&nbsp;to&nbsp;particular&nbsp;data&nbsp;sets.</tt></dd></dl>
+
+<dl><dt><a name="DataConverter-read_cube"><strong>read_cube</strong></a>(self)</dt><dd><tt>Read&nbsp;cube&nbsp;from&nbsp;raw&nbsp;input&nbsp;file.<br>
+&nbsp;<br>
+Code&nbsp;is&nbsp;by&nbsp;necessity&nbsp;ad&nbsp;hoc&nbsp;as&nbsp;it&nbsp;caters&nbsp;for&nbsp;many&nbsp;different<br>
+data&nbsp;sources&nbsp;with&nbsp;different&nbsp;input&nbsp;formats.</tt></dd></dl>
+
+<dl><dt><a name="DataConverter-write_cube"><strong>write_cube</strong></a>(self)</dt><dd><tt>Write&nbsp;standardised&nbsp;iris&nbsp;cube&nbsp;to&nbsp;netcdf&nbsp;file.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Glider">class <strong>Glider</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Glider">Glider</a>&nbsp;<a href="__builtin__.html#object">object</a>.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Glider-__init__"><strong>__init__</strong></a>(self, gliderid, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source_wildcard',<br>
+'basedir','mission'.</tt></dd></dl>
+
+<dl><dt><a name="Glider-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Glider-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Glider-f_oi_pad"><strong>f_oi_pad</strong></a>(self, var_name, time1, time2, verbose<font color="#909090">=False</font>)</dt><dd><tt>Pad&nbsp;OI&nbsp;data&nbsp;with&nbsp;missing&nbsp;values&nbsp;back&nbsp;to&nbsp;time1&nbsp;and&nbsp;forward&nbsp;to&nbsp;time2.<br>
+&nbsp;<br>
+Create&nbsp;attribute&nbsp;data_oi_pad.</tt></dd></dl>
+
+<dl><dt><a name="Glider-f_read_oi"><strong>f_read_oi</strong></a>(self, var_name, verbose<font color="#909090">=False</font>)</dt><dd><tt>Read&nbsp;OI&nbsp;field&nbsp;for&nbsp;individual&nbsp;glider.<br>
+&nbsp;<br>
+Create&nbsp;attribute&nbsp;data_oi.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="GliderMission">class <strong>GliderMission</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Analyse&nbsp;a&nbsp;glider&nbsp;mission<br>
+&nbsp;<br>
+Called&nbsp;from,&nbsp;e.g.,&nbsp;glider_interp_lon.py<br>
+&nbsp;<br>
+Selected&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>mission</strong>&nbsp;:&nbsp;integer&nbsp;id&nbsp;for&nbsp;mission<br>
+&nbsp;<br>
+self.<strong>gliderids</strong>&nbsp;:&nbsp;list&nbsp;of&nbsp;integer&nbsp;glider&nbsp;ids&nbsp;for&nbsp;mission<br>
+&nbsp;<br>
+self.<strong>time1</strong>&nbsp;:&nbsp;datetime.datetime&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;for&nbsp;00&nbsp;UTC&nbsp;on&nbsp;day&nbsp;of<br>
+deployment&nbsp;of&nbsp;first&nbsp;glider&nbsp;in&nbsp;mission<br>
+&nbsp;<br>
+self.<strong>time2</strong>&nbsp;:&nbsp;datetime.datetime&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;for&nbsp;00&nbsp;UTC&nbsp;on&nbsp;day&nbsp;after<br>
+recovery&nbsp;of&nbsp;last&nbsp;glider&nbsp;in&nbsp;mission<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="GliderMission-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source_wildcard','var_name',<br>
+'basedir','mission'.</tt></dd></dl>
+
+<dl><dt><a name="GliderMission-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="GliderMission-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="GliderMission-f_interp_oi_lon"><strong>f_interp_oi_lon</strong></a>(self, lon1, lon2, delta_lon)</dt><dd><tt>Interpolate&nbsp;padded&nbsp;OI&nbsp;data&nbsp;from&nbsp;individual&nbsp;gliders&nbsp;in&nbsp;longitude.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="InterpolateDefunct">class <strong>InterpolateDefunct</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Interpolate&nbsp;data&nbsp;in&nbsp;time&nbsp;using&nbsp;iris.analysis.interpolate.<br>
+&nbsp;<br>
+Defunct.&nbsp;Use&nbsp;<a href="#ModifySource">ModifySource</a>&nbsp;class&nbsp;now.&nbsp;Remove&nbsp;this&nbsp;class&nbsp;when&nbsp;sure<br>
+new&nbsp;code&nbsp;is&nbsp;correct.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;interpolate.py.<br>
+&nbsp;<br>
+N.B.&nbsp;&nbsp;To&nbsp;decrease&nbsp;time&nbsp;resolution&nbsp;of&nbsp;data,&nbsp;e.g.,&nbsp;from&nbsp;3-hourly&nbsp;to<br>
+daily,&nbsp;use&nbsp;the&nbsp;TimeAverage&nbsp;class&nbsp;instead.<br>
+&nbsp;<br>
+Selected&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>source1</strong>&nbsp;:&nbsp;input&nbsp;source,&nbsp;e.g.,&nbsp;sstrey_sfc_7d&nbsp;weekly&nbsp;data.<br>
+&nbsp;<br>
+self.<strong>source2</strong>&nbsp;:&nbsp;output&nbsp;source,&nbsp;e.g.,&nbsp;sstrey_sfc_d&nbsp;daily&nbsp;data.&nbsp;&nbsp;The<br>
+data_source&nbsp;and&nbsp;level_type&nbsp;parts&nbsp;of&nbsp;self.<strong>source1</strong>&nbsp;and&nbsp;self.<strong>source</strong>&nbsp;2<br>
+should&nbsp;be&nbsp;identical.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="InterpolateDefunct-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source1','source2','var_name',<br>
+'file_data_in','file_data_out'.</tt></dd></dl>
+
+<dl><dt><a name="InterpolateDefunct-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="InterpolateDefunct-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="InterpolateDefunct-f_interpolate_time"><strong>f_interpolate_time</strong></a>(self)</dt><dd><tt>Interpolate&nbsp;over&nbsp;time.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ModifySource">class <strong>ModifySource</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Process&nbsp;data&nbsp;such&nbsp;that&nbsp;it's&nbsp;source&nbsp;attribute&nbsp;has&nbsp;to&nbsp;change.<br>
+&nbsp;<br>
+Examples:<br>
+1)&nbsp;Time&nbsp;average&nbsp;data&nbsp;to&nbsp;lower&nbsp;time&nbsp;resolution&nbsp;e.g.,&nbsp;convert&nbsp;from&nbsp;<br>
+&nbsp;&nbsp;&nbsp;3-hourly&nbsp;to&nbsp;daily&nbsp;mean.<br>
+2)&nbsp;Time&nbsp;interpolate&nbsp;data&nbsp;to&nbsp;higher&nbsp;time&nbsp;resolution&nbsp;using&nbsp;<br>
+&nbsp;&nbsp;&nbsp;iris.analysis.interpolate.<br>
+3)&nbsp;Fill&nbsp;in&nbsp;missing&nbsp;data.<br>
+4)&nbsp;Regrid&nbsp;data.<br>
+&nbsp;<br>
+Selected&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>source1</strong>&nbsp;:&nbsp;input&nbsp;source,&nbsp;e.g.,&nbsp;trmm3b42v7_sfc_3h&nbsp;3-hourly&nbsp;data.<br>
+&nbsp;<br>
+self.<strong>source2</strong>&nbsp;:&nbsp;output&nbsp;source,&nbsp;e.g.,&nbsp;trmm3b42v7_sfc_d&nbsp;daily&nbsp;data.<br>
+The&nbsp;data_source&nbsp;and&nbsp;level_type&nbsp;parts&nbsp;of&nbsp;self.<strong>source1</strong>&nbsp;and<br>
+self.<strong>source</strong>&nbsp;2&nbsp;should&nbsp;be&nbsp;identical.<br>
+&nbsp;<br>
+self.<strong>frequency</strong>&nbsp;:&nbsp;the&nbsp;frequency&nbsp;part&nbsp;of&nbsp;self.<strong>source2</strong>,&nbsp;indicating<br>
+what&nbsp;time&nbsp;resolution&nbsp;the&nbsp;input&nbsp;data&nbsp;is&nbsp;to&nbsp;be&nbsp;converted&nbsp;to,&nbsp;e.g.,<br>
+'d'&nbsp;for&nbsp;daily.<br>
+&nbsp;<br>
+self.<strong>year</strong>&nbsp;and&nbsp;self.<strong>month</strong>&nbsp;:&nbsp;year&nbsp;(and&nbsp;month,&nbsp;depending&nbsp;on&nbsp;value&nbsp;of<br>
+self.<strong>outfile_frequency</strong>)&nbsp;of&nbsp;input&nbsp;data&nbsp;block.<br>
+&nbsp;<br>
+self.<strong>filein1</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;input&nbsp;files&nbsp;from&nbsp;self.<strong>source1</strong>.<br>
+Probably&nbsp;contains&nbsp;wild&nbsp;card&nbsp;characters.<br>
+&nbsp;<br>
+self.<strong>data_in</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;list&nbsp;of&nbsp;all&nbsp;input&nbsp;data<br>
+&nbsp;<br>
+self.<strong>cube_in</strong>&nbsp;:&nbsp;input&nbsp;cube&nbsp;of&nbsp;data&nbsp;from&nbsp;self.<strong>source1</strong>&nbsp;for&nbsp;the<br>
+current&nbsp;time&nbsp;block.<br>
+&nbsp;<br>
+self.<strong>cube_out</strong>&nbsp;:&nbsp;output&nbsp;cube&nbsp;of&nbsp;data&nbsp;for&nbsp;current&nbsp;time&nbsp;block&nbsp;to&nbsp;be<br>
+saved&nbsp;under&nbsp;self.<strong>source2</strong>.<br>
+&nbsp;<br>
+self.<strong>fileout1</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;output&nbsp;file&nbsp;under&nbsp;self.<strong>source2</strong>.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ModifySource-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source1','source2','var_name','level',<br>
+'basedir','subdir'.</tt></dd></dl>
+
+<dl><dt><a name="ModifySource-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="ModifySource-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="ModifySource-f_get_target_grid"><strong>f_get_target_grid</strong></a>(self)</dt><dd><tt>Get&nbsp;grid&nbsp;from&nbsp;sample&nbsp;input&nbsp;data&nbsp;to&nbsp;use&nbsp;in&nbsp;later&nbsp;regridding.<br>
+&nbsp;<br>
+Option&nbsp;to&nbsp;restrict&nbsp;range&nbsp;of&nbsp;latitudes&nbsp;in&nbsp;grid,&nbsp;using&nbsp;self.<strong>latmin</strong>&nbsp;and&nbsp;self.<strong>latmax</strong>.<br>
+&nbsp;<br>
+Create&nbsp;attribute&nbsp;self.<strong>cube_grid</strong>.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;regrid.py.</tt></dd></dl>
+
+<dl><dt><a name="ModifySource-f_interpolate_time"><strong>f_interpolate_time</strong></a>(self)</dt><dd><tt>Interpolate&nbsp;over&nbsp;time.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;interpolate.py.<br>
+&nbsp;<br>
+N.B.&nbsp;&nbsp;To&nbsp;decrease&nbsp;time&nbsp;resolution&nbsp;of&nbsp;data,&nbsp;e.g.,&nbsp;from&nbsp;3-hourly&nbsp;to<br>
+daily,&nbsp;use&nbsp;the&nbsp;f_time_average&nbsp;method&nbsp;in&nbsp;this&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="ModifySource-f_regrid"><strong>f_regrid</strong></a>(self)</dt><dd><tt>Regrid&nbsp;data&nbsp;and&nbsp;save&nbsp;output.<br>
+&nbsp;<br>
+Create&nbsp;attribute&nbsp;self.<strong>cube_out</strong>.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;regrid.py.</tt></dd></dl>
+
+<dl><dt><a name="ModifySource-f_time_average"><strong>f_time_average</strong></a>(self, method<font color="#909090">=1</font>)</dt><dd><tt>Time&nbsp;average&nbsp;data.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;time_average.py.<br>
+&nbsp;<br>
+Used&nbsp;to&nbsp;change&nbsp;(reduce)&nbsp;time&nbsp;resolution&nbsp;of&nbsp;data,&nbsp;for&nbsp;subsequent<br>
+data&nbsp;analysis.&nbsp;&nbsp;Because&nbsp;the&nbsp;source&nbsp;attribute&nbsp;of&nbsp;a&nbsp;data&nbsp;set<br>
+contains&nbsp;information&nbsp;on&nbsp;the&nbsp;time&nbsp;resolution,&nbsp;this&nbsp;effectively<br>
+creates&nbsp;data&nbsp;with&nbsp;a&nbsp;different&nbsp;source.<br>
+&nbsp;<br>
+N.B.&nbsp;To&nbsp;calculate&nbsp;time&nbsp;mean&nbsp;statistics&nbsp;over&nbsp;a&nbsp;particular&nbsp;time<br>
+domain,&nbsp;use&nbsp;the&nbsp;<a href="#TimeDomStats">TimeDomStats</a>&nbsp;class&nbsp;instead.<br>
+&nbsp;<br>
+N.B.&nbsp;&nbsp;To&nbsp;"increase"&nbsp;time&nbsp;resolution&nbsp;of&nbsp;data,&nbsp;e.g.,&nbsp;from&nbsp;weekly&nbsp;to<br>
+daily,&nbsp;use&nbsp;the&nbsp;f_interpolate_time&nbsp;method&nbsp;in&nbsp;this&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="ModifySource-f_zero_missing_values"><strong>f_zero_missing_values</strong></a>(self)</dt><dd><tt>Set&nbsp;missing&nbsp;values&nbsp;to&nbsp;zero&nbsp;and&nbsp;save&nbsp;to&nbsp;new&nbsp;source.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;zero_missing_values.py.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Planet">class <strong>Planet</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Planetary&nbsp;parameters.<br>
+&nbsp;<br>
+Default&nbsp;is&nbsp;<a href="#Planet">Planet</a>&nbsp;Earth.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;<br>
+Specified&nbsp;base&nbsp;attributes<br>
+&nbsp;<br>
+self.<strong>arad</strong>&nbsp;:&nbsp;<a href="#Planet">Planet</a>&nbsp;radius&nbsp;(m)<br>
+self.<strong>gg</strong>&nbsp;:&nbsp;Gravitational&nbsp;acceleration&nbsp;at&nbsp;surface&nbsp;(m&nbsp;s-2)<br>
+self.<strong>omega</strong>&nbsp;:&nbsp;&nbsp;Sidereal&nbsp;rotation&nbsp;rate&nbsp;(s-1)<br>
+self.<strong>gascon</strong>&nbsp;:&nbsp;Specific&nbsp;gas&nbsp;constant&nbsp;of&nbsp;atmosphere&nbsp;(J&nbsp;kg-1&nbsp;K-1)<br>
+self.<strong>cp</strong>&nbsp;:&nbsp;Specific&nbsp;heat&nbsp;capacity&nbsp;of&nbsp;atmosphere&nbsp;at&nbsp;constant&nbsp;pressure&nbsp;(J&nbsp;kg-1&nbsp;K-1)<br>
+&nbsp;<br>
+Derived&nbsp;attributes<br>
+&nbsp;<br>
+self.<strong>f0</strong>&nbsp;:&nbsp;Coriolis&nbsp;parameter&nbsp;at&nbsp;45&nbsp;degrees&nbsp;lat&nbsp;(s-1)<br>
+self.<strong>beta0</strong>&nbsp;:&nbsp;beta&nbsp;at&nbsp;equator&nbsp;(m-1&nbsp;s-1)<br>
+self.<strong>circum</strong>&nbsp;:&nbsp;planet&nbsp;circumference&nbsp;(m)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Planet-__init__"><strong>__init__</strong></a>(self, title<font color="#909090">='Earth'</font>, verbose<font color="#909090">=True</font>)</dt><dd><tt>Initialise.</tt></dd></dl>
+
+<dl><dt><a name="Planet-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Planet-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SpatialSubset">class <strong>SpatialSubset</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Create&nbsp;a&nbsp;<a href="#SpatialSubset">SpatialSubset</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;(Hovmoller&nbsp;or&nbsp;1-d&nbsp;time&nbsp;series).<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;spatial_subset.py<br>
+&nbsp;<br>
+Input&nbsp;is&nbsp;a&nbsp;N-dimensional&nbsp;cube,&nbsp;with&nbsp;one&nbsp;of&nbsp;these&nbsp;dimensions<br>
+possibly&nbsp;being&nbsp;time,&nbsp;and&nbsp;the&nbsp;remaining&nbsp;dimensions&nbsp;being&nbsp;spatial<br>
+coordinates.&nbsp;&nbsp;Extract&nbsp;a&nbsp;spatial&nbsp;subset&nbsp;over&nbsp;one&nbsp;or&nbsp;more&nbsp;spatial<br>
+dimensions&nbsp;and&nbsp;average&nbsp;over&nbsp;these&nbsp;dimensions.<br>
+&nbsp;<br>
+If&nbsp;all&nbsp;spatial&nbsp;dimensions&nbsp;are&nbsp;chosen&nbsp;(and&nbsp;subsetted&nbsp;and&nbsp;averaged<br>
+over),&nbsp;and&nbsp;input&nbsp;had&nbsp;a&nbsp;time&nbsp;dimension,&nbsp;output&nbsp;is&nbsp;a&nbsp;1-dimensional<br>
+time&nbsp;series&nbsp;(area-averaged&nbsp;over&nbsp;a&nbsp;spatial&nbsp;box).<br>
+&nbsp;<br>
+If&nbsp;not&nbsp;all&nbsp;spatial&nbsp;dimensions&nbsp;are&nbsp;chosen,&nbsp;and&nbsp;input&nbsp;contains&nbsp;a<br>
+time&nbsp;dimension,&nbsp;output&nbsp;contains&nbsp;a&nbsp;time&nbsp;dimension&nbsp;plus&nbsp;at&nbsp;least&nbsp;one<br>
+spatial&nbsp;dimension,&nbsp;and&nbsp;is&nbsp;essentially&nbsp;a&nbsp;Hovmoller&nbsp;<a href="__builtin__.html#object">object</a>.<br>
+&nbsp;<br>
+Selected&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>data_in</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;list&nbsp;of&nbsp;all&nbsp;input&nbsp;data.<br>
+&nbsp;<br>
+self.<strong>data_subset_current</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;subset&nbsp;of&nbsp;current&nbsp;data<br>
+(e.g.,&nbsp;year).<br>
+&nbsp;<br>
+self.<strong>data_subset</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;list&nbsp;of&nbsp;all&nbsp;subsetted&nbsp;data.<br>
+&nbsp;<br>
+self.<strong>file_data_in</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file(s)&nbsp;of&nbsp;input&nbsp;data.&nbsp;&nbsp;If&nbsp;input<br>
+data&nbsp;has&nbsp;a&nbsp;time&nbsp;dimension,&nbsp;contains&nbsp;a&nbsp;wild&nbsp;card&nbsp;*&nbsp;character,&nbsp;which<br>
+will&nbsp;be&nbsp;replaced&nbsp;by,&nbsp;e.g.,&nbsp;year&nbsp;numbers&nbsp;(if&nbsp;self.<strong>outfile_frequency</strong><br>
+is&nbsp;'year').<br>
+&nbsp;<br>
+self.<strong>file_data_subset</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file(s)&nbsp;of&nbsp;subsetted&nbsp;data.<br>
+If&nbsp;input&nbsp;data&nbsp;has&nbsp;a&nbsp;time&nbsp;dimension,&nbsp;contains&nbsp;a&nbsp;wild&nbsp;card&nbsp;*<br>
+character,&nbsp;which&nbsp;will&nbsp;be&nbsp;replaced&nbsp;by,&nbsp;e.g.,&nbsp;year&nbsp;numbers&nbsp;(if<br>
+self.<strong>outfile_frequency</strong>&nbsp;is&nbsp;'year').<br>
+&nbsp;<br>
+self.[band1_name,band1_val1,band1_val2]&nbsp;:&nbsp;Input&nbsp;cube&nbsp;is&nbsp;subset<br>
+over&nbsp;dimension&nbsp;band1_name,&nbsp;and&nbsp;averaged&nbsp;between&nbsp;band1_val1&nbsp;and<br>
+band1_val2<br>
+&nbsp;<br>
+self.<strong>band2</strong>&nbsp;:&nbsp;logical&nbsp;switch&nbsp;to&nbsp;enable&nbsp;subsetting&nbsp;and&nbsp;averaging<br>
+over&nbsp;a&nbsp;second&nbsp;spatial&nbsp;dimension.<br>
+&nbsp;<br>
+self.[band2_name,band2_val1,band2_val2]&nbsp;:&nbsp;as&nbsp;for&nbsp;band1<br>
+&nbsp;<br>
+self.<strong>band3</strong>&nbsp;:&nbsp;does&nbsp;not&nbsp;exist&nbsp;yet,&nbsp;but&nbsp;code&nbsp;could&nbsp;easily&nbsp;be&nbsp;extended<br>
+to&nbsp;allow&nbsp;for&nbsp;subsetting&nbsp;over&nbsp;3&nbsp;spatial&nbsp;dimensions.<br>
+&nbsp;<br>
+History.&nbsp;5&nbsp;Jan&nbsp;2018.&nbsp;This&nbsp;is&nbsp;a&nbsp;rename&nbsp;and&nbsp;generalisation&nbsp;of<br>
+discontinued&nbsp;class&nbsp;Hovmoller.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="SpatialSubset-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source','var_name','level'<br>
+'basedir','subdir','filepre','band1_name','band1_val1','band1_val2','band2'.<br>
+&nbsp;<br>
+Optional&nbsp;keywords:&nbsp;'band2_name','band2_val1','band2_val2'</tt></dd></dl>
+
+<dl><dt><a name="SpatialSubset-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SpatialSubset-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SpatialSubset-f_read_spatial_subset"><strong>f_read_spatial_subset</strong></a>(self)</dt><dd><tt>Read&nbsp;previously&nbsp;calculated&nbsp;spatially&nbsp;subsetted&nbsp;data.<br>
+&nbsp;<br>
+Create&nbsp;data_subset&nbsp;attribute.</tt></dd></dl>
+
+<dl><dt><a name="SpatialSubset-f_spatial_subset"><strong>f_spatial_subset</strong></a>(self)</dt><dd><tt>Create&nbsp;cube&nbsp;of&nbsp;spatially&nbsp;subsetted&nbsp;data&nbsp;and&nbsp;save.<br>
+&nbsp;<br>
+Create&nbsp;data_subset_current&nbsp;attribute.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TimeAverageDefunct">class <strong>TimeAverageDefunct</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Time&nbsp;average&nbsp;data&nbsp;e.g.,&nbsp;convert&nbsp;from&nbsp;3-hourly&nbsp;to&nbsp;daily&nbsp;mean.<br>
+&nbsp;<br>
+Defunct.&nbsp;Use&nbsp;<a href="#ModifySource">ModifySource</a>&nbsp;class&nbsp;now.&nbsp;Remove&nbsp;this&nbsp;class&nbsp;when&nbsp;sure<br>
+new&nbsp;code&nbsp;is&nbsp;correct.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;time_average.py.<br>
+&nbsp;<br>
+Used&nbsp;to&nbsp;change&nbsp;(reduce)&nbsp;time&nbsp;resolution&nbsp;of&nbsp;data,&nbsp;for&nbsp;subsequent<br>
+data&nbsp;analysis.&nbsp;&nbsp;Because&nbsp;the&nbsp;source&nbsp;attribute&nbsp;of&nbsp;a&nbsp;data&nbsp;set<br>
+contains&nbsp;information&nbsp;on&nbsp;the&nbsp;time&nbsp;resolution,&nbsp;this&nbsp;effectively<br>
+creates&nbsp;data&nbsp;with&nbsp;a&nbsp;different&nbsp;source.<br>
+&nbsp;<br>
+N.B.&nbsp;To&nbsp;calculate&nbsp;time&nbsp;mean&nbsp;statistics&nbsp;over&nbsp;a&nbsp;particular&nbsp;time<br>
+domain,&nbsp;use&nbsp;the&nbsp;<a href="#TimeDomStats">TimeDomStats</a>&nbsp;class&nbsp;instead.<br>
+&nbsp;<br>
+N.B.&nbsp;&nbsp;To&nbsp;"increase"&nbsp;time&nbsp;resolution&nbsp;of&nbsp;data,&nbsp;e.g.,&nbsp;from&nbsp;weekly&nbsp;to<br>
+daily,&nbsp;use&nbsp;the&nbsp;TimeInterpolate&nbsp;class&nbsp;instead.<br>
+&nbsp;<br>
+Selected&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>source1</strong>&nbsp;:&nbsp;input&nbsp;source,&nbsp;e.g.,&nbsp;trmm3b42v7_sfc_3h&nbsp;3-hourly&nbsp;data.<br>
+&nbsp;<br>
+self.<strong>source2</strong>&nbsp;:&nbsp;output&nbsp;source,&nbsp;e.g.,&nbsp;trmm3b42v7_sfc_d&nbsp;daily&nbsp;data.<br>
+The&nbsp;data_source&nbsp;and&nbsp;level_type&nbsp;parts&nbsp;of&nbsp;self.<strong>source1</strong>&nbsp;and<br>
+self.<strong>source</strong>&nbsp;2&nbsp;should&nbsp;be&nbsp;identical.<br>
+&nbsp;<br>
+self.<strong>frequency</strong>&nbsp;:&nbsp;the&nbsp;frequency&nbsp;part&nbsp;of&nbsp;self.<strong>source2</strong>,&nbsp;indicating<br>
+what&nbsp;time&nbsp;resolution&nbsp;the&nbsp;input&nbsp;data&nbsp;is&nbsp;to&nbsp;be&nbsp;converted&nbsp;to,&nbsp;e.g.,<br>
+'d'&nbsp;for&nbsp;daily.<br>
+&nbsp;<br>
+self.<strong>year</strong>&nbsp;and&nbsp;self.<strong>month</strong>&nbsp;:&nbsp;year&nbsp;(and&nbsp;month,&nbsp;depending&nbsp;on&nbsp;value&nbsp;of<br>
+self.<strong>outfile_frequency</strong>)&nbsp;of&nbsp;input&nbsp;data&nbsp;block.<br>
+&nbsp;<br>
+self.<strong>filein1</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;input&nbsp;files&nbsp;from&nbsp;self.<strong>source1</strong>.<br>
+Probably&nbsp;contains&nbsp;wild&nbsp;card&nbsp;characters.<br>
+&nbsp;<br>
+self.<strong>data_in</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;list&nbsp;of&nbsp;all&nbsp;input&nbsp;data<br>
+&nbsp;<br>
+self.<strong>cube_in</strong>&nbsp;:&nbsp;input&nbsp;cube&nbsp;of&nbsp;data&nbsp;from&nbsp;self.<strong>source1</strong>&nbsp;for&nbsp;the<br>
+current&nbsp;time&nbsp;block.<br>
+&nbsp;<br>
+self.<strong>cube_out</strong>&nbsp;:&nbsp;output&nbsp;cube&nbsp;of&nbsp;data&nbsp;for&nbsp;current&nbsp;time&nbsp;block&nbsp;to&nbsp;be<br>
+saved&nbsp;under&nbsp;self.<strong>source2</strong>.<br>
+&nbsp;<br>
+self.<strong>fileout1</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;output&nbsp;file&nbsp;under&nbsp;self.<strong>source2</strong>.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="TimeAverageDefunct-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source1','source2','var_name','level',<br>
+'basedir'.</tt></dd></dl>
+
+<dl><dt><a name="TimeAverageDefunct-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TimeAverageDefunct-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TimeAverageDefunct-f_time_average"><strong>f_time_average</strong></a>(self, method<font color="#909090">=1</font>)</dt><dd><tt>Time&nbsp;average&nbsp;data.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TimeDomStats">class <strong>TimeDomStats</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Time&nbsp;mean&nbsp;and&nbsp;other&nbsp;statistics&nbsp;of&nbsp;data&nbsp;over&nbsp;non-contiguous&nbsp;time&nbsp;domain.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;several&nbsp;scripts,&nbsp;including&nbsp;mean.py.<br>
+&nbsp;<br>
+All&nbsp;statistics&nbsp;calculations&nbsp;will&nbsp;be&nbsp;done&nbsp;by&nbsp;this&nbsp;class,&nbsp;so&nbsp;add<br>
+further&nbsp;functions&nbsp;as&nbsp;needed.<br>
+&nbsp;<br>
+Selected&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>tdomainid</strong>&nbsp;:&nbsp;string&nbsp;id&nbsp;of&nbsp;the&nbsp;time&nbsp;domain.<br>
+&nbsp;<br>
+self.<strong>tdomain</strong>&nbsp;:&nbsp;instance&nbsp;of&nbsp;<a href="#TimeDomain">TimeDomain</a>&nbsp;class&nbsp;for&nbsp;the&nbsp;time&nbsp;domain.<br>
+&nbsp;<br>
+self.<strong>filein1</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;input&nbsp;files&nbsp;for&nbsp;data&nbsp;to&nbsp;calculate<br>
+statistics&nbsp;from.&nbsp;&nbsp;Will&nbsp;likely&nbsp;contain&nbsp;wild&nbsp;card&nbsp;characters.<br>
+&nbsp;<br>
+self.<strong>fileout1</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;output&nbsp;file&nbsp;of&nbsp;calculated&nbsp;statistic.<br>
+&nbsp;<br>
+self.<strong>cube_event_means</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;list&nbsp;of&nbsp;individual&nbsp;event&nbsp;means,<br>
+i.e.,&nbsp;the&nbsp;time&nbsp;mean&nbsp;over&nbsp;each&nbsp;pair&nbsp;of&nbsp;(start,end)&nbsp;times&nbsp;in&nbsp;the<br>
+time&nbsp;domain.<br>
+&nbsp;<br>
+self.<strong>cube_event_ntimes</strong>&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;with&nbsp;number&nbsp;of&nbsp;times<br>
+that&nbsp;went&nbsp;into&nbsp;each&nbsp;even&nbsp;mean,&nbsp;e.g.,&nbsp;list&nbsp;of&nbsp;numbers&nbsp;of&nbsp;days&nbsp;in<br>
+each&nbsp;event&nbsp;is&nbsp;data&nbsp;is&nbsp;daily.<br>
+&nbsp;<br>
+self.<strong>time_mean</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;time&nbsp;mean&nbsp;calculated&nbsp;over&nbsp;the&nbsp;whole<br>
+time&nbsp;domain.<br>
+&nbsp;<br>
+#&nbsp;Following&nbsp;attributes&nbsp;are&nbsp;used&nbsp;in&nbsp;Monte&nbsp;Carlo&nbsp;simulation&nbsp;to<br>
+#&nbsp;calculate&nbsp;null&nbsp;distribution&nbsp;of&nbsp;mean.<br>
+&nbsp;<br>
+self.<strong>nmc</strong>&nbsp;:&nbsp;integer&nbsp;number&nbsp;of&nbsp;Monte&nbsp;Carlo&nbsp;simulations&nbsp;to&nbsp;be<br>
+performed&nbsp;for&nbsp;calculation&nbsp;of&nbsp;null&nbsp;distribution.<br>
+&nbsp;<br>
+self.<strong>percentiles_null</strong>&nbsp;:&nbsp;list&nbsp;of&nbsp;the&nbsp;percentiles&nbsp;of&nbsp;the&nbsp;null<br>
+distribution&nbsp;to&nbsp;be&nbsp;saved.<br>
+&nbsp;<br>
+self.<strong>max_day_shift</strong>&nbsp;:&nbsp;integer&nbsp;maximum&nbsp;day&nbsp;shift&nbsp;to&nbsp;be&nbsp;used&nbsp;in<br>
+randomisation&nbsp;of&nbsp;time&nbsp;domain&nbsp;times&nbsp;for&nbsp;use&nbsp;in&nbsp;calculation&nbsp;of&nbsp;null<br>
+distribution.<br>
+&nbsp;<br>
+self.<strong>time_first</strong>&nbsp;:&nbsp;datetime.datetime&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;that&nbsp;is&nbsp;first&nbsp;(i.e.,<br>
+lowest)&nbsp;allowable&nbsp;date&nbsp;for&nbsp;the&nbsp;randomised&nbsp;times&nbsp;in&nbsp;the&nbsp;Monte&nbsp;Carlo<br>
+simulation.<br>
+&nbsp;<br>
+self.<strong>time_last</strong>&nbsp;:&nbsp;as&nbsp;self.<strong>time_first</strong>&nbsp;but&nbsp;the&nbsp;last&nbsp;(i.e.,&nbsp;highest)<br>
+allowable&nbsp;date.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="TimeDomStats-__init__"><strong>__init__</strong></a>(self, lazy_load<font color="#909090">=True</font>, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source','var_name','level',<br>
+'basedir','tdomainid','filepre'.<br>
+&nbsp;<br>
+Optional&nbsp;keywords:&nbsp;'nmc','percentiles_null','max_day_shift',<br>
+'time_first','time_last'.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomStats-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TimeDomStats-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TimeDomStats-event_means"><strong>event_means</strong></a>(self)</dt><dd><tt>Calculate&nbsp;time&nbsp;mean&nbsp;and&nbsp;ntime&nbsp;for&nbsp;each&nbsp;event&nbsp;in&nbsp;time&nbsp;domain.<br>
+&nbsp;<br>
+Create&nbsp;cube_event_means&nbsp;and&nbsp;cube_event_ntimes&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomStats-f_diurnal_cycle"><strong>f_diurnal_cycle</strong></a>(self, double<font color="#909090">=True</font>)</dt><dd><tt>Calculate&nbsp;mean&nbsp;diurnal&nbsp;cycle.<br>
+&nbsp;<br>
+Time&nbsp;axis&nbsp;for&nbsp;mean&nbsp;diurnal&nbsp;cycle&nbsp;runs&nbsp;for&nbsp;one&nbsp;day&nbsp;(1&nbsp;Jan&nbsp;in<br>
+year&nbsp;1,&nbsp;ie&nbsp;01-01-01).<br>
+&nbsp;<br>
+if&nbsp;double&nbsp;is&nbsp;True,&nbsp;create&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;diurnal&nbsp;cycle&nbsp;for&nbsp;a<br>
+second&nbsp;day,&nbsp;ie&nbsp;2&nbsp;Jan&nbsp;year&nbsp;1.&nbsp;&nbsp;This&nbsp;is&nbsp;to&nbsp;help&nbsp;in&nbsp;plotting<br>
+later.<br>
+&nbsp;<br>
+Create&nbsp;attribute:<br>
+&nbsp;<br>
+self.<strong>mean_dc</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;mean&nbsp;diurnal&nbsp;cycle&nbsp;calculated&nbsp;over<br>
+time&nbsp;domain&nbsp;self.<strong>tdomain</strong>.<br>
+&nbsp;<br>
+Note:&nbsp;initial&nbsp;attempt&nbsp;at&nbsp;coding&nbsp;this&nbsp;function&nbsp;used<br>
+PartialDateTime&nbsp;to&nbsp;extract&nbsp;data&nbsp;on&nbsp;each&nbsp;day&nbsp;for&nbsp;a&nbsp;given&nbsp;time<br>
+of&nbsp;day&nbsp;(e.g.&nbsp;0300&nbsp;UTC)&nbsp;and&nbsp;then&nbsp;average.&nbsp;&nbsp;This&nbsp;took&nbsp;about<br>
+10-100&nbsp;times&nbsp;longer&nbsp;to&nbsp;run&nbsp;than&nbsp;method&nbsp;here.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomStats-f_lagged_mean"><strong>f_lagged_mean</strong></a>(self, lags<font color="#909090">=[0]</font>)</dt><dd><tt>Calculate&nbsp;time-lagged&nbsp;means&nbsp;over&nbsp;time&nbsp;domain&nbsp;and&nbsp;save.<br>
+&nbsp;<br>
+Input:<br>
+&nbsp;<br>
+lags&nbsp;:&nbsp;list&nbsp;of&nbsp;integer&nbsp;lags&nbsp;(default&nbsp;is&nbsp;[0,]).&nbsp;These&nbsp;are<br>
+combined&nbsp;with&nbsp;self.<strong>timedelta</strong>&nbsp;to&nbsp;create&nbsp;the&nbsp;lags&nbsp;to&nbsp;calculate<br>
+the&nbsp;mean&nbsp;over.&nbsp;&nbsp;E.g.,&nbsp;if&nbsp;lags=[-5,0,5]&nbsp;and&nbsp;self.<strong>timedelta</strong>&nbsp;is&nbsp;1<br>
+day,&nbsp;then&nbsp;lagged&nbsp;means&nbsp;will&nbsp;be&nbsp;calculated&nbsp;at&nbsp;lags&nbsp;of&nbsp;-5,&nbsp;0,<br>
+and&nbsp;5&nbsp;days.<br>
+&nbsp;<br>
+Create&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>lags</strong>&nbsp;:&nbsp;lags<br>
+&nbsp;<br>
+self.<strong>nlags</strong>&nbsp;:&nbsp;length&nbsp;of&nbsp;list&nbsp;of&nbsp;lags<br>
+&nbsp;<br>
+self.<strong>lagged_mean</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;lagged&nbsp;means.&nbsp;&nbsp;Shape&nbsp;is<br>
+(self.<strong>nlags</strong>,...)&nbsp;&nbsp;where&nbsp;...&nbsp;is&nbsp;shape&nbsp;of&nbsp;input&nbsp;cube.&nbsp;&nbsp;The&nbsp;'lag'<br>
+axis&nbsp;is&nbsp;a&nbsp;time&nbsp;axis,&nbsp;relative&nbsp;to&nbsp;an&nbsp;arbitrary&nbsp;reference&nbsp;time<br>
+of&nbsp;1000-01-01&nbsp;00:00:0.0</tt></dd></dl>
+
+<dl><dt><a name="TimeDomStats-f_percentiles_null"><strong>f_percentiles_null</strong></a>(self)</dt><dd><tt>Calculate&nbsp;percenticles&nbsp;of&nbsp;null&nbsp;distribution&nbsp;of&nbsp;time&nbsp;mean&nbsp;and&nbsp;save.<br>
+&nbsp;<br>
+Read&nbsp;the&nbsp;null&nbsp;distribution&nbsp;of&nbsp;the&nbsp;time&nbsp;mean&nbsp;previously<br>
+calculated&nbsp;using&nbsp;<a href="#TimeDomStats-f_time_mean_null_distribution_component">f_time_mean_null_distribution_component</a>().<br>
+&nbsp;<br>
+The&nbsp;percentiles&nbsp;self.<strong>percentiles_null</strong>&nbsp;of&nbsp;this&nbsp;distribution&nbsp;are<br>
+then&nbsp;extracted&nbsp;and&nbsp;saved&nbsp;as&nbsp;self.<strong>mean_percentiles_null</strong>.<br>
+&nbsp;<br>
+Creates&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>mean_percentiles_null</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;containing&nbsp;selected<br>
+percentiles&nbsp;of&nbsp;the&nbsp;null&nbsp;distribution.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomStats-f_time_mean"><strong>f_time_mean</strong></a>(self, save<font color="#909090">=True</font>)</dt><dd><tt>Calculate&nbsp;time&nbsp;mean&nbsp;over&nbsp;time&nbsp;domain&nbsp;and&nbsp;optionally&nbsp;save&nbsp;to&nbsp;netcdf.<br>
+&nbsp;<br>
+Calculate&nbsp;this&nbsp;by&nbsp;a&nbsp;weighted&nbsp;(cube_event_ntimes)&nbsp;mean&nbsp;of&nbsp;the<br>
+cube_event_means.&nbsp;&nbsp;Hence,&nbsp;each&nbsp;individual&nbsp;time&nbsp;(e.g.,&nbsp;day)&nbsp;in&nbsp;the<br>
+original&nbsp;data&nbsp;has&nbsp;equal&nbsp;weighting.<br>
+&nbsp;<br>
+Create&nbsp;attribute&nbsp;time_mean.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomStats-f_time_mean_null_distribution_component"><strong>f_time_mean_null_distribution_component</strong></a>(self)</dt><dd><tt>Calculate&nbsp;null&nbsp;distribution&nbsp;of&nbsp;the&nbsp;time&nbsp;mean&nbsp;and&nbsp;save.<br>
+&nbsp;<br>
+Perform&nbsp;a&nbsp;Monte&nbsp;Carlo&nbsp;simulation&nbsp;of&nbsp;size&nbsp;self.<strong>nmc</strong>&nbsp;to&nbsp;create&nbsp;(a<br>
+partial&nbsp;component&nbsp;of)&nbsp;the&nbsp;null&nbsp;distribution&nbsp;of&nbsp;the&nbsp;time&nbsp;mean.<br>
+For&nbsp;each&nbsp;evaluation&nbsp;in&nbsp;the&nbsp;Monte&nbsp;Carlo&nbsp;simulation,&nbsp;create&nbsp;a<br>
+randomized&nbsp;version&nbsp;of&nbsp;the&nbsp;time&nbsp;domain.<br>
+&nbsp;<br>
+The&nbsp;time&nbsp;mean&nbsp;is&nbsp;then&nbsp;calculated&nbsp;for&nbsp;each&nbsp;of&nbsp;the&nbsp;self.<strong>nmc</strong><br>
+randomised&nbsp;time&nbsp;domains,&nbsp;building&nbsp;up&nbsp;a&nbsp;null&nbsp;distribution&nbsp;of<br>
+the&nbsp;mean&nbsp;of&nbsp;length&nbsp;self.<strong>nmc</strong>.<br>
+&nbsp;<br>
+Note.&nbsp;&nbsp;The&nbsp;total&nbsp;number&nbsp;of&nbsp;randomised&nbsp;simulations&nbsp;in&nbsp;the<br>
+overall&nbsp;Monte&nbsp;Carlo&nbsp;simulation&nbsp;should&nbsp;be&nbsp;at&nbsp;least&nbsp;1000&nbsp;to<br>
+ensure&nbsp;robustness&nbsp;in&nbsp;the&nbsp;tails&nbsp;of&nbsp;the&nbsp;null&nbsp;distribution.&nbsp;&nbsp;To<br>
+run&nbsp;these&nbsp;sequentially&nbsp;is&nbsp;too&nbsp;time&nbsp;consuming.&nbsp;&nbsp;Hence,&nbsp;small<br>
+batches&nbsp;of&nbsp;simulations&nbsp;should&nbsp;be&nbsp;run&nbsp;in&nbsp;parallel.&nbsp;&nbsp;Use&nbsp;this<br>
+function&nbsp;together&nbsp;called&nbsp;from&nbsp;e.g.,&nbsp;mean.py,&nbsp;together&nbsp;with<br>
+run_scripts_bsub.py&nbsp;to&nbsp;do&nbsp;this,&nbsp;looping&nbsp;over&nbsp;a&nbsp;variable&nbsp;called<br>
+NODE_NUMBER.&nbsp;&nbsp;Each&nbsp;individual&nbsp;simulation&nbsp;runs&nbsp;self.<strong>nmc</strong><br>
+realisations,&nbsp;hence&nbsp;the&nbsp;total&nbsp;size&nbsp;of&nbsp;the&nbsp;Monte&nbsp;Carlo<br>
+simulation&nbsp;is&nbsp;NODE_NUMBER*nmc&nbsp;which&nbsp;should&nbsp;be&nbsp;minimum<br>
+approximately&nbsp;1000.<br>
+&nbsp;<br>
+Creates&nbsp;attributes:&nbsp;None.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TimeDomain">class <strong>TimeDomain</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;set&nbsp;of&nbsp;single&nbsp;or&nbsp;paired&nbsp;(start,end)&nbsp;times.<br>
+&nbsp;<br>
+A&nbsp;set&nbsp;of&nbsp;single&nbsp;times&nbsp;can&nbsp;be&nbsp;used&nbsp;as&nbsp;the&nbsp;basis&nbsp;of&nbsp;(lagged)<br>
+composite&nbsp;analysis.<br>
+&nbsp;<br>
+A&nbsp;set&nbsp;of&nbsp;paired&nbsp;(start,end)&nbsp;times&nbsp;can&nbsp;be&nbsp;used&nbsp;as&nbsp;the&nbsp;basis&nbsp;of<br>
+calculating&nbsp;time&nbsp;means&nbsp;and&nbsp;other&nbsp;statistics.<br>
+&nbsp;<br>
+They&nbsp;have&nbsp;a&nbsp;unique&nbsp;string&nbsp;identifier,&nbsp;e.g.,&nbsp;'jul9899'.<br>
+&nbsp;<br>
+They&nbsp;are&nbsp;stored/archived&nbsp;as&nbsp;ascii&nbsp;files&nbsp;in<br>
+/gpfs/home/e058/home/data/tdomain/<br>
+&nbsp;<br>
+Once&nbsp;created,&nbsp;the&nbsp;ascii&nbsp;time&nbsp;domain&nbsp;files&nbsp;should&nbsp;not&nbsp;be&nbsp;modified<br>
+or&nbsp;deleted.&nbsp;&nbsp;A&nbsp;modified&nbsp;version&nbsp;of&nbsp;the&nbsp;time&nbsp;domain&nbsp;should&nbsp;be&nbsp;given<br>
+a&nbsp;new&nbsp;id,&nbsp;and&nbsp;a&nbsp;new&nbsp;ascii&nbsp;file&nbsp;created&nbsp;for&nbsp;it.<br>
+&nbsp;<br>
+For&nbsp;historical&nbsp;reasons&nbsp;(from&nbsp;using&nbsp;the&nbsp;cdat&nbsp;module)&nbsp;the&nbsp;format&nbsp;of<br>
+the&nbsp;ascii&nbsp;file&nbsp;is&nbsp;that&nbsp;from&nbsp;a&nbsp;print&nbsp;cdtime.comptime&nbsp;<a href="__builtin__.html#object">object</a>,<br>
+e.g.&nbsp;for&nbsp;'jul9899':<br>
+&nbsp;<br>
+#&nbsp;Optional&nbsp;descriptive&nbsp;comment&nbsp;line(s)&nbsp;beginning&nbsp;with&nbsp;'#'<br>
+#&nbsp;July&nbsp;1998,&nbsp;1999<br>
+1998-07-01&nbsp;00:00:0.0,&nbsp;1998-07-31&nbsp;23:59:0.0<br>
+1999-07-01&nbsp;00:00:0.0,&nbsp;1999-07-31&nbsp;23:59:0.0<br>
+&nbsp;<br>
+This&nbsp;format&nbsp;must&nbsp;be&nbsp;adhered&nbsp;to.<br>
+&nbsp;<br>
+The&nbsp;<a href="#TimeDomain">TimeDomain</a>&nbsp;class&nbsp;has&nbsp;methods&nbsp;to&nbsp;read&nbsp;and&nbsp;write&nbsp;these&nbsp;ascii<br>
+files,&nbsp;and&nbsp;to&nbsp;convert&nbsp;to/from&nbsp;datetime&nbsp;objects,&nbsp;for&nbsp;use&nbsp;with&nbsp;iris<br>
+scripts.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;<br>
+self.<strong>idx</strong>&nbsp;:&nbsp;unique&nbsp;string&nbsp;identifier,&nbsp;e.g.,&nbsp;'jul9899'.&nbsp;&nbsp;Must&nbsp;be<br>
+supplied&nbsp;when&nbsp;creating&nbsp;instance&nbsp;of&nbsp;<a href="#TimeDomain">TimeDomain</a>&nbsp;class.&nbsp;Must&nbsp;not<br>
+contain&nbsp;an&nbsp;underscore&nbsp;_.<br>
+&nbsp;<br>
+self.<strong>basedir</strong>&nbsp;:&nbsp;directory&nbsp;path&nbsp;for&nbsp;timedomain&nbsp;ascii&nbsp;files.&nbsp;&nbsp;Has<br>
+default&nbsp;value&nbsp;that&nbsp;can&nbsp;be&nbsp;overwritten&nbsp;as&nbsp;a&nbsp;keyword&nbsp;argument.<br>
+&nbsp;<br>
+self.<strong>filename</strong>&nbsp;:&nbsp;full&nbsp;path&nbsp;name&nbsp;for&nbsp;timedomain&nbsp;ascii&nbsp;file.&nbsp;&nbsp;Created<br>
+from&nbsp;self.<strong>basedir</strong>&nbsp;and&nbsp;self.<strong>idx</strong>.<br>
+&nbsp;<br>
+self.<strong>_format2ascii</strong>&nbsp;:&nbsp;format&nbsp;used&nbsp;for&nbsp;conversion&nbsp;to&nbsp;ascii&nbsp;format.<br>
+Do&nbsp;not&nbsp;change.<br>
+&nbsp;<br>
+self.<strong>_format2datetime</strong>&nbsp;:&nbsp;format&nbsp;used&nbsp;for&nbsp;conversion&nbsp;to&nbsp;datetime<br>
+<a href="__builtin__.html#object">object</a>.&nbsp;&nbsp;Do&nbsp;not&nbsp;change.<br>
+&nbsp;<br>
+self.<strong>lines</strong>&nbsp;:&nbsp;ascii&nbsp;representation&nbsp;of&nbsp;timedomain.&nbsp;&nbsp;A&nbsp;nested&nbsp;list&nbsp;of<br>
+strings.<br>
+&nbsp;<br>
+self.<strong>datetimes</strong>&nbsp;:&nbsp;datetime&nbsp;representation&nbsp;of&nbsp;timedomain.&nbsp;&nbsp;A&nbsp;nested<br>
+list&nbsp;of&nbsp;datetime&nbsp;objects.<br>
+&nbsp;<br>
+self.<strong>type</strong>&nbsp;:&nbsp;either&nbsp;'single'&nbsp;or&nbsp;'event'.<br>
+&nbsp;<br>
+self.<strong>nevents</strong>&nbsp;:&nbsp;integer&nbsp;equivalent&nbsp;to&nbsp;length&nbsp;of&nbsp;self.<strong>lines</strong>,&nbsp;i.e.,&nbsp;number<br>
+single&nbsp;times&nbsp;or&nbsp;events.<br>
+&nbsp;<br>
+self.<strong>header</strong>&nbsp;:&nbsp;tuple&nbsp;of&nbsp;two&nbsp;strings,&nbsp;each&nbsp;beginning&nbsp;with&nbsp;'#',&nbsp;that<br>
+are&nbsp;descriptors&nbsp;of&nbsp;the&nbsp;time&nbsp;domain<br>
+&nbsp;<br>
+self.<strong>ndaytot</strong>&nbsp;:&nbsp;float&nbsp;of&nbsp;total&nbsp;number&nbsp;of&nbsp;days&nbsp;covered&nbsp;by&nbsp;time<br>
+domain&nbsp;if&nbsp;it&nbsp;is&nbsp;of&nbsp;type&nbsp;'event'.<br>
+&nbsp;<br>
+self.<strong>ndays</strong>&nbsp;:&nbsp;sorted&nbsp;list&nbsp;of&nbsp;floats&nbsp;of&nbsp;number&nbsp;of&nbsp;days&nbsp;in&nbsp;each&nbsp;event<br>
+in&nbsp;time&nbsp;domain,&nbsp;if&nbsp;time&nbsp;domain&nbsp;is&nbsp;of&nbsp;type&nbsp;'event'.<br>
+&nbsp;<br>
+Note&nbsp;on&nbsp;calendars.&nbsp;The&nbsp;<a href="#TimeDomain">TimeDomain</a>&nbsp;class&nbsp;works&nbsp;with<br>
+datetime.datetime&nbsp;objects&nbsp;which&nbsp;implicitly&nbsp;assume&nbsp;a&nbsp;gregorian<br>
+calendar.&nbsp;When&nbsp;using&nbsp;360_day&nbsp;calendar&nbsp;data,&nbsp;still&nbsp;use&nbsp;the<br>
+<a href="#TimeDomain">TimeDomain</a>&nbsp;class,&nbsp;and&nbsp;call&nbsp;the&nbsp;set_time_constraint&nbsp;function&nbsp;when<br>
+creating&nbsp;iris&nbsp;time&nbsp;constraints&nbsp;from&nbsp;the&nbsp;<a href="#TimeDomain">TimeDomain</a><br>
+datetime.datetime&nbsp;objects.&nbsp;This&nbsp;will&nbsp;convert&nbsp;the&nbsp;datetime.datetime<br>
+objects&nbsp;to&nbsp;cftime.Datetime360Day&nbsp;objects&nbsp;needed&nbsp;to&nbsp;extract&nbsp;360_day<br>
+calendar&nbsp;data.<br>
+&nbsp;<br>
+However,&nbsp;the&nbsp;actual&nbsp;dates&nbsp;in&nbsp;a&nbsp;time&nbsp;domain&nbsp;might&nbsp;have&nbsp;to&nbsp;change<br>
+according&nbsp;to&nbsp;the&nbsp;calendar.&nbsp;For&nbsp;example,&nbsp;a&nbsp;JJA&nbsp;average&nbsp;time&nbsp;domain<br>
+would&nbsp;have&nbsp;a&nbsp;line&nbsp;like&nbsp;e.g.&nbsp;1986-06-01&nbsp;to&nbsp;1986-08-31&nbsp;if&nbsp;the<br>
+calendar&nbsp;is&nbsp;gregorian,&nbsp;but&nbsp;1986-06-01&nbsp;to&nbsp;1986-08-30&nbsp;if&nbsp;the<br>
+calendar&nbsp;is&nbsp;360_day.&nbsp;Hence,&nbsp;the&nbsp;convention&nbsp;adopted&nbsp;is&nbsp;that&nbsp;time<br>
+domains&nbsp;created&nbsp;for&nbsp;360_day&nbsp;calendar&nbsp;data&nbsp;have&nbsp;their&nbsp;id&nbsp;ending&nbsp;in<br>
+'-360day',&nbsp;e.g.,&nbsp;'jja86-88-360day'.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="TimeDomain-__init__"><strong>__init__</strong></a>(self, idx, basedir<font color="#909090">='/gpfs/home/e058/home/data/tdomain'</font>, tseriesdir<font color="#909090">='/gpfs/home/e058/home/data'</font>, verbose<font color="#909090">=True</font>)</dt></dl>
+
+<dl><dt><a name="TimeDomain-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TimeDomain-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TimeDomain-ascii2datetime"><strong>ascii2datetime</strong></a>(self)</dt><dd><tt>Convert&nbsp;ascii&nbsp;representation&nbsp;of&nbsp;timedomain&nbsp;to&nbsp;datetime&nbsp;representation.<br>
+Create&nbsp;a&nbsp;datetimes&nbsp;attribute.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomain-ascii2partial_date_time"><strong>ascii2partial_date_time</strong></a>(self)</dt><dd><tt>Convert&nbsp;ascii&nbsp;representation&nbsp;of&nbsp;timedomain&nbsp;to&nbsp;PartialDateTime.<br>
+&nbsp;<br>
+Create&nbsp;a&nbsp;partial_date_times&nbsp;attribute.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;should&nbsp;not&nbsp;be&nbsp;needed.&nbsp;&nbsp;I&nbsp;was&nbsp;confused&nbsp;over&nbsp;partial<br>
+date&nbsp;times&nbsp;and&nbsp;datetimes.&nbsp;&nbsp;Just&nbsp;use&nbsp;datetimes.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomain-datetime2ascii"><strong>datetime2ascii</strong></a>(self)</dt><dd><tt>Convert&nbsp;datetime&nbsp;representation&nbsp;of&nbsp;timedomain&nbsp;to&nbsp;ascii.<br>
+&nbsp;<br>
+Create&nbsp;a&nbsp;lines&nbsp;attribute.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomain-f_create_time_domain_from_indices"><strong>f_create_time_domain_from_indices</strong></a>(self)</dt><dd><tt>Create&nbsp;time&nbsp;domain&nbsp;from&nbsp;algorithm&nbsp;on&nbsp;index&nbsp;time&nbsp;series.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomain-f_lagged_time_domain"><strong>f_lagged_time_domain</strong></a>(self, idx_new, timedelta_lag)</dt><dd><tt>Create&nbsp;copy&nbsp;of&nbsp;time&nbsp;domain&nbsp;with&nbsp;all&nbsp;time&nbsp;values&nbsp;lagged.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+idx_new&nbsp;:&nbsp;string&nbsp;id&nbsp;of&nbsp;new&nbsp;(randomised)&nbsp;time&nbsp;domain<br>
+&nbsp;<br>
+timedelta_lag&nbsp;:&nbsp;datetime.timedelta&nbsp;of&nbsp;the&nbsp;lag<br>
+&nbsp;<br>
+Returns&nbsp;tdomain_lagged,&nbsp;a&nbsp;new&nbsp;(lagged)&nbsp;<a href="#TimeDomain">TimeDomain</a>&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomain-f_ndays"><strong>f_ndays</strong></a>(self)</dt><dd><tt>Calculate&nbsp;number&nbsp;of&nbsp;days&nbsp;covered&nbsp;by&nbsp;time&nbsp;domain.<br>
+&nbsp;<br>
+Create&nbsp;ndays&nbsp;and&nbsp;ndaytot&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomain-f_nevents"><strong>f_nevents</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TimeDomain-f_randomise_times"><strong>f_randomise_times</strong></a>(self, idx_new, max_day_shift, time_first, time_last)</dt><dd><tt>Create&nbsp;copy&nbsp;of&nbsp;time&nbsp;domain&nbsp;with&nbsp;randomised&nbsp;times.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+idx_new&nbsp;:&nbsp;string&nbsp;id&nbsp;of&nbsp;new&nbsp;(randomised)&nbsp;time&nbsp;domain<br>
+&nbsp;<br>
+max_day_shift&nbsp;:&nbsp;integer&nbsp;(typical&nbsp;value&nbsp;15)<br>
+&nbsp;<br>
+time_first,&nbsp;time_last&nbsp;:&nbsp;datetime.datetime&nbsp;objects<br>
+corresponding&nbsp;to&nbsp;the&nbsp;time&nbsp;range&nbsp;of&nbsp;the&nbsp;data&nbsp;this&nbsp;randomised<br>
+time&nbsp;domain&nbsp;will&nbsp;be&nbsp;applied&nbsp;to.<br>
+&nbsp;<br>
+For&nbsp;each&nbsp;random&nbsp;time,&nbsp;the&nbsp;year&nbsp;of&nbsp;the&nbsp;original&nbsp;time&nbsp;is<br>
+replaced&nbsp;by&nbsp;a&nbsp;random&nbsp;year&nbsp;between&nbsp;time_first.year&nbsp;and<br>
+time_last.year,&nbsp;and&nbsp;the&nbsp;day&nbsp;is&nbsp;shifted&nbsp;randomly&nbsp;between<br>
+plus/minus&nbsp;max_day_shift.&nbsp;&nbsp;This&nbsp;procedure&nbsp;ensures&nbsp;the<br>
+randomised&nbsp;time&nbsp;is&nbsp;at&nbsp;approximately&nbsp;the&nbsp;same&nbsp;time&nbsp;of&nbsp;year<br>
+(i.e.,&nbsp;same&nbsp;part&nbsp;of&nbsp;seasonal&nbsp;cycle)&nbsp;as&nbsp;the&nbsp;original&nbsp;time.<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;time&nbsp;domain&nbsp;type&nbsp;is&nbsp;'event',&nbsp;the&nbsp;randomisation&nbsp;is<br>
+carried&nbsp;out&nbsp;on&nbsp;the&nbsp;start&nbsp;time&nbsp;of&nbsp;each&nbsp;pair&nbsp;of&nbsp;datetimes,&nbsp;and<br>
+the&nbsp;time&nbsp;difference&nbsp;between&nbsp;the&nbsp;start&nbsp;and&nbsp;end&nbsp;time&nbsp;of&nbsp;each<br>
+pair&nbsp;is&nbsp;preserved.<br>
+&nbsp;<br>
+Returns&nbsp;tdomain_rand,&nbsp;a&nbsp;new&nbsp;(randomised)&nbsp;<a href="#TimeDomain">TimeDomain</a>&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomain-info"><strong>info</strong></a>(self)</dt><dd><tt>Calculate&nbsp;and&nbsp;print&nbsp;information&nbsp;on&nbsp;time&nbsp;domain.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomain-read_ascii"><strong>read_ascii</strong></a>(self)</dt><dd><tt>Read&nbsp;the&nbsp;ascii&nbsp;time&nbsp;domain&nbsp;file.<br>
+&nbsp;<br>
+Discard&nbsp;any&nbsp;comments&nbsp;(lines&nbsp;beginning&nbsp;with&nbsp;'#')<br>
+&nbsp;<br>
+Create&nbsp;lines&nbsp;and&nbsp;comments&nbsp;attribute.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomain-time_domain_type"><strong>time_domain_type</strong></a>(self)</dt><dd><tt>Determine&nbsp;if&nbsp;time&nbsp;domain&nbsp;is&nbsp;'single'&nbsp;or&nbsp;'event'&nbsp;type.<br>
+&nbsp;<br>
+'Single'&nbsp;type&nbsp;is&nbsp;list&nbsp;of&nbsp;single&nbsp;times.<br>
+&nbsp;<br>
+'Event'&nbsp;type&nbsp;is&nbsp;list&nbsp;of&nbsp;paired&nbsp;(start,end)&nbsp;times.<br>
+&nbsp;<br>
+Creates&nbsp;type&nbsp;attribute.</tt></dd></dl>
+
+<dl><dt><a name="TimeDomain-write_ascii"><strong>write_ascii</strong></a>(self)</dt><dd><tt>Write&nbsp;the&nbsp;ascii&nbsp;file&nbsp;for&nbsp;a&nbsp;newly&nbsp;created&nbsp;time&nbsp;domain.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TimeFilter">class <strong>TimeFilter</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Time&nbsp;filter&nbsp;using&nbsp;rolling_window&nbsp;method&nbsp;of&nbsp;iris&nbsp;cube.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;filter.py.<br>
+&nbsp;<br>
+Assumes&nbsp;input&nbsp;data&nbsp;has&nbsp;equally&nbsp;spaced&nbsp;time&nbsp;intervals<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;<br>
+self.<strong>weights</strong>&nbsp;:&nbsp;1-d&nbsp;numpy&nbsp;array&nbsp;of&nbsp;filter&nbsp;weights<br>
+&nbsp;<br>
+self.<strong>nn</strong>&nbsp;:&nbsp;integer&nbsp;value&nbsp;of&nbsp;order&nbsp;of&nbsp;filter.<br>
+&nbsp;<br>
+self.<strong>nweights</strong>&nbsp;:&nbsp;integer&nbsp;number&nbsp;of&nbsp;weights&nbsp;(length&nbsp;of&nbsp;self.<strong>weights</strong><br>
+array.&nbsp;&nbsp;Must&nbsp;be&nbsp;odd.&nbsp;&nbsp;Filtered&nbsp;output&nbsp;will&nbsp;be&nbsp;a&nbsp;nweight&nbsp;running<br>
+mean&nbsp;of&nbsp;the&nbsp;input&nbsp;data,&nbsp;using&nbsp;self.<strong>weights</strong>.<br>
+&nbsp;<br>
+self.<strong>nn</strong>&nbsp;:&nbsp;Equal&nbsp;to&nbsp;(nweights-1)/2,&nbsp;e.g.,&nbsp;if&nbsp;nweights=61,&nbsp;nn=30.<br>
+Filtered&nbsp;output&nbsp;will&nbsp;be&nbsp;a&nbsp;61-point&nbsp;weighted&nbsp;mean&nbsp;of&nbsp;the&nbsp;30&nbsp;input<br>
+data&nbsp;points&nbsp;before&nbsp;the&nbsp;current&nbsp;time,&nbsp;the&nbsp;current&nbsp;time&nbsp;itself,&nbsp;and<br>
+the&nbsp;30&nbsp;intput&nbsp;data&nbsp;points&nbsp;after&nbsp;the&nbsp;current&nbsp;time.<br>
+&nbsp;<br>
+self.<strong>data_out</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;filtered&nbsp;output&nbsp;data.&nbsp;&nbsp;Length&nbsp;of&nbsp;time<br>
+dimension&nbsp;is&nbsp;typically&nbsp;a&nbsp;convenient&nbsp;block&nbsp;of&nbsp;time,&nbsp;e.g.,&nbsp;1&nbsp;year<br>
+for&nbsp;daily&nbsp;data.<br>
+&nbsp;<br>
+self.<strong>frequency</strong>&nbsp;:&nbsp;string&nbsp;to&nbsp;denote&nbsp;frequency&nbsp;of&nbsp;input&nbsp;(and&nbsp;output)<br>
+data,&nbsp;e.g.,&nbsp;'d'&nbsp;for&nbsp;daily&nbsp;data.<br>
+&nbsp;<br>
+self.<strong>timeout1</strong>&nbsp;:&nbsp;datetime&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;for&nbsp;start&nbsp;time&nbsp;of&nbsp;self.<strong>data_out</strong>.<br>
+&nbsp;<br>
+self.<strong>timeout2</strong>&nbsp;:&nbsp;datetime&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;for&nbsp;end&nbsp;time&nbsp;of&nbsp;self.<strong>data_out</strong>.<br>
+&nbsp;<br>
+self.<strong>data_in</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;input&nbsp;data&nbsp;to&nbsp;be&nbsp;filtered.&nbsp;&nbsp;Length&nbsp;of<br>
+time&nbsp;dimension&nbsp;is&nbsp;length&nbsp;of&nbsp;time&nbsp;dimension&nbsp;of&nbsp;self.<strong>data_out</strong>&nbsp;+<br>
+2*self.<strong>nn</strong>&nbsp;(self.<strong>nn</strong>&nbsp;at&nbsp;the&nbsp;beginning,&nbsp;and&nbsp;self.<strong>nn</strong>&nbsp;at&nbsp;the&nbsp;end).<br>
+&nbsp;<br>
+self.<strong>timein1</strong>&nbsp;:&nbsp;datetime&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;for&nbsp;start&nbsp;time&nbsp;of&nbsp;self.<strong>data_in</strong>.<br>
+&nbsp;<br>
+self.<strong>timein2</strong>&nbsp;:&nbsp;datetime&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;for&nbsp;end&nbsp;time&nbsp;of&nbsp;self.<strong>data_in</strong>.<br>
+&nbsp;<br>
+self.<strong>filein1</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file(s)&nbsp;of&nbsp;input&nbsp;data.<br>
+&nbsp;<br>
+self.<strong>fileout1</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file&nbsp;of&nbsp;output&nbsp;(filtered)&nbsp;data.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="TimeFilter-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source','var_name','level',<br>
+'basedir','filter','file_weights','filepre'</tt></dd></dl>
+
+<dl><dt><a name="TimeFilter-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TimeFilter-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TimeFilter-f_weights"><strong>f_weights</strong></a>(self)</dt><dd><tt>Create&nbsp;array&nbsp;of&nbsp;file&nbsp;weights.<br>
+&nbsp;<br>
+Read&nbsp;in&nbsp;file&nbsp;weights&nbsp;from&nbsp;ASCII&nbsp;text&nbsp;file.&nbsp;&nbsp;Must&nbsp;be&nbsp;in&nbsp;format:<br>
+Line&nbsp;0:&nbsp;information&nbsp;on&nbsp;filter&nbsp;(not&nbsp;actually&nbsp;used&nbsp;here)<br>
+Remaining&nbsp;lines:&nbsp;each&nbsp;line&nbsp;has&nbsp;a&nbsp;single&nbsp;float&nbsp;filter&nbsp;weight.<br>
+&nbsp;<br>
+If&nbsp;nlines&nbsp;is&nbsp;number&nbsp;of&nbsp;lines&nbsp;in&nbsp;the&nbsp;filter&nbsp;file,&nbsp;there&nbsp;are<br>
+nweights=nlines-1&nbsp;filter&nbsp;weights.<br>
+&nbsp;<br>
+nweights&nbsp;must&nbsp;be&nbsp;odd.<br>
+&nbsp;<br>
+nn=(nfilter-1)/2<br>
+&nbsp;<br>
+Create&nbsp;nweights,&nbsp;nn&nbsp;and&nbsp;weights&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="TimeFilter-time_filter"><strong>time_filter</strong></a>(self, subtract<font color="#909090">=False</font>)</dt><dd><tt>Filter&nbsp;using&nbsp;the&nbsp;rolling_window&nbsp;cube&nbsp;method&nbsp;and&nbsp;save&nbsp;data.<br>
+&nbsp;<br>
+If&nbsp;subtract&nbsp;is&nbsp;False,&nbsp;the&nbsp;filtered&nbsp;data&nbsp;set&nbsp;is&nbsp;just&nbsp;returned.<br>
+&nbsp;<br>
+If&nbsp;subtract&nbsp;is&nbsp;True,&nbsp;then&nbsp;the&nbsp;filtered&nbsp;data&nbsp;is&nbsp;subtracted&nbsp;from<br>
+the&nbsp;original&nbsp;data,&nbsp;and&nbsp;this&nbsp;subtracted&nbsp;data&nbsp;set&nbsp;is&nbsp;returned.<br>
+This&nbsp;option&nbsp;is&nbsp;generally&nbsp;used&nbsp;to&nbsp;create&nbsp;high-pass&nbsp;filtered<br>
+data.&nbsp;&nbsp;For&nbsp;example,&nbsp;if&nbsp;the&nbsp;filter&nbsp;weights&nbsp;create&nbsp;an&nbsp;N-running<br>
+mean&nbsp;low&nbsp;pass&nbsp;filter&nbsp;data&nbsp;set,&nbsp;this&nbsp;is&nbsp;then&nbsp;subtracted&nbsp;from<br>
+the&nbsp;original&nbsp;data&nbsp;to&nbsp;create&nbsp;a&nbsp;high-pass&nbsp;filtered&nbsp;data&nbsp;set.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ToDoError">class <strong>ToDoError</strong></a>(<a href="exceptions.html#UserWarning">exceptions.UserWarning</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>An&nbsp;exception&nbsp;that&nbsp;indicates&nbsp;I&nbsp;need&nbsp;to&nbsp;write&nbsp;some&nbsp;more&nbsp;code.<br>
+&nbsp;<br>
+Use&nbsp;raise&nbsp;<a href="#ToDoError">ToDoError</a>&nbsp;as&nbsp;a&nbsp;placeholder&nbsp;for&nbsp;code&nbsp;to&nbsp;be&nbsp;written&nbsp;for&nbsp;a<br>
+different&nbsp;situation.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="data_analysis.html#ToDoError">ToDoError</a></dd>
+<dd><a href="exceptions.html#UserWarning">exceptions.UserWarning</a></dd>
+<dd><a href="exceptions.html#Warning">exceptions.Warning</a></dd>
+<dd><a href="exceptions.html#Exception">exceptions.Exception</a></dd>
+<dd><a href="exceptions.html#BaseException">exceptions.BaseException</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="exceptions.html#UserWarning">exceptions.UserWarning</a>:<br>
+<dl><dt><a name="ToDoError-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#ToDoError-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="exceptions.html#UserWarning">exceptions.UserWarning</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#ToDoError-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><a name="ToDoError-__delattr__"><strong>__delattr__</strong></a>(...)</dt><dd><tt>x.<a href="#ToDoError-__delattr__">__delattr__</a>('name')&nbsp;&lt;==&gt;&nbsp;del&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="ToDoError-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#ToDoError-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="ToDoError-__getitem__"><strong>__getitem__</strong></a>(...)</dt><dd><tt>x.<a href="#ToDoError-__getitem__">__getitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;x[y]</tt></dd></dl>
+
+<dl><dt><a name="ToDoError-__getslice__"><strong>__getslice__</strong></a>(...)</dt><dd><tt>x.<a href="#ToDoError-__getslice__">__getslice__</a>(i,&nbsp;j)&nbsp;&lt;==&gt;&nbsp;x[i:j]<br>
+&nbsp;<br>
+Use&nbsp;of&nbsp;negative&nbsp;indices&nbsp;is&nbsp;not&nbsp;supported.</tt></dd></dl>
+
+<dl><dt><a name="ToDoError-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ToDoError-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#ToDoError-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
+
+<dl><dt><a name="ToDoError-__setattr__"><strong>__setattr__</strong></a>(...)</dt><dd><tt>x.<a href="#ToDoError-__setattr__">__setattr__</a>('name',&nbsp;value)&nbsp;&lt;==&gt;&nbsp;x.name&nbsp;=&nbsp;value</tt></dd></dl>
+
+<dl><dt><a name="ToDoError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ToDoError-__str__"><strong>__str__</strong></a>(...)</dt><dd><tt>x.<a href="#ToDoError-__str__">__str__</a>()&nbsp;&lt;==&gt;&nbsp;str(x)</tt></dd></dl>
+
+<dl><dt><a name="ToDoError-__unicode__"><strong>__unicode__</strong></a>(...)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+<dl><dt><strong>message</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="WheelerKiladis">class <strong>WheelerKiladis</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Wheeler-Kiladis&nbsp;diagnostics&nbsp;of&nbsp;2-D&nbsp;longitude-time&nbsp;data..<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;wheelerkiladis.py.<br>
+&nbsp;<br>
+Selected&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>data_hov</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;input&nbsp;2-D&nbsp;longitude-time&nbsp;data<br>
+&nbsp;<br>
+self.<strong>data_hovfftWK</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;2-D&nbsp;FFT&nbsp;of&nbsp;self.<strong>hov</strong>&nbsp;(complex<br>
+data,&nbsp;so&nbsp;cannot&nbsp;be&nbsp;saved&nbsp;as&nbsp;netcdf&nbsp;file)<br>
+&nbsp;<br>
+self.<strong>data_hovfftWKabs</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;magnitude&nbsp;of&nbsp;2-D&nbsp;FFT&nbsp;of<br>
+self.<strong>hov</strong><br>
+&nbsp;<br>
+self.<strong>data_hovWKfilt</strong>&nbsp;:&nbsp;inverse&nbsp;2-D&nbsp;FFT&nbsp;of&nbsp;self.<strong>hovfft</strong>,&nbsp;i.e.,&nbsp;2-D<br>
+longitude-time&nbsp;Hovmoller&nbsp;of&nbsp;wave-filtered&nbsp;data<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="WheelerKiladis-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source','var_name','level',<br>
+'basedir','filepre',&nbsp;'time1',&nbsp;'time2',&nbsp;'lat1',&nbsp;'lat2'.</tt></dd></dl>
+
+<dl><dt><a name="WheelerKiladis-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="WheelerKiladis-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="WheelerKiladis-f_fft"><strong>f_fft</strong></a>(self)</dt><dd><tt>Calculate&nbsp;2-D&nbsp;FFT&nbsp;of&nbsp;2-D&nbsp;Hovmoller.<br>
+&nbsp;<br>
+Create&nbsp;a&nbsp;2-D&nbsp;FFT&nbsp;iris&nbsp;cube&nbsp;self.<strong>data_hovfftWK</strong>&nbsp;from&nbsp;2-D<br>
+Hovmoller&nbsp;self.<strong>data_hov</strong>.&nbsp;Note&nbsp;this&nbsp;is&nbsp;an&nbsp;array&nbsp;of&nbsp;complex<br>
+numbers&nbsp;which&nbsp;cannot&nbsp;be&nbsp;saved&nbsp;to&nbsp;a&nbsp;netcdf&nbsp;file&nbsp;(but&nbsp;could&nbsp;save<br>
+real&nbsp;and&nbsp;imaginary&nbsp;parts&nbsp;separately&nbsp;if&nbsp;needed).&nbsp;So&nbsp;just&nbsp;save<br>
+the&nbsp;absolute&nbsp;values&nbsp;(magnitudes&nbsp;of&nbsp;the&nbsp;complex&nbsp;numbers)&nbsp;in<br>
+self.<strong>data_hovfftWKabs</strong>&nbsp;to&nbsp;a&nbsp;netcdf&nbsp;file&nbsp;for&nbsp;reference,&nbsp;but<br>
+retain&nbsp;the&nbsp;full&nbsp;complex&nbsp;number&nbsp;array&nbsp;for&nbsp;future&nbsp;work.<br>
+&nbsp;<br>
+Notes&nbsp;on&nbsp;ouput&nbsp;from&nbsp;np.fft.fft2&nbsp;and&nbsp;rearrangement&nbsp;of&nbsp;this<br>
+output&nbsp;here&nbsp;to&nbsp;be&nbsp;consistent&nbsp;with&nbsp;Wheeler-Kiladis&nbsp;diagrams.<br>
+&nbsp;<br>
+Input&nbsp;to&nbsp;fft2&nbsp;is&nbsp;(nt,nx)&nbsp;Hovmoller.&nbsp;We&nbsp;need&nbsp;both&nbsp;nt&nbsp;and&nbsp;nx&nbsp;to<br>
+be&nbsp;even&nbsp;for&nbsp;subsequent&nbsp;rearrangement.<br>
+&nbsp;<br>
+Output&nbsp;from&nbsp;fft2&nbsp;is&nbsp;a&nbsp;2-D&nbsp;(nt,nx)&nbsp;array.&nbsp;&nbsp;Arrangment&nbsp;of<br>
+(complex)&nbsp;coefficients&nbsp;is&nbsp;shown&nbsp;by&nbsp;the&nbsp;following.&nbsp;Because&nbsp;the<br>
+input&nbsp;to&nbsp;fft2&nbsp;is&nbsp;real,&nbsp;there&nbsp;is&nbsp;a&nbsp;symmetry&nbsp;in&nbsp;some&nbsp;of&nbsp;the<br>
+outputs.&nbsp;We&nbsp;could&nbsp;use&nbsp;rfft2&nbsp;which&nbsp;only&nbsp;outputs&nbsp;approximately<br>
+half&nbsp;the&nbsp;number&nbsp;of&nbsp;coefficients&nbsp;to&nbsp;avoid&nbsp;duplication.&nbsp;However,<br>
+the&nbsp;output&nbsp;of&nbsp;rfft2&nbsp;is&nbsp;complex,&nbsp;so&nbsp;the&nbsp;filtered&nbsp;version&nbsp;of<br>
+this&nbsp;complex&nbsp;FFT&nbsp;cannot&nbsp;be&nbsp;fed&nbsp;back&nbsp;into&nbsp;irfft2&nbsp;to&nbsp;compute&nbsp;the<br>
+inverse&nbsp;FFT&nbsp;as&nbsp;irfft2&nbsp;requires&nbsp;real&nbsp;input.&nbsp;So&nbsp;have&nbsp;to&nbsp;use&nbsp;the<br>
+full&nbsp;fft2.<br>
+&nbsp;<br>
+For&nbsp;example&nbsp;with&nbsp;nt=6&nbsp;and&nbsp;nx=8&nbsp;(and&nbsp;a&nbsp;Nyquist&nbsp;frequency&nbsp;of<br>
+harmonic&nbsp;3,&nbsp;and&nbsp;Nyquist&nbsp;wavenumber&nbsp;of&nbsp;4),&nbsp;the&nbsp;output&nbsp;of&nbsp;fft2<br>
+is:<br>
+&nbsp;<br>
+In&nbsp;the&nbsp;following&nbsp;table,&nbsp;each&nbsp;entry&nbsp;is&nbsp;(iharm,ss)&nbsp;where&nbsp;iharm<br>
+is&nbsp;iharm'th&nbsp;time&nbsp;harmonic&nbsp;and&nbsp;ss&nbsp;is&nbsp;the&nbsp;ss'th&nbsp;zonal<br>
+wavenumber.&nbsp;In&nbsp;this&nbsp;representation,&nbsp;there&nbsp;are&nbsp;only&nbsp;positive<br>
+time&nbsp;harmonics,&nbsp;but&nbsp;ss&nbsp;can&nbsp;be&nbsp;positive&nbsp;or&nbsp;negative<br>
+(corresponding&nbsp;to&nbsp;eastward&nbsp;and&nbsp;westward&nbsp;propagating&nbsp;waves).<br>
+&nbsp;<br>
+NB&nbsp;The&nbsp;values&nbsp;in&nbsp;the&nbsp;upper&nbsp;left&nbsp;quadrant&nbsp;are&nbsp;the&nbsp;complex<br>
+conjugates&nbsp;of&nbsp;the&nbsp;corresponding&nbsp;coefficients&nbsp;in&nbsp;the&nbsp;lower<br>
+right&nbsp;quadrant&nbsp;(i.e.,&nbsp;not&nbsp;actually&nbsp;identical).&nbsp;Note&nbsp;that&nbsp;the<br>
+imaginary&nbsp;parts&nbsp;of&nbsp;the&nbsp;coefficients&nbsp;correspond&nbsp;to&nbsp;a&nbsp;sine&nbsp;wave<br>
+test&nbsp;case&nbsp;sin(kx-omega&nbsp;t),&nbsp;and&nbsp;the&nbsp;real&nbsp;parts&nbsp;correspond&nbsp;to&nbsp;a<br>
+cosine&nbsp;wave&nbsp;test&nbsp;case&nbsp;cos(kx&nbsp;-omega&nbsp;t),&nbsp;so&nbsp;make&nbsp;sure&nbsp;to&nbsp;test<br>
+with&nbsp;both!<br>
+&nbsp;<br>
+Similarly&nbsp;the&nbsp;values&nbsp;in&nbsp;the&nbsp;upper&nbsp;right&nbsp;quadrant&nbsp;are&nbsp;the<br>
+complex&nbsp;conjugates&nbsp;of&nbsp;the&nbsp;corresponding&nbsp;coefficients&nbsp;in&nbsp;the<br>
+lower&nbsp;left&nbsp;quadrant.<br>
+&nbsp;<br>
+index<br>
+5,nt-1&nbsp;&nbsp;&nbsp;|&nbsp;1,0&nbsp;&nbsp;1,1&nbsp;&nbsp;1,2&nbsp;&nbsp;1,3&nbsp;&nbsp;1,4&nbsp;1,-3&nbsp;1,-2,&nbsp;1,-1<br>
+&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;2,0&nbsp;&nbsp;2,1&nbsp;&nbsp;2,2&nbsp;&nbsp;2,3&nbsp;&nbsp;2,4&nbsp;2,-3&nbsp;2,-2&nbsp;&nbsp;2,-1<br>
+3,nt/2&nbsp;&nbsp;&nbsp;|&nbsp;3,0&nbsp;&nbsp;3,1&nbsp;&nbsp;3,2&nbsp;&nbsp;3,3&nbsp;&nbsp;3,4&nbsp;3,3&nbsp;&nbsp;3,2&nbsp;&nbsp;&nbsp;3,1<br>
+&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;2,0&nbsp;&nbsp;2,-1&nbsp;2,-2&nbsp;2,-3&nbsp;2,4&nbsp;2,3&nbsp;&nbsp;2,2&nbsp;&nbsp;&nbsp;2,1<br>
+&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;1,0&nbsp;&nbsp;1,-1&nbsp;1,-2&nbsp;1,-3&nbsp;1,4&nbsp;1,3&nbsp;&nbsp;1,2&nbsp;&nbsp;&nbsp;1,1<br>
+&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;0,0&nbsp;&nbsp;0,1&nbsp;&nbsp;0,2&nbsp;&nbsp;0,3&nbsp;&nbsp;0,4&nbsp;0,3&nbsp;&nbsp;0,2&nbsp;&nbsp;&nbsp;0,1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|________________________________________<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7&nbsp;&nbsp;x&nbsp;index<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nx/2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nx-1<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;e.g.,&nbsp;1,4&nbsp;and&nbsp;1,-4&nbsp;are&nbsp;identical,&nbsp;as&nbsp;ss=4&nbsp;is&nbsp;Nyquist<br>
+wavenumber.&nbsp;Also,&nbsp;e.g.,&nbsp;3,2&nbsp;and&nbsp;3,-2&nbsp;are&nbsp;identical&nbsp;as&nbsp;iharm=3<br>
+is&nbsp;Nyquist&nbsp;harmonic.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+We&nbsp;only&nbsp;need&nbsp;the&nbsp;left-hand&nbsp;half&nbsp;of&nbsp;this&nbsp;array,&nbsp;i.e.,&nbsp;all&nbsp;the&nbsp;t<br>
+indices,&nbsp;and&nbsp;the&nbsp;x&nbsp;indices&nbsp;up&nbsp;to&nbsp;the&nbsp;Nyquist&nbsp;wavenumber&nbsp;(index<br>
+4)&nbsp;in&nbsp;this&nbsp;case.&nbsp;The&nbsp;right&nbsp;hand&nbsp;half&nbsp;is&nbsp;a&nbsp;duplication.<br>
+&nbsp;<br>
+This&nbsp;needs&nbsp;to&nbsp;be&nbsp;rearranged&nbsp;into&nbsp;a&nbsp;form&nbsp;consistent&nbsp;with&nbsp;the<br>
+Wheeler-Kiladis&nbsp;diagram,&nbsp;a&nbsp;(nt/2+1,nx+1)&nbsp;array:<br>
+&nbsp;<br>
+iharm&nbsp;&nbsp;index&nbsp;&nbsp;|&nbsp;<br>
+3,nt/2&nbsp;3,nt/2&nbsp;|&nbsp;3,4&nbsp;3,3&nbsp;&nbsp;3,2&nbsp;&nbsp;3,1&nbsp;&nbsp;3,0&nbsp;3,1&nbsp;3,2&nbsp;3,3&nbsp;3,4<br>
+&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;2,4&nbsp;2,-3&nbsp;2,-2&nbsp;2,-1&nbsp;2,0&nbsp;2,1&nbsp;2,2&nbsp;2,3&nbsp;2,4<br>
+&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;1,4&nbsp;1,-3&nbsp;1,-2&nbsp;1,-1&nbsp;1,0&nbsp;1,1&nbsp;1,2&nbsp;1,3&nbsp;1,4<br>
+&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;0,4&nbsp;0,3&nbsp;&nbsp;0,2&nbsp;&nbsp;0,1&nbsp;&nbsp;0,0&nbsp;0,1&nbsp;0,2&nbsp;0,3&nbsp;0,4<br>
+--------------|________________________________________<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ss&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-4&nbsp;-3&nbsp;&nbsp;&nbsp;-2&nbsp;&nbsp;&nbsp;-1&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;4&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-nx/2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-2&nbsp;&nbsp;&nbsp;-1&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nx/2<br>
+&nbsp;&nbsp;&nbsp;index&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;5&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;7&nbsp;&nbsp;&nbsp;8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nx/2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nx<br>
+&nbsp;<br>
+Output.&nbsp;Creates&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>data_hovfft</strong>&nbsp;:&nbsp;wavenumber-frequency&nbsp;2-D&nbsp;complex&nbsp;numpy<br>
+array&nbsp;output&nbsp;from&nbsp;np.fft.fft2.&nbsp;Shape&nbsp;(nt,nx)<br>
+&nbsp;<br>
+self.<strong>data_hovfftWK</strong>&nbsp;:&nbsp;wavenumber-frequency&nbsp;2-D&nbsp;complex&nbsp;numpy<br>
+array,&nbsp;in&nbsp;Wheeler-Kiladis&nbsp;format.&nbsp;Shape&nbsp;(nt/2&nbsp;+1,nx+1)<br>
+&nbsp;<br>
+self.<strong>data_hovfftWKabs</strong>&nbsp;:&nbsp;magnitude&nbsp;of&nbsp;data_hovfftWK.&nbsp;Hence<br>
+real.&nbsp;Stored&nbsp;as&nbsp;iris&nbsp;cube.</tt></dd></dl>
+
+<dl><dt><a name="WheelerKiladis-f_filter"><strong>f_filter</strong></a>(self)</dt><dd><tt>Filter&nbsp;the&nbsp;2-D&nbsp;Wheeler-Kiladis&nbsp;FFT&nbsp;for&nbsp;selected&nbsp;waves.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+self.&lt;wave_type&gt;&nbsp;:&nbsp;string&nbsp;describing&nbsp;wave&nbsp;type,&nbsp;from&nbsp;'none,<br>
+'EK',&nbsp;etc.<br>
+&nbsp;<br>
+self.&lt;wave_params&gt;&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;various&nbsp;parameters&nbsp;needed&nbsp;to<br>
+selected&nbsp;each&nbsp;wave&nbsp;type,&nbsp;based&nbsp;on&nbsp;wavenumber&nbsp;and<br>
+frequency.&nbsp;Bespoke&nbsp;to&nbsp;each&nbsp;wave&nbsp;type,&nbsp;and&nbsp;designed&nbsp;to&nbsp;mimic<br>
+the&nbsp;dispersion&nbsp;curves&nbsp;of&nbsp;the&nbsp;theoretical&nbsp;waves.<br>
+&nbsp;<br>
+Outputs:<br>
+&nbsp;<br>
+Sets&nbsp;attributes&nbsp;self.<strong>data_hovfftWKfilt</strong>,&nbsp;the&nbsp;filtered&nbsp;2-D&nbsp;FFT<br>
+(with&nbsp;Wheeler-Kiladis&nbsp;arrangedment&nbsp;of&nbsp;coefficients).&nbsp;Shape<br>
+(nt/2&nbsp;+1,nx+1).</tt></dd></dl>
+
+<dl><dt><a name="WheelerKiladis-f_hovmoller"><strong>f_hovmoller</strong></a>(self, mode<font color="#909090">='calculate'</font>)</dt><dd><tt>Create&nbsp;and&nbsp;write&nbsp;single&nbsp;cube&nbsp;2-D&nbsp;Hovmoller,&nbsp;or&nbsp;read&nbsp;pre-existing.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+If&nbsp;&lt;mode&gt;&nbsp;is&nbsp;'calculate',&nbsp;create&nbsp;a&nbsp;single&nbsp;cube&nbsp;2-D&nbsp;Hovmoller<br>
+self.<strong>data_hov</strong>&nbsp;from&nbsp;the&nbsp;input&nbsp;data&nbsp;between&nbsp;self.<strong>time1</strong>&nbsp;and<br>
+self.<strong>time2</strong>,&nbsp;and&nbsp;save&nbsp;to&nbsp;file.<br>
+&nbsp;<br>
+If&nbsp;&lt;mode&gt;&nbsp;is&nbsp;'read',&nbsp;read&nbsp;in&nbsp;pre-existing&nbsp;single&nbsp;cube&nbsp;2-D<br>
+Hovmoller&nbsp;self.<strong>data_hov</strong>&nbsp;from&nbsp;file.<br>
+&nbsp;<br>
+If&nbsp;&lt;mode&gt;&nbsp;is&nbsp;'analytical',&nbsp;create&nbsp;an&nbsp;analytical&nbsp;test&nbsp;Hovmoller<br>
+with&nbsp;single&nbsp;propagating&nbsp;wave.<br>
+&nbsp;<br>
+self.&lt;hovmoller_params&gt;&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;used&nbsp;to<br>
+create&nbsp;the&nbsp;Hovmoller,&nbsp;related&nbsp;to&nbsp;preparing&nbsp;it&nbsp;for&nbsp;future&nbsp;2-D<br>
+FFT.<br>
+&nbsp;<br>
+Output:<br>
+&nbsp;<br>
+Create&nbsp;attribute&nbsp;self.&lt;data_hov&gt;&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;Hovmoller&nbsp;data</tt></dd></dl>
+
+<dl><dt><a name="WheelerKiladis-f_ifft"><strong>f_ifft</strong></a>(self)</dt><dd><tt>Calculate&nbsp;inverse&nbsp;2-D&nbsp;FFT&nbsp;of&nbsp;filtered&nbsp;2-D&nbsp;Hovmoller.<br>
+&nbsp;<br>
+Input&nbsp;is&nbsp;the&nbsp;attribute&nbsp;self.<strong>data_hovfftWKfilt</strong>&nbsp;has&nbsp;the<br>
+Wheeler-Kiladis&nbsp;arrangement&nbsp;of&nbsp;coefficients,&nbsp;and&nbsp;needs&nbsp;to&nbsp;be<br>
+rearranged&nbsp;to&nbsp;the&nbsp;form&nbsp;expected&nbsp;by&nbsp;the&nbsp;numpy.fft&nbsp;routines.<br>
+&nbsp;<br>
+Then&nbsp;do&nbsp;the&nbsp;inverse&nbsp;2-D&nbsp;FFT.<br>
+&nbsp;<br>
+Outputs.&nbsp;Sets&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>data_hovfftfilt</strong>.&nbsp;This&nbsp;is&nbsp;self.<strong>data_hovfftWKfilt</strong>&nbsp;with<br>
+coefficients&nbsp;rearranged&nbsp;to&nbsp;the&nbsp;form&nbsp;expected&nbsp;by&nbsp;the&nbsp;numpy.fft<br>
+routines.&nbsp;Shape&nbsp;(nt,nx)</tt></dd></dl>
+
+<dl><dt><a name="WheelerKiladis-fft2_WK_to_numpy"><strong>fft2_WK_to_numpy</strong></a>(self, x1)</dt><dd><tt>Rearrange&nbsp;2D&nbsp;FFT&nbsp;from&nbsp;Wheeler-Kiladis&nbsp;format&nbsp;to&nbsp;numpy.fft2&nbsp;format.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+&lt;x1&gt;&nbsp;:&nbsp;numpy&nbsp;array,&nbsp;2D&nbsp;FFT&nbsp;in&nbsp;Wheeler-Kiladis&nbsp;format.<br>
+&nbsp;<br>
+Output:<br>
+&nbsp;<br>
+&lt;x2&gt;&nbsp;:&nbsp;numpy&nbsp;array,&nbsp;rearranged&nbsp;version&nbsp;of&nbsp;&lt;x1&gt;,&nbsp;in&nbsp;same&nbsp;format<br>
+that&nbsp;numpy.fft2&nbsp;delivers.</tt></dd></dl>
+
+<dl><dt><a name="WheelerKiladis-fft2_numpy_to_WK"><strong>fft2_numpy_to_WK</strong></a>(self, x1)</dt><dd><tt>Rearrange&nbsp;output&nbsp;of&nbsp;fft2&nbsp;into&nbsp;Wheeler-Kiladis&nbsp;format.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+&lt;x1&gt;&nbsp;:&nbsp;numpy&nbsp;array,&nbsp;output&nbsp;from&nbsp;numpy.fft.fft2.&nbsp;Shape(nt,nx)<br>
+&nbsp;<br>
+Output:<br>
+&nbsp;<br>
+&lt;x2&gt;&nbsp;:&nbsp;numpy&nbsp;array,&nbsp;'rearranged'&nbsp;version&nbsp;of&nbsp;&lt;x1&gt;,&nbsp;not&nbsp;same<br>
+size.&nbsp;Shape&nbsp;(nt/2&nbsp;+1,nx+1).</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Wind">class <strong>Wind</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Create&nbsp;a&nbsp;<a href="#Wind">Wind</a>&nbsp;<a href="__builtin__.html#object">object</a>.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;wind.py.<br>
+&nbsp;<br>
+Wrapper&nbsp;for&nbsp;windspharm&nbsp;VectorWind&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;to&nbsp;handle&nbsp;file&nbsp;i/o.<br>
+&nbsp;<br>
+Attributes&nbsp;(following&nbsp;VectorWind):<br>
+&nbsp;<br>
+self.<strong>uwnd</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;u&nbsp;wind<br>
+self.<strong>vwnd</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;v&nbsp;wind<br>
+self.<strong>psi</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;streamfunction<br>
+self.<strong>chi</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;velocity&nbsp;potential<br>
+self.<strong>vrt</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;relative&nbsp;vorticity<br>
+self.<strong>div</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;divergence<br>
+self.<strong>wndspd</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;wind&nbsp;speed<br>
+self.<strong>uwndchi</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;eastward&nbsp;component&nbsp;of&nbsp;irrotational&nbsp;wind<br>
+self.<strong>vwndchi</strong>&nbsp;:&nbsp;iris&nbsp;cube&nbsp;of&nbsp;northward&nbsp;component&nbsp;of&nbsp;irrotational&nbsp;wind<br>
+&nbsp;<br>
+self.<strong>flag_psi</strong>&nbsp;:&nbsp;Boolean&nbsp;flag&nbsp;to&nbsp;compute&nbsp;streamfunction<br>
+or&nbsp;not.<br>
+&nbsp;<br>
+Similarly,&nbsp;self.<strong>flag_chi</strong>,&nbsp;self.<strong>flag_vrt</strong>,&nbsp;self.<strong>flag_div</strong>,&nbsp;etc.<br>
+&nbsp;<br>
+self.<strong>subdir</strong>&nbsp;:&nbsp;'std',&nbsp;data&nbsp;has&nbsp;time&nbsp;dimension.&nbsp;Process&nbsp;for&nbsp;each&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'processed',&nbsp;data&nbsp;is&nbsp;time-invariant,&nbsp;e.g.,&nbsp;time&nbsp;mean<br>
+&nbsp;<br>
+self.<strong>file_data</strong>&nbsp;:&nbsp;path&nbsp;name&nbsp;for&nbsp;file(s)&nbsp;of&nbsp;input&nbsp;data.&nbsp;if&nbsp;If&nbsp;input<br>
+data&nbsp;has&nbsp;a&nbsp;time&nbsp;dimension,&nbsp;contains&nbsp;a&nbsp;wild&nbsp;card&nbsp;*&nbsp;character,&nbsp;which<br>
+will&nbsp;be&nbsp;replaced&nbsp;by,&nbsp;e.g.,&nbsp;year&nbsp;numbers&nbsp;(if&nbsp;self.<strong>outfile_frequency</strong><br>
+is&nbsp;'year').&nbsp;&nbsp;Contains&nbsp;a&nbsp;dummy&nbsp;string'VARNAME'&nbsp;to&nbsp;be&nbsp;replaced&nbsp;by<br>
+'uwnd',&nbsp;'vwnd',&nbsp;'psi',&nbsp;etc.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Wind-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','source','level',<br>
+'basedir','subdir','filepre',<br>
+'flag_psi','flag_chi','flag_vrt','flag_div',<br>
+'flag_windspd',&nbsp;'flag_uchi',&nbsp;'flag_vchi'</tt></dd></dl>
+
+<dl><dt><a name="Wind-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Wind-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Wind-f_wind"><strong>f_wind</strong></a>(self)</dt><dd><tt>Calculate&nbsp;and&nbsp;save&nbsp;streamfunction&nbsp;etc.<br>
+&nbsp;<br>
+windspharm&nbsp;methods&nbsp;always&nbsp;return&nbsp;output&nbsp;with&nbsp;latitude&nbsp;running<br>
+from&nbsp;north&nbsp;to&nbsp;south.&nbsp;&nbsp;If&nbsp;input&nbsp;data&nbsp;runs&nbsp;south&nbsp;to&nbsp;north,<br>
+switch&nbsp;the&nbsp;output&nbsp;data&nbsp;to&nbsp;also&nbsp;run&nbsp;from&nbsp;south&nbsp;to&nbsp;north,&nbsp;with<br>
+lat_direction.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="XYGrid">class <strong>XYGrid</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Regularly&nbsp;spaced&nbsp;2-d&nbsp;rectangular&nbsp;grid.<br>
+&nbsp;<br>
+Basic&nbsp;grid&nbsp;is&nbsp;initially&nbsp;an&nbsp;empty&nbsp;(zeroes)&nbsp;2-d&nbsp;numpy&nbsp;array.&nbsp;&nbsp;Populate<br>
+the&nbsp;grid&nbsp;with&nbsp;numbers&nbsp;externally.<br>
+&nbsp;<br>
+Two&nbsp;alternative&nbsp;sets&nbsp;of&nbsp;axes&nbsp;are&nbsp;used:&nbsp;(x,y)&nbsp;and&nbsp;(lon,lat).&nbsp;&nbsp;All<br>
+calculations&nbsp;on&nbsp;the&nbsp;grid&nbsp;are&nbsp;done&nbsp;using&nbsp;the&nbsp;(x,y)&nbsp;axes.&nbsp;&nbsp;The<br>
+(lon,lat)&nbsp;axes&nbsp;are&nbsp;only&nbsp;for&nbsp;presentational&nbsp;purposes.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;<br>
+self.<strong>nx</strong>=self.<strong>nlon</strong>,&nbsp;self.<strong>ny</strong>=self.<strong>nlat</strong>&nbsp;:&nbsp;integer&nbsp;number&nbsp;of&nbsp;grid<br>
+points&nbsp;in&nbsp;x&nbsp;and&nbsp;y&nbsp;directions.<br>
+&nbsp;<br>
+self.<strong>deltax</strong>,&nbsp;self.<strong>deltay</strong>&nbsp;:&nbsp;float&nbsp;spacing&nbsp;for&nbsp;x&nbsp;and&nbsp;y&nbsp;grid&nbsp;points<br>
+&nbsp;<br>
+self.<strong>deltalon</strong>,&nbsp;self.<strong>deltalat</strong>&nbsp;:&nbsp;equivalent&nbsp;float&nbsp;spacing&nbsp;for&nbsp;lon<br>
+and&nbsp;lat&nbsp;grid&nbsp;points<br>
+&nbsp;<br>
+self.<strong>x1</strong>,&nbsp;self.<strong>y1</strong>&nbsp;:&nbsp;float&nbsp;values&nbsp;of&nbsp;first&nbsp;points&nbsp;on&nbsp;x&nbsp;and&nbsp;y&nbsp;axes<br>
+&nbsp;<br>
+self.<strong>lon1</strong>,&nbsp;self.<strong>lat1</strong>&nbsp;:&nbsp;equivalent&nbsp;float&nbsp;values&nbsp;of&nbsp;first&nbsp;points&nbsp;on<br>
+lon&nbsp;and&nbsp;lat&nbsp;axes<br>
+&nbsp;<br>
+self.<strong>xaxis</strong>,&nbsp;self.<strong>yaxis</strong>&nbsp;:&nbsp;numpy&nbsp;arrays&nbsp;of&nbsp;x&nbsp;and&nbsp;y&nbsp;values<br>
+&nbsp;<br>
+self.<strong>lonaxis</strong>,&nbsp;self.<strong>lataxis</strong>&nbsp;:&nbsp;equivalent&nbsp;numpy&nbsp;arrays&nbsp;of&nbsp;lon&nbsp;and<br>
+lat&nbsp;values<br>
+&nbsp;<br>
+self.<strong>xperiodic</strong>,&nbsp;self.<strong>yperiodic</strong>&nbsp;:&nbsp;Boolean&nbsp;flags&nbsp;for&nbsp;whether&nbsp;x&nbsp;and&nbsp;y<br>
+axes&nbsp;are&nbsp;periodic&nbsp;(wrapping&nbsp;around).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="XYGrid-__init__"><strong>__init__</strong></a>(self, **descriptor)</dt><dd><tt>Initialise&nbsp;from&nbsp;descriptor&nbsp;dictionary.<br>
+&nbsp;<br>
+Compulsory&nbsp;keywords:&nbsp;'verbose','var_name','nx','ny','type_init',<br>
+'units','xperiodic','yperiodic'.<br>
+&nbsp;<br>
+Optional&nbsp;keywords:&nbsp;['deltalon','deltalat','lon1','lat1']&nbsp;or<br>
+['deltax','deltay','x1','y1'].</tt></dd></dl>
+
+<dl><dt><a name="XYGrid-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="XYGrid-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="XYGrid-create_lonlat_cube"><strong>create_lonlat_cube</strong></a>(self)</dt><dd><tt>Create&nbsp;iris&nbsp;cube&nbsp;from&nbsp;lon-lat&nbsp;grid.<br>
+&nbsp;<br>
+Creates&nbsp;attribute&nbsp;self.<strong>lonlat_cube</strong>.</tt></dd></dl>
+
+<dl><dt><a name="XYGrid-create_xy_cube"><strong>create_xy_cube</strong></a>(self)</dt><dd><tt>Create&nbsp;iris&nbsp;cube&nbsp;from&nbsp;x-y&nbsp;grid.<br>
+&nbsp;<br>
+Creates&nbsp;attribute&nbsp;self.<strong>xy_cube</strong>.</tt></dd></dl>
+
+<dl><dt><a name="XYGrid-x_gradient"><strong>x_gradient</strong></a>(self)</dt><dd><tt>Calculate&nbsp;x-gradient&nbsp;of&nbsp;self.<strong>grid</strong>.<br>
+&nbsp;<br>
+Creates&nbsp;attribute&nbsp;self.<strong>x_gradient</strong>.</tt></dd></dl>
+
+<dl><dt><a name="XYGrid-y_gradient"><strong>y_gradient</strong></a>(self)</dt><dd><tt>Calculate&nbsp;y-gradient&nbsp;of&nbsp;self.<strong>grid</strong>.<br>
+&nbsp;<br>
+Creates&nbsp;attribute&nbsp;self.<strong>y_gradient</strong>.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-archive_file"><strong>archive_file</strong></a>(aa, filein)</dt><dd><tt>Archive&nbsp;file.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+&lt;aa&gt;&nbsp;:&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;string&nbsp;attributes&nbsp;basedir&nbsp;and&nbsp;basedir_archive<br>
+&nbsp;<br>
+&lt;filein&gt;&nbsp;:&nbsp;string&nbsp;of&nbsp;filename&nbsp;(full&nbsp;pathname)&nbsp;to&nbsp;be&nbsp;archived.&nbsp;filein&nbsp;string&nbsp;must&nbsp;begin&nbsp;with&nbsp;aa.basedir<br>
+&nbsp;<br>
+Copy&nbsp;(archive)&nbsp;filein&nbsp;to&nbsp;same&nbsp;file&nbsp;structure,&nbsp;but&nbsp;under&nbsp;aa.basedir_archive</tt></dd></dl>
+ <dl><dt><a name="-block_times"><strong>block_times</strong></a>(aa, verbose<font color="#909090">=False</font>)</dt><dd><tt>Set&nbsp;start&nbsp;and&nbsp;end&nbsp;times&nbsp;for&nbsp;current&nbsp;block.<br>
+&nbsp;<br>
+Input&nbsp;&lt;aa&gt;&nbsp;is&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;the&nbsp;following&nbsp;attributes:<br>
+&nbsp;<br>
+outfile_frequency:&nbsp;&nbsp;e.g.,&nbsp;'year'&nbsp;or&nbsp;'month'<br>
+year:&nbsp;integer&nbsp;for&nbsp;current&nbsp;year,&nbsp;e.g.,&nbsp;2016<br>
+month:&nbsp;integer&nbsp;for&nbsp;current&nbsp;month,&nbsp;in&nbsp;range&nbsp;1&nbsp;to&nbsp;12.<br>
+&nbsp;<br>
+Returns&nbsp;time,time2&nbsp;which&nbsp;are&nbsp;datetime.datetime&nbsp;objects&nbsp;(if<br>
+aa.calendar&nbsp;is&nbsp;'gregorian')&nbsp;or&nbsp;cftime.Datetime360Day&nbsp;objects&nbsp;(if<br>
+aa.calendar&nbsp;is&nbsp;'360_day')&nbsp;for&nbsp;the&nbsp;start&nbsp;and&nbsp;end&nbsp;times&nbsp;for&nbsp;the<br>
+current&nbsp;block.&nbsp;&nbsp;These&nbsp;are&nbsp;then&nbsp;typically&nbsp;used&nbsp;to&nbsp;create&nbsp;an&nbsp;iris<br>
+constraint&nbsp;on&nbsp;time&nbsp;for&nbsp;extracting&nbsp;data.<br>
+&nbsp;<br>
+If&nbsp;outfile_frequency&nbsp;is&nbsp;'year',&nbsp;start&nbsp;and&nbsp;end&nbsp;times&nbsp;are&nbsp;00&nbsp;UTC&nbsp;on<br>
+1&nbsp;Jan&nbsp;of&nbsp;current&nbsp;year,&nbsp;and&nbsp;1&nbsp;second&nbsp;before&nbsp;00&nbsp;UTC&nbsp;on&nbsp;1&nbsp;Jan&nbsp;the<br>
+following&nbsp;year.<br>
+&nbsp;<br>
+If&nbsp;outfile_frequency&nbsp;is&nbsp;'month',&nbsp;start&nbsp;and&nbsp;end&nbsp;times&nbsp;are&nbsp;00&nbsp;UTC&nbsp;on<br>
+1st&nbsp;of&nbsp;current&nbsp;month&nbsp;and&nbsp;year,&nbsp;and&nbsp;1&nbsp;second&nbsp;before&nbsp;00&nbsp;UTC&nbsp;on&nbsp;1st<br>
+of&nbsp;the&nbsp;following&nbsp;month.</tt></dd></dl>
+ <dl><dt><a name="-change_time_stamp_from_12_to_00"><strong>change_time_stamp_from_12_to_00</strong></a>(self, verbose<font color="#909090">=False</font>)</dt><dd><tt>Time&nbsp;stamp&nbsp;is&nbsp;at&nbsp;12&nbsp;UTC.&nbsp;Change&nbsp;to&nbsp;00&nbsp;UTC&nbsp;by&nbsp;subtracting&nbsp;0.5&nbsp;(days).</tt></dd></dl>
+ <dl><dt><a name="-clean_callback"><strong>clean_callback</strong></a>(cube, field, filename)</dt><dd><tt>Deletes&nbsp;many&nbsp;attributes&nbsp;on&nbsp;iris&nbsp;load.<br>
+&nbsp;<br>
+Problem.&nbsp;&nbsp;iris&nbsp;concatenate&nbsp;and&nbsp;merge&nbsp;(to&nbsp;create&nbsp;a&nbsp;single&nbsp;cube&nbsp;from<br>
+a&nbsp;cube&nbsp;list)&nbsp;is&nbsp;very&nbsp;picky&nbsp;and&nbsp;will&nbsp;fail&nbsp;if&nbsp;there&nbsp;are&nbsp;any<br>
+mismatching&nbsp;metadata&nbsp;between&nbsp;the&nbsp;cubes.&nbsp;&nbsp;This&nbsp;function&nbsp;removes<br>
+attributes&nbsp;from&nbsp;the&nbsp;time&nbsp;coordinate&nbsp;and&nbsp;basic&nbsp;metadata&nbsp;that<br>
+typically&nbsp;fall&nbsp;foul&nbsp;of&nbsp;this.&nbsp;&nbsp;These&nbsp;attributes&nbsp;are&nbsp;not&nbsp;useful<br>
+anyway.<br>
+&nbsp;<br>
+Data&nbsp;providers&nbsp;(such&nbsp;as&nbsp;NOAA)&nbsp;sometimes&nbsp;change&nbsp;the&nbsp;attributes<br>
+(trivially)&nbsp;in&nbsp;the&nbsp;middle&nbsp;of&nbsp;their&nbsp;data&nbsp;sets,&nbsp;so&nbsp;these&nbsp;all&nbsp;need&nbsp;to<br>
+be&nbsp;stripped&nbsp;out.<br>
+&nbsp;<br>
+Ideally,&nbsp;this&nbsp;clean&nbsp;callback&nbsp;will&nbsp;only&nbsp;be&nbsp;used&nbsp;in&nbsp;preprocess.py,<br>
+and&nbsp;all&nbsp;subsequent&nbsp;analysis&nbsp;will&nbsp;not&nbsp;need&nbsp;it.&nbsp;&nbsp;Hence&nbsp;attributes<br>
+that&nbsp;are&nbsp;built&nbsp;up&nbsp;during&nbsp;analysis&nbsp;will&nbsp;be&nbsp;self-consistent&nbsp;and&nbsp;will<br>
+not&nbsp;need&nbsp;removing.<br>
+&nbsp;<br>
+Usage:&nbsp;as&nbsp;an&nbsp;argument&nbsp;in&nbsp;iris&nbsp;load&nbsp;&nbsp;(...,callback=clean_callback).</tt></dd></dl>
+ <dl><dt><a name="-compare_cube_attributes"><strong>compare_cube_attributes</strong></a>(cube1, cube2)</dt><dd><tt>Compare&nbsp;attributes&nbsp;of&nbsp;two&nbsp;cubes&nbsp;and&nbsp;find&nbsp;any&nbsp;non&nbsp;matches.</tt></dd></dl>
+ <dl><dt><a name="-concatenate_cube"><strong>concatenate_cube</strong></a>(cubelist)</dt><dd><tt>concatenate_cube&nbsp;cube&nbsp;list&nbsp;when&nbsp;one&nbsp;cube&nbsp;has&nbsp;singleton&nbsp;time&nbsp;dimension.<br>
+&nbsp;<br>
+Input&nbsp;is&nbsp;&lt;cubelist&gt;,&nbsp;an&nbsp;iris&nbsp;CubeList<br>
+&nbsp;<br>
+Output&nbsp;is&nbsp;&lt;cube&gt;,&nbsp;a&nbsp;concatenate_cube'd&nbsp;version&nbsp;of&nbsp;&lt;cubelist&gt;<br>
+&nbsp;<br>
+The&nbsp;problem:&nbsp;If&nbsp;a&nbsp;cube&nbsp;list&nbsp;contains&nbsp;a&nbsp;cube&nbsp;that&nbsp;has&nbsp;a&nbsp;singleton<br>
+time&nbsp;coordinate,&nbsp;then&nbsp;iris&nbsp;will&nbsp;have&nbsp;relegated&nbsp;that&nbsp;time<br>
+coordinate&nbsp;to&nbsp;a&nbsp;scalar&nbsp;coordinate&nbsp;when&nbsp;it&nbsp;extracted&nbsp;the&nbsp;cube.&nbsp;&nbsp;The<br>
+other&nbsp;cubes&nbsp;will&nbsp;have&nbsp;time&nbsp;coordinates&nbsp;as&nbsp;dimension&nbsp;coordinates.<br>
+If&nbsp;the&nbsp;cubelist&nbsp;concatenate_cube&nbsp;method&nbsp;is&nbsp;used,&nbsp;it&nbsp;will&nbsp;fail&nbsp;because<br>
+of&nbsp;this&nbsp;mismatch&nbsp;of&nbsp;dimensions.<br>
+&nbsp;<br>
+Example:<br>
+x1=iris.load('uwnd_200_????.nc')&nbsp;#&nbsp;Load&nbsp;data&nbsp;stored&nbsp;in&nbsp;single&nbsp;file&nbsp;per&nbsp;year<br>
+time1=datetime.datetime(1994,12,31)<br>
+time2=datetime.datetime(1995,1,6)<br>
+time_constraint=iris.Constraint(time=lambda&nbsp;cell:&nbsp;time1&lt;=cell&lt;=time2)<br>
+x3=x2.<a href="#-concatenate_cube">concatenate_cube</a>()<br>
+&nbsp;<br>
+x2&nbsp;is&nbsp;a&nbsp;cube&nbsp;list&nbsp;containing&nbsp;two&nbsp;cubes.&nbsp;&nbsp;The&nbsp;first&nbsp;cube&nbsp;only&nbsp;has<br>
+one&nbsp;time&nbsp;(31&nbsp;Dec&nbsp;1994)&nbsp;and&nbsp;the&nbsp;time&nbsp;coordinate&nbsp;will&nbsp;have&nbsp;been<br>
+relegated&nbsp;to&nbsp;a&nbsp;scalar&nbsp;coordinate&nbsp;by&nbsp;the&nbsp;extract&nbsp;method.&nbsp;&nbsp;The<br>
+second&nbsp;cube&nbsp;has&nbsp;6&nbsp;time&nbsp;values&nbsp;(1-6&nbsp;Jan&nbsp;1995)&nbsp;and&nbsp;its&nbsp;time<br>
+coordinate&nbsp;will&nbsp;be&nbsp;a&nbsp;dimension&nbsp;coordinate.&nbsp;&nbsp;The<br>
+x2.<a href="#-concatenate_cube">concatenate_cube</a>()&nbsp;will&nbsp;then&nbsp;fail.<br>
+&nbsp;<br>
+Solution:&nbsp;Wherever&nbsp;this&nbsp;is&nbsp;likely&nbsp;to&nbsp;happen,&nbsp;replace&nbsp;the&nbsp;standard<br>
+cube&nbsp;list&nbsp;concatenate_cube&nbsp;method,&nbsp;i.e.,&nbsp;in&nbsp;the&nbsp;example&nbsp;above,<br>
+replace<br>
+&nbsp;<br>
+x3=x2.<a href="#-concatenate_cube">concatenate_cube</a>()&nbsp;<br>
+&nbsp;<br>
+with&nbsp;a&nbsp;call&nbsp;to&nbsp;this&nbsp;function:<br>
+&nbsp;<br>
+x3=<a href="#-concatenate_cube">concatenate_cube</a>(x2)<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;uses&nbsp;iris.util.new_axis()&nbsp;to&nbsp;promote&nbsp;the&nbsp;singleton<br>
+scalar&nbsp;time&nbsp;coordinate&nbsp;to&nbsp;a&nbsp;dimension&nbsp;coordinate.&nbsp;&nbsp;The&nbsp;cubes&nbsp;can<br>
+then&nbsp;be&nbsp;concatenate_cube'd&nbsp;using&nbsp;the&nbsp;standard&nbsp;cube&nbsp;list<br>
+concatenate_cube&nbsp;method.</tt></dd></dl>
+ <dl><dt><a name="-conv_float32"><strong>conv_float32</strong></a>(old_array)</dt><dd><tt>Convert&nbsp;a&nbsp;numpy&nbsp;array&nbsp;type&nbsp;to&nbsp;float32&nbsp;('single&nbsp;precision').<br>
+&nbsp;<br>
+Default&nbsp;numpy&nbsp;array&nbsp;type&nbsp;is&nbsp;float64&nbsp;(64&nbsp;bit,&nbsp;or&nbsp;'double<br>
+precision').&nbsp;&nbsp;This&nbsp;leads&nbsp;to&nbsp;a&nbsp;doubling&nbsp;of&nbsp;disk&nbsp;space&nbsp;needed&nbsp;to<br>
+store&nbsp;data,&nbsp;compared&nbsp;to&nbsp;float32&nbsp;(32&nbsp;bit,&nbsp;'single&nbsp;precision'),&nbsp;with<br>
+only&nbsp;spurious&nbsp;increase&nbsp;in&nbsp;precision.<br>
+&nbsp;<br>
+It&nbsp;is&nbsp;not&nbsp;a&nbsp;problem&nbsp;having&nbsp;float64&nbsp;type&nbsp;numbers&nbsp;in&nbsp;memory,&nbsp;only<br>
+when&nbsp;they&nbsp;are&nbsp;written&nbsp;to&nbsp;disk.&nbsp;&nbsp;Hence,&nbsp;just&nbsp;call&nbsp;this&nbsp;function&nbsp;as<br>
+a&nbsp;final&nbsp;wrapper&nbsp;for&nbsp;a&nbsp;numpy&nbsp;array&nbsp;that&nbsp;is&nbsp;about&nbsp;to&nbsp;be&nbsp;converted&nbsp;to<br>
+an&nbsp;iris&nbsp;cube.&nbsp;&nbsp;Do&nbsp;not&nbsp;bother&nbsp;with&nbsp;all&nbsp;the&nbsp;previous&nbsp;intermediate<br>
+steps,&nbsp;as&nbsp;float64&nbsp;is&nbsp;insidious&nbsp;and&nbsp;can&nbsp;easily&nbsp;creep&nbsp;back&nbsp;into&nbsp;to<br>
+your&nbsp;arrays&nbsp;somewhere.<br>
+&nbsp;<br>
+Input:&nbsp;old_array&nbsp;should&nbsp;be&nbsp;a&nbsp;numpy&nbsp;array.<br>
+&nbsp;<br>
+Returns&nbsp;new_array,&nbsp;a&nbsp;numpy&nbsp;array&nbsp;of&nbsp;type&nbsp;float32.</tt></dd></dl>
+ <dl><dt><a name="-create_Datetime360Day"><strong>create_Datetime360Day</strong></a>(time1)</dt><dd><tt>Return&nbsp;a&nbsp;cftime.Datetime360Day&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;from&nbsp;a&nbsp;datetime&nbsp;like&nbsp;<a href="__builtin__.html#object">object</a>.<br>
+&nbsp;<br>
+Input:&nbsp;&lt;time1&gt;&nbsp;a&nbsp;datetime&nbsp;like&nbsp;<a href="__builtin__.html#object">object</a>,&nbsp;e.g.,&nbsp;a&nbsp;datetime.datetime<br>
+or&nbsp;cftime.Datetime360Day&nbsp;<a href="__builtin__.html#object">object</a>,&nbsp;or&nbsp;False.</tt></dd></dl>
+ <dl><dt><a name="-create_counter_from_mask"><strong>create_counter_from_mask</strong></a>(cube_in, verbose<font color="#909090">=False</font>)</dt><dd><tt>Create&nbsp;counter&nbsp;array&nbsp;based&nbsp;on&nbsp;data&nbsp;mask.<br>
+&nbsp;<br>
+Input:<br>
+&nbsp;<br>
+cube_in:&nbsp;input&nbsp;iris&nbsp;cube.<br>
+&nbsp;<br>
+Outputs:<br>
+&nbsp;<br>
+counter:&nbsp;numpy&nbsp;array&nbsp;with&nbsp;same&nbsp;shape&nbsp;as&nbsp;cube_in.&nbsp;&nbsp;Filled&nbsp;with&nbsp;1s<br>
+and&nbsp;0s:&nbsp;1&nbsp;if&nbsp;the&nbsp;relevant&nbsp;value&nbsp;of&nbsp;cube_in&nbsp;exists,&nbsp;0&nbsp;if&nbsp;it&nbsp;does<br>
+not&nbsp;(i.e.,&nbsp;is&nbsp;masked).<br>
+&nbsp;<br>
+cube_out:&nbsp;output&nbsp;iris&nbsp;cube&nbsp;with&nbsp;same&nbsp;shape&nbsp;as&nbsp;cube_in.&nbsp;Filled&nbsp;with<br>
+mixture&nbsp;of&nbsp;data&nbsp;values&nbsp;and&nbsp;0s:&nbsp;data&nbsp;value&nbsp;if&nbsp;the&nbsp;relevant&nbsp;value&nbsp;of<br>
+cube_in&nbsp;exists,&nbsp;0&nbsp;if&nbsp;it&nbsp;does&nbsp;not&nbsp;(i.e.,&nbsp;is&nbsp;masked).</tt></dd></dl>
+ <dl><dt><a name="-create_cube"><strong>create_cube</strong></a>(array, oldcube, new_axis<font color="#909090">=False</font>, new_var_name<font color="#909090">=False</font>)</dt><dd><tt>Create&nbsp;an&nbsp;iris&nbsp;cube&nbsp;from&nbsp;a&nbsp;numpy&nbsp;array&nbsp;and&nbsp;attributes&nbsp;from&nbsp;an&nbsp;old&nbsp;cube.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+&lt;array&gt;&nbsp;must&nbsp;be&nbsp;a&nbsp;numpy&nbsp;array.<br>
+&nbsp;<br>
+&lt;oldcube&gt;&nbsp;&nbsp;must&nbsp;be&nbsp;an&nbsp;iris&nbsp;cube.<br>
+&nbsp;<br>
+&lt;new_axis&gt;&nbsp;is&nbsp;either&nbsp;False,&nbsp;or&nbsp;an&nbsp;iris&nbsp;cube&nbsp;axis&nbsp;(e.g.,&nbsp;a&nbsp;time&nbsp;axis).<br>
+&nbsp;<br>
+&lt;new_var_name&gt;&nbsp;is&nbsp;either&nbsp;False,&nbsp;or&nbsp;a&nbsp;string&nbsp;variable&nbsp;name,&nbsp;e.g.,&nbsp;'psi'<br>
+&nbsp;<br>
+Output:<br>
+&nbsp;<br>
+&lt;newcube&gt;&nbsp;is&nbsp;an&nbsp;iris&nbsp;cube&nbsp;of&nbsp;the&nbsp;same&nbsp;shape&nbsp;as&nbsp;&lt;array&gt;<br>
+&nbsp;<br>
+Usage:<br>
+&nbsp;<br>
+If&nbsp;&lt;new_axis&gt;&nbsp;is&nbsp;False&nbsp;then&nbsp;array&nbsp;and&nbsp;oldcube&nbsp;must&nbsp;have&nbsp;the&nbsp;same<br>
+shape&nbsp;and&nbsp;dimensions.&nbsp;&nbsp;&lt;newcube&gt;&nbsp;is&nbsp;then&nbsp;simply&nbsp;an&nbsp;iris&nbsp;cube<br>
+created&nbsp;from&nbsp;&lt;array&gt;&nbsp;and&nbsp;the&nbsp;coordinate&nbsp;axes&nbsp;and&nbsp;attributes&nbsp;of<br>
+&lt;oldcube&gt;.<br>
+&nbsp;<br>
+If&nbsp;&lt;new_axis&gt;&nbsp;is&nbsp;an&nbsp;iris&nbsp;cube&nbsp;axis&nbsp;(e.g.,&nbsp;a&nbsp;time&nbsp;axis),&nbsp;then<br>
+&lt;array&gt;&nbsp;and&nbsp;&lt;oldcube&gt;&nbsp;must&nbsp;have&nbsp;the&nbsp;same&nbsp;number&nbsp;of&nbsp;dimensions,&nbsp;but<br>
+one&nbsp;of&nbsp;the&nbsp;axes&nbsp;(the&nbsp;one&nbsp;that&nbsp;will&nbsp;correspond&nbsp;to&nbsp;&lt;new_axis&gt;)&nbsp;can<br>
+be&nbsp;a&nbsp;different&nbsp;length.&nbsp;&nbsp;For&nbsp;example,&nbsp;&lt;array&gt;&nbsp;could&nbsp;have&nbsp;shape<br>
+(30,73,144),&nbsp;&lt;oldcube&gt;&nbsp;could&nbsp;have&nbsp;shape&nbsp;(365,73,144)&nbsp;with<br>
+dimensions&nbsp;of&nbsp;time,latitude,longitude,&nbsp;and&nbsp;&lt;new_axis&gt;&nbsp;would&nbsp;be&nbsp;a<br>
+time&nbsp;axis&nbsp;of&nbsp;length&nbsp;30.&nbsp;&nbsp;&lt;newcube&gt;&nbsp;would&nbsp;then&nbsp;be&nbsp;a&nbsp;cube&nbsp;with&nbsp;data<br>
+from&nbsp;&lt;array&gt;,&nbsp;the&nbsp;time&nbsp;axis&nbsp;of&nbsp;&lt;new_axis&gt;&nbsp;and&nbsp;latitude&nbsp;and<br>
+longitude&nbsp;axes&nbsp;from&nbsp;&lt;oldcube&gt;,&nbsp;plus&nbsp;all&nbsp;the&nbsp;attributes&nbsp;of<br>
+&lt;oldcube&gt;.<br>
+&nbsp;<br>
+If&nbsp;&lt;new_var_name&gt;&nbsp;is&nbsp;False,&nbsp;the&nbsp;new&nbsp;cube&nbsp;has&nbsp;the&nbsp;same&nbsp;name&nbsp;as&nbsp;the<br>
+old&nbsp;cube,&nbsp;otherwise&nbsp;it&nbsp;is&nbsp;renamed.</tt></dd></dl>
+ <dl><dt><a name="-create_datetime"><strong>create_datetime</strong></a>(time1)</dt><dd><tt>Return&nbsp;a&nbsp;datetime.datetime&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;from&nbsp;a&nbsp;datetime&nbsp;like&nbsp;<a href="__builtin__.html#object">object</a>.<br>
+&nbsp;<br>
+Input:&nbsp;&lt;time1&gt;&nbsp;a&nbsp;datetime&nbsp;like&nbsp;<a href="__builtin__.html#object">object</a>,&nbsp;e.g.,&nbsp;a&nbsp;datetime.datetime<br>
+or&nbsp;cftime.Datetime360Day&nbsp;<a href="__builtin__.html#object">object</a>,&nbsp;or&nbsp;False.</tt></dd></dl>
+ <dl><dt><a name="-cube_section"><strong>cube_section</strong></a>(cube_in, xdat, ydat, verbose<font color="#909090">=False</font>)</dt><dd><tt>Calculate&nbsp;an&nbsp;irregular&nbsp;section&nbsp;through&nbsp;a&nbsp;cube.<br>
+&nbsp;<br>
+Called&nbsp;from&nbsp;e.g.,&nbsp;curved_section.py<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+cube_in:&nbsp;input&nbsp;iris&nbsp;cube<br>
+&nbsp;<br>
+xdat,ydat&nbsp;:&nbsp;2-tuples.&nbsp;&nbsp;First&nbsp;element&nbsp;is&nbsp;string&nbsp;of&nbsp;coordinate&nbsp;name.<br>
+Second&nbsp;element&nbsp;is&nbsp;list&nbsp;of&nbsp;coordinate&nbsp;values.&nbsp;&nbsp;Both&nbsp;coordinate<br>
+names&nbsp;must&nbsp;be&nbsp;coordinates&nbsp;of&nbsp;cube_in.<br>
+&nbsp;<br>
+e.g.,&nbsp;xdat&nbsp;is&nbsp;('longitude',[4.3,&nbsp;5.7,&nbsp;6.1])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ydat&nbsp;is&nbsp;('latitude',&nbsp;[13.1,&nbsp;12.6,&nbsp;5.6])<br>
+&nbsp;<br>
+Outputs:<br>
+&nbsp;<br>
+cube_out:&nbsp;iris&nbsp;cube,&nbsp;with&nbsp;data&nbsp;from&nbsp;cube_in&nbsp;interpolated&nbsp;onto&nbsp;the<br>
+xdat,ydat&nbsp;values.</tt></dd></dl>
+ <dl><dt><a name="-f_longitude_average"><strong>f_longitude_average</strong></a>(cube_in, nave)</dt><dd><tt>Return&nbsp;longitude&nbsp;average&nbsp;("regrid")&nbsp;of&nbsp;iris&nbsp;cube.<br>
+&nbsp;<br>
+Used&nbsp;to&nbsp;change&nbsp;(reduce)&nbsp;longitude&nbsp;resolution&nbsp;of&nbsp;data,&nbsp;for<br>
+subsequent&nbsp;data&nbsp;analysis.<br>
+&nbsp;<br>
+Input:<br>
+&nbsp;<br>
+&lt;cube_in&gt;&nbsp;:&nbsp;iris&nbsp;cube&nbsp;that&nbsp;has&nbsp;longitude&nbsp;as&nbsp;one&nbsp;dimension.<br>
+&nbsp;<br>
+&lt;nave&gt;&nbsp;:&nbsp;integer&nbsp;number&nbsp;of&nbsp;longitudes&nbsp;to&nbsp;average&nbsp;over.&nbsp;E.g.,<br>
+if&nbsp;nave&nbsp;is&nbsp;4&nbsp;and&nbsp;the&nbsp;input&nbsp;cube&nbsp;has&nbsp;a&nbsp;longitude&nbsp;resolution&nbsp;of<br>
+1/4&nbsp;degree,&nbsp;the&nbsp;output&nbsp;will&nbsp;have&nbsp;a&nbsp;longitude&nbsp;resolution&nbsp;of&nbsp;1<br>
+degree,&nbsp;each&nbsp;new&nbsp;longitude&nbsp;data&nbsp;point&nbsp;being&nbsp;the&nbsp;average&nbsp;of<br>
+nave&nbsp;source&nbsp;data&nbsp;points.<br>
+&nbsp;<br>
+Output:<br>
+&nbsp;<br>
+&lt;cube_out&gt;&nbsp;:&nbsp;iris&nbsp;cube&nbsp;with&nbsp;data&nbsp;averaged&nbsp;(regridded)&nbsp;over<br>
+longitude.<br>
+&nbsp;<br>
+Method:&nbsp;Based&nbsp;on&nbsp;method&nbsp;in&nbsp;f_time_average(method=2).&nbsp;Slice&nbsp;the<br>
+input&nbsp;cube&nbsp;numpy&nbsp;array&nbsp;over&nbsp;longitude&nbsp;with&nbsp;steps&nbsp;of&nbsp;nave,&nbsp;to<br>
+get&nbsp;nave&nbsp;separated&nbsp;cubes.&nbsp;Add&nbsp;them&nbsp;together&nbsp;and&nbsp;divide&nbsp;by<br>
+nave.&nbsp;This&nbsp;is&nbsp;fast.&nbsp;&nbsp;Depends&nbsp;on&nbsp;longitude&nbsp;values&nbsp;being&nbsp;equally<br>
+spaced.</tt></dd></dl>
+ <dl><dt><a name="-find_npd"><strong>find_npd</strong></a>(source)</dt><dd><tt>Find&nbsp;npd&nbsp;(number&nbsp;per&nbsp;day&nbsp;from&nbsp;source&nbsp;string.</tt></dd></dl>
+ <dl><dt><a name="-gradient"><strong>gradient</strong></a>(cube_in)</dt><dd><tt>Calculate&nbsp;horizontal&nbsp;gradient&nbsp;of&nbsp;an&nbsp;iris&nbsp;cube.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+&lt;cube_in&gt;&nbsp;is&nbsp;an&nbsp;iris&nbsp;cube.<br>
+&nbsp;<br>
+Outputs:<br>
+&nbsp;<br>
+Return&nbsp;&lt;cube_gradx&gt;,&lt;cube_grady&gt;,&nbsp;the&nbsp;eastward&nbsp;and&nbsp;northward&nbsp;gradient&nbsp;<br>
+fields.</tt></dd></dl>
+ <dl><dt><a name="-inverse_laplacian"><strong>inverse_laplacian</strong></a>(cube_in)</dt><dd><tt>Calculate&nbsp;inverse&nbsp;Laplacian&nbsp;of&nbsp;an&nbsp;iris&nbsp;cube.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+&lt;cube_in&gt;&nbsp;is&nbsp;an&nbsp;iris&nbsp;cube.<br>
+&nbsp;<br>
+Outputs:<br>
+&nbsp;<br>
+Return&nbsp;&lt;cube_out&gt;,&nbsp;the&nbsp;inverse&nbsp;Laplacian.</tt></dd></dl>
+ <dl><dt><a name="-invert_dict"><strong>invert_dict</strong></a>(d)</dt><dd><tt>#&nbsp;Create&nbsp;inverse&nbsp;dictionary</tt></dd></dl>
+ <dl><dt><a name="-iter_generator"><strong>iter_generator</strong></a>(input)</dt><dd><tt>Convert&nbsp;&lt;input&gt;&nbsp;to&nbsp;an&nbsp;iterator&nbsp;and&nbsp;return&nbsp;it.<br>
+&nbsp;<br>
+If&nbsp;&lt;input&gt;&nbsp;is&nbsp;an&nbsp;integer,&nbsp;convert&nbsp;it&nbsp;to&nbsp;a&nbsp;list&nbsp;so&nbsp;it&nbsp;can&nbsp;be<br>
+iterated&nbsp;over.&nbsp;&nbsp;Otherwise,&nbsp;return&nbsp;unchanged.<br>
+&nbsp;<br>
+Typically,&nbsp;YEAR&nbsp;or&nbsp;MONTH&nbsp;is&nbsp;passed&nbsp;to&nbsp;this&nbsp;function.&nbsp;&nbsp;They&nbsp;may<br>
+already&nbsp;be&nbsp;in&nbsp;the&nbsp;form&nbsp;of&nbsp;a&nbsp;range-type&nbsp;iterator&nbsp;or&nbsp;a&nbsp;list,&nbsp;or&nbsp;just&nbsp;a&nbsp;single<br>
+integer&nbsp;value.&nbsp;&nbsp;This&nbsp;function&nbsp;converts&nbsp;the&nbsp;single&nbsp;integer&nbsp;value&nbsp;to<br>
+an&nbsp;iterator&nbsp;(a&nbsp;list).</tt></dd></dl>
+ <dl><dt><a name="-lat_direction"><strong>lat_direction</strong></a>(cube_in, direction, verbose<font color="#909090">=True</font>)</dt><dd><tt>Make&nbsp;cube&nbsp;latitude&nbsp;run&nbsp;north&nbsp;to&nbsp;south&nbsp;or&nbsp;south&nbsp;to&nbsp;north.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+&lt;cube_in&gt;&nbsp;is&nbsp;an&nbsp;iris&nbsp;cube<br>
+&nbsp;<br>
+&lt;direction&gt;&nbsp;is&nbsp;a&nbsp;string,&nbsp;either&nbsp;'s2n'&nbsp;or&nbsp;'n2s'<br>
+&nbsp;<br>
+Use&nbsp;iris.util.reverse&nbsp;if&nbsp;needed.<br>
+&nbsp;<br>
+Return&nbsp;&lt;cube_out&gt;,&nbsp;whose&nbsp;latitude&nbsp;axis&nbsp;runs&nbsp;according&nbsp;to<br>
+&lt;direction&gt;.</tt></dd></dl>
+ <dl><dt><a name="-replace_wildcard_with_time"><strong>replace_wildcard_with_time</strong></a>(aa, string1)</dt><dd><tt>Replace&nbsp;wild&nbsp;card&nbsp;question&nbsp;marks&nbsp;with&nbsp;current&nbsp;time.<br>
+&nbsp;<br>
+Input&nbsp;&lt;aa&gt;&nbsp;is&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;the&nbsp;following&nbsp;attributes:<br>
+&nbsp;<br>
+outfile_frequency:&nbsp;&nbsp;e.g.,&nbsp;'year'&nbsp;or&nbsp;'month'<br>
+wildcard:&nbsp;e.g.,&nbsp;'????'&nbsp;or&nbsp;'??????'<br>
+year:&nbsp;integer&nbsp;for&nbsp;current&nbsp;year,&nbsp;e.g.,&nbsp;2016<br>
+month:&nbsp;integer&nbsp;for&nbsp;current&nbsp;month,&nbsp;in&nbsp;range&nbsp;1&nbsp;to&nbsp;12.<br>
+&nbsp;<br>
+Input&nbsp;&lt;string1&gt;&nbsp;is&nbsp;a&nbsp;string,&nbsp;usually&nbsp;a&nbsp;filename,&nbsp;which&nbsp;contains<br>
+wild&nbsp;card&nbsp;question&nbsp;marks,&nbsp;e.g.,&nbsp;????&nbsp;or&nbsp;??????.<br>
+&nbsp;<br>
+The&nbsp;wild&nbsp;card&nbsp;question&nbsp;marks&nbsp;are&nbsp;replaced&nbsp;with&nbsp;the&nbsp;current&nbsp;date,<br>
+e.g.,&nbsp;YYYY&nbsp;or&nbsp;YYYYMM,&nbsp;depending&nbsp;on&nbsp;aa.outfile_frequency.<br>
+&nbsp;<br>
+Output&nbsp;is&nbsp;&lt;string2&gt;,&nbsp;typically&nbsp;a&nbsp;filename&nbsp;referring&nbsp;to&nbsp;a&nbsp;specific<br>
+date&nbsp;or&nbsp;range&nbsp;of&nbsp;dates&nbsp;(e.g.,&nbsp;year&nbsp;and&nbsp;month).</tt></dd></dl>
+ <dl><dt><a name="-set_time_constraint"><strong>set_time_constraint</strong></a>(time1, time2, calendar<font color="#909090">='gregorian'</font>, verbose<font color="#909090">=False</font>)</dt><dd><tt>Set&nbsp;iris&nbsp;time&nbsp;constraint&nbsp;from&nbsp;datetime.datetime&nbsp;like&nbsp;<a href="__builtin__.html#object">object</a>(s)&nbsp;according&nbsp;to&nbsp;calendar.&nbsp;<br>
+&nbsp;<br>
+Inputs:<br>
+&lt;time1&gt;&nbsp;a&nbsp;datetime.datetime&nbsp;or&nbsp;cftime.Datetime360Day&nbsp;<a href="__builtin__.html#object">object</a><br>
+&lt;time2&gt;&nbsp;a&nbsp;datetime.datetime&nbsp;or&nbsp;cftime.Datetime360Day&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;or&nbsp;False<br>
+&lt;calendar&gt;&nbsp;string&nbsp;to&nbsp;specify&nbsp;calendar<br>
+&nbsp;<br>
+Always&nbsp;call&nbsp;this&nbsp;function&nbsp;to&nbsp;set&nbsp;an&nbsp;iris&nbsp;time&nbsp;constraint,&nbsp;rather<br>
+than&nbsp;explicitly&nbsp;setting&nbsp;iris.Constraint&nbsp;in&nbsp;the&nbsp;code.<br>
+&nbsp;<br>
+Return&nbsp;an&nbsp;iris.Constraint&nbsp;<a href="__builtin__.html#object">object</a>:&nbsp;time&nbsp;constraint&nbsp;between&nbsp;time1<br>
+and&nbsp;time2&nbsp;inclusive,&nbsp;or&nbsp;just&nbsp;equal&nbsp;to&nbsp;time1&nbsp;if&nbsp;time2&nbsp;is&nbsp;False.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;is&nbsp;used&nbsp;as&nbsp;a&nbsp;single&nbsp;call&nbsp;to&nbsp;allow&nbsp;an&nbsp;iris&nbsp;time<br>
+constraint&nbsp;to&nbsp;be&nbsp;set&nbsp;for&nbsp;data&nbsp;on&nbsp;either&nbsp;a&nbsp;gregorian&nbsp;or&nbsp;360_day<br>
+calendar.&nbsp;Data&nbsp;with&nbsp;a&nbsp;gregorian&nbsp;calendar&nbsp;needs&nbsp;datetime.datetime<br>
+objects&nbsp;to&nbsp;set&nbsp;the&nbsp;time&nbsp;constraint.&nbsp;Date&nbsp;with&nbsp;a&nbsp;360_day&nbsp;calendar<br>
+needs&nbsp;cftime.Datetime360Day&nbsp;objects&nbsp;to&nbsp;set&nbsp;the&nbsp;time<br>
+constraint.&nbsp;This&nbsp;function&nbsp;can&nbsp;take&nbsp;datetime.datetime&nbsp;objects&nbsp;and<br>
+then&nbsp;internally&nbsp;converts&nbsp;them&nbsp;to&nbsp;cftime.Datetime360day&nbsp;objects&nbsp;if<br>
+the&nbsp;calendar&nbsp;is&nbsp;360_day&nbsp;before&nbsp;creating&nbsp;the&nbsp;iris&nbsp;time<br>
+constraint.&nbsp;Alternatively,&nbsp;if&nbsp;the&nbsp;calendar&nbsp;is&nbsp;360_day&nbsp;then&nbsp;can&nbsp;just&nbsp;pass&nbsp;cftime.Datetime360day&nbsp;objects&nbsp;to&nbsp;this&nbsp;function&nbsp;and&nbsp;it&nbsp;will&nbsp;create&nbsp;a</tt></dd></dl>
+ <dl><dt><a name="-source_info"><strong>source_info</strong></a>(aa)</dt><dd><tt>Create&nbsp;attributes&nbsp;of&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;based&nbsp;on&nbsp;the&nbsp;source&nbsp;attribute.<br>
+&nbsp;<br>
+aa&nbsp;is&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>.<br>
+&nbsp;<br>
+Attributes&nbsp;created&nbsp;are:<br>
+&nbsp;<br>
+data_source:&nbsp;&nbsp;e.g.,&nbsp;'ncepdoe',&nbsp;'olrinterp'<br>
+level_type:&nbsp;&nbsp;e.g.,&nbsp;'plev'&nbsp;for&nbsp;pressure&nbsp;level,&nbsp;'toa'&nbsp;for&nbsp;top&nbsp;of&nbsp;atmosphere<br>
+frequency:&nbsp;e.g.,&nbsp;'d'&nbsp;for&nbsp;daily,&nbsp;'3'&nbsp;for&nbsp;3-hourly<br>
+&nbsp;<br>
+outfile_frequency:&nbsp;e.g.,&nbsp;'year'&nbsp;or&nbsp;'month'<br>
+wildcard:&nbsp;e.g.,&nbsp;'????'&nbsp;or&nbsp;'??????'<br>
+timedelta:&nbsp;datetime.timedelta&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;frequency&nbsp;attribute<br>
+calendar:&nbsp;'gregorian'&nbsp;or&nbsp;'360_day'<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;is&nbsp;typically&nbsp;called&nbsp;in&nbsp;the&nbsp;initialisation&nbsp;of&nbsp;class&nbsp;instances&nbsp;in&nbsp;this&nbsp;module.</tt></dd></dl>
+ <dl><dt><a name="-standardise_time_coord_units"><strong>standardise_time_coord_units</strong></a>(self, verbose<font color="#909090">=True</font>)</dt><dd><tt>Convert&nbsp;time&nbsp;coordinate&nbsp;of&nbsp;cube&nbsp;to&nbsp;standard&nbsp;time&nbsp;units.<br>
+&nbsp;<br>
+Takes&nbsp;account&nbsp;of&nbsp;calendar&nbsp;of&nbsp;time&nbsp;units.<br>
+&nbsp;<br>
+Standard&nbsp;time&nbsp;units&nbsp;are&nbsp;'[hours,days,seconds]&nbsp;since&nbsp;1900-01-01&nbsp;00:00:0.0<br>
+(hours,&nbsp;days&nbsp;or&nbsp;seconds&nbsp;depending&nbsp;on&nbsp;time&nbsp;units&nbsp;of&nbsp;input&nbsp;cube).</tt></dd></dl>
+ <dl><dt><a name="-truncate"><strong>truncate</strong></a>(cube_in, truncation)</dt><dd><tt>Spectrally&nbsp;truncate&nbsp;(triangular&nbsp;truncation)&nbsp;iris&nbsp;cube.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+&lt;cube_in&gt;&nbsp;is&nbsp;an&nbsp;iris&nbsp;cube.<br>
+&nbsp;<br>
+&lt;truncation&gt;&nbsp;is&nbsp;an&nbsp;integer,&nbsp;to&nbsp;triangular&nbsp;truncate&nbsp;to&nbsp;in&nbsp;spectral<br>
+space.<br>
+&nbsp;<br>
+Outputs:<br>
+&nbsp;<br>
+Return&nbsp;&lt;cube_out&gt;,&nbsp;the&nbsp;spectrally&nbsp;truncated&nbsp;cube.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>division</strong> = _Feature((2, 2, 0, 'alpha', 2), (3, 0, 0, 'alpha', 0), 8192)<br>
+<strong>h1a</strong> = '&lt;&lt;&lt;=============================================================<font color="#c040c0">\n</font>'<br>
+<strong>h1b</strong> = '=============================================================&gt;&gt;&gt;<font color="#c040c0">\n</font>'<br>
+<strong>h2a</strong> = '&lt;&lt;&lt;---------------------------<font color="#c040c0">\n</font>'<br>
+<strong>h2b</strong> = '---------------------------&gt;&gt;&gt;<font color="#c040c0">\n</font>'<br>
+<strong>long_name2var_name</strong> = {'BSISO_1-1_index': 'bsiso1-1', 'BSISO_1-2_index': 'bsiso1-2', 'BSISO_1_amplitude': 'bsiso1_amp', 'BSISO_1_category': 'bsiso1_cat', 'BSISO_1_phase_angle': 'bsiso1_theta', 'BSISO_2-1_index': 'bsiso2-1', 'BSISO_2-2_index': 'bsiso2-2', 'BSISO_2_amplitude': 'bsiso2_amp', 'BSISO_2_category': 'bsiso2_cat', 'BSISO_2_phase_angle': 'bsiso2_theta', ...}<br>
+<strong>print_function</strong> = _Feature((2, 6, 0, 'alpha', 2), (3, 0, 0, 'alpha', 0), 65536)<br>
+<strong>var_name2long_name</strong> = {'bsiso1-1': 'BSISO_1-1_index', 'bsiso1-2': 'BSISO_1-2_index', 'bsiso1_amp': 'BSISO_1_amplitude', 'bsiso1_cat': 'BSISO_1_category', 'bsiso1_theta': 'BSISO_1_phase_angle', 'bsiso2-1': 'BSISO_2-1_index', 'bsiso2-2': 'BSISO_2-2_index', 'bsiso2_amp': 'BSISO_2_amplitude', 'bsiso2_cat': 'BSISO_2_category', 'bsiso2_theta': 'BSISO_2_phase_angle', ...}<br>
+<strong>with_statement</strong> = _Feature((2, 5, 0, 'alpha', 1), (2, 6, 0, 'alpha', 0), 32768)</td></tr></table>
+</body></html>
