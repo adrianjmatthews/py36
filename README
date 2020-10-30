@@ -1,0 +1,11 @@
+Repository of python scripts for analysis of (gridded) atmospheric, oceanographic and climate data.
+
+Key files are:
+
+resources.html # description of file structure, scripts etc.
+
+data_analysis.py # the main python module will all classes, functions and methods
+
+mean.py, anncycle.py, etc. # python scripts you actually run. These all import data_analysis.py
+
+plot_multipanel.py # One plotting script to rule them all. 
