@@ -1,0 +1,2082 @@
+<HTML>
+  <HEAD>
+    <TITLE>Resources</TITLE>
+    <LINK REL="stylesheet" HREF="def1.css"
+      TYPE="text/css">  
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  </HEAD>
+  
+  <BODY bgcolor="white">
+
+<H1>Adrian Matthews: Resources</H1>
+
+<P>This page is an ad hoc collection of information on research
+computing for my group at UEA.
+
+<h3>Contents</h3>
+
+<ul>
+<li><a href="#support">UEA Computer support</a>
+<li><a href="#unix_machines">UEA Unix machines</a>
+<li><a href="#disk_space">Storage on UEA HPC</a>
+<li><a href="#jasmin">JASMIN and LOTUS</a>
+<li><a href="#iris">Iris, cartopy, matplotlib and other python packages</a>
+<li><a href="#git">Git and github</a>
+<li><a href="#source">Data sources</a>
+<li><a href="#data">Data conventions</a>
+<li><a href="#scripts">Python scripts</a>
+<HR>
+<li><a href="./public_html_2018-10-30_partial_copy/climatologies.html">Climatologies</a>
+<li><a href="resources_old.html">Old CDAT information</a>
+</ul>
+
+<hr><!-------------------------------------------------------------->
+
+<h2><a name="support">UEA Computer support</h2>
+
+<ul>
+
+  <li>PC and Windows support all now done through UEA help desk
+  (it.helpdesk and staff.helpdesk@uea.ac.uk).
+
+  <li>Raise a ticket at <a href="https://itsupport.uea.ac.uk">
+  itsupport.uea.ac.uk</a> 
+
+  <li><a href="http://rscs.uea.ac.uk/">UEA Research and Specialist
+  Computer Support</a>
+
+  <li>hpc.admin@uea.ac.uk  HPC support staff
+
+  <ul>
+
+    <li>Leo Earl.  Head of HPC
+
+    <li>Julie Harold
+
+    <li>Jimmy Cross
+
+    <li>Michael Adams
+
+  </ul>
+
+</ul>
+
+<hr><!-------------------------------------------------------------->
+
+<h2><a name="unix_machines">UEA Unix machines</h2>
+
+<ul>
+
+  <li>Acknowledgement statement. The research presented in this paper
+  was carried out on the High Performance Computing Cluster supported
+  by the Research Computing Service at the University of East Anglia.
+  
+  <li>ada.uea.ac.uk; new UEA high performance computing (HPC) machine.
+
+    <ul>
+
+      <li><a href="https://rscs.uea.ac.uk/ada">ada info</a>
+
+      <li><I>interactive</i> for an interactive session (N.B., can run
+      X windows from this session, no need to have an Xinteractive
+      session).
+	
+    </ul>
+    
+  <li>hpc.uea.ac.uk; old HPC machine, due to be decomissioned in Aug 2020.
+
+  <ul>
+
+    <li><a href="https://rscs.uea.ac.uk/new-high-performance-computing-cluster">
+    hpc info</a>
+
+    <li>Xinteractive for standard interactive session.
+
+    <li>tmux (terminal multiplexer)
+
+      <ul>
+
+	<li>Issue with X11 forwarding. Sort this out, then modify
+	documentation below. Currently, first run Xinteractive to
+	interactive node, make a note of $DISPLAY, then reconnect to
+	tmux session. source .bashrc. export DISPLAY=? Try this.
+	
+	<li><I>module add tmux/2.5</I>.
+	
+	<li>On login node, <I>tmux ls</I> to list current tmux
+	sessions, and <I>tmux attach -t number</I> to join session
+	number, or just <I>tmux</I> if no sessions running. <I>Ctrl b
+	    d</I> to detach from the current session.
+
+	  <li>Note that each terminal in a pane is initially on the
+	  login node, so need to <I>Xinteractive</I> to get an
+	  interactive node. NB you could start tmux from an
+	  interactive node (rather than the login node) but then it
+	  does not pick up all your aliases etc).
+
+	<li>Panes. <I>Ctrl b %</I> to split into a left and right
+	  pane. <I>Ctrl b &ldquo;</I> to split vertically. <I>Ctrl b arrow_key</I>
+	  to navigate between panes.
+
+	<li>Windows. <I>Ctrl b c</I> to create new window. <I>Ctrl b p</I>
+	to switch to previous window. <I>Ctrl b n</I> to switch to next
+	  window. <I>Ctrl b number</I> to switch to window number.
+
+	<li>Copy and pasting between panes/windows. <I>Ctrl b [</I> to
+	enter copy mode. Move to start/end of test to highlight. <I>Ctrl
+	space</I> to start highlighting text. Move to opposite end of
+	text to copy. <I>Alt w</I> copies selected text into tmux
+	clipboard. Move cursor to pane or window where you want to
+	copy, and <I>Ctrl b ]</I> to paste text.
+
+	<li><I>Ctrl b ?</I> for list of all tmux key bindings. <I>Esc</I>
+	to escape this.
+
+      </ul>
+      
+  </ul>
+
+  <li>Historical machines from 1999: cpca7, comserver1, beo1,
+  cluster1, escluster, grace, hpc.
+  
+  <li>uearclogin02 is the general UEA unix research machine.
+
+  <ul>
+
+    <li>My envam1.env.uea.ac.uk space is accesible at
+    /web/asa-flatweb/uk.ac.uea.env.envam1/ which has a symbolic link
+    to envam1 in my home directory.
+
+  </ul>
+
+</ul>
+
+<hr><!-------------------------------------------------------------->
+
+<h2><a name="disk_space">Storage on UEA HPC</h2>
+
+<ul>
+
+  <li>Each user is allocated disk space under their HPC home
+  directory, plus on the scratch directories. Use <I>quotacheck</I> to
+  see quota and usage for home and scratch spaces.
+
+  <li>As of Jun 2015, there is a new research storage infrastructure
+  being introduced (on /gpfs/afm/).  This has a blended cost (through
+  tiered disk and tape based storage) of GBP100 per TB per year, so
+  significantly cheaper than the old costs.  Research storage acts as
+  an additional bulk data store for HPC, with a local cache of data
+  on the dedicated HPC storage. The size of the HPC cache can be
+  varied, with active data cached on the HPC storage and unactive data
+  residing only on the research storage infrastructure.  There are a
+  number of benefits to this,for example we can look at making the
+  data accessible in multiple locations, for example in HPC, but also
+  to Windows and Linux systems, also all storage is backed up.
+
+  <li>Note that the afm storage is not suitable for high I/O, while
+  the scratch and home spaces are. New approach after Jun 2020, after
+  running into problems with this, is to have mirror directory
+  structures on scratch and afm. At the beginning of a project, copy
+  any input data from afm to the mirrored structure on scratch, do all
+  the analysis using scratch, then copy output files from scratch onto
+  afm. This is handled in the python scripts using the ARCHIVE Boolean
+  flag.
+    
+  <li>20 Oct 2016.  /gpfs/afm/matthews/ Moved everything from old
+  matthews and matthews-scratch disks to here, and deleted all old
+  data.  Only 457 GB of data left.  Signed up for 2 TB of data (at 100
+  GBP per year per TB) for 5 years = 1000 GBP.  Filled out form and
+  sent hard copy.
+
+  <li>Can also access afm storage via uearclogin02.  For major data
+  transfers from outside UEA, this is the preferred access method.
+  Path is /data/matthews/.
+
+  <li>Use 'du --block-size=1G -c --max-depth=1' to see size of each
+  subdirectory, and a total at the end (-c option).  Run from
+  uearclogin02, as from hpc will only see the part of the fileset that
+  is in the HPC cache.
+
+  <li>14 Feb 2017.  Total use of afm/matthews/data/ is 1.2T, mainly from
+  erainterim_plev_6h and trmm3b42v7_sfc_3h.
+
+  <li>12 Oct 2018. Total use of afm/matthews/data/ is 1.4T.
+
+  <li>18 Oct 2018. Total use of afm/matthews is 2.6T (1.4T from data
+  and 1.3T from webber). Cleared out data directory, reduced from 1.4T
+  to 0.3T. Total is now 1.6T.
+
+  <li>8 Apr 2019. Total use of afm/matthews is 3.0T (0.8T from
+  azaneu, 0.5T from data, 1.6T from webber.
+
+  <li>17 Jul 2019. Total use of afm/matthews is 4.1T (0.9T from
+  azaneu, 0.5T from data, 2.7T from webber. (Note that the .snapshots
+  directory in afm/matthews does not count towards my quota. It is a
+  backup process from ITCS.)
+
+  <li>18 Jul 2019. Increased /gpfs/afm/matthews to 10 TB, paid until
+  Jul 2025 (Contact is James Alborough in ITCS). Payment is: increase
+  of 8TB (quota total now 10TB) now to Oct 2021 - £1,800, then 10TB
+  Nov 2021 to July 2025 - £3,750. Total - £5,550.
+    
+  <li>1 Aug 2019. Total use of afm/matthews is 5.2T (1.2T from
+  azaneu, 1.4T from data, 2.7T from webber. 
+
+  <li>31 Mar 2020. Total use of afm/matthews is XXT (2.1T from
+  azaneu, 1.4T from data, 1.9T from webber. 
+    
+  <li>7 May 2020. Total use of afm/matthews is 12T. 2.1T from azaneu,
+  2.8T from webber, 6.4T from data (3.4 T imerg_sfc_30m, 1.1T
+  erainterim_plev_d, 0.7T erainterim_plev_6h). Removed files in raw
+  directories, to get data down to 2.3T (bringing total down to 8T).
+
+  <li>Sep 2020. Had GBP1000 left on ELO. Used this to add another 2 TB
+  for 5 years. James Alborough arranged this. Now have total of 12 TB
+  that will expire on 31 Jul 2025.
+    
+</ul>
+
+<hr><!-------------------------------------------------------------->
+
+<h2><a name="jasmin"> JASMIN</h2>
+
+<ul>
+
+  <li>support@jasmin.ac.uk for computing issues, and
+  support@ceda.ac.uk for data issues.
+  
+  <li><a href="http://www.jasmin.ac.uk">JASMIN</a> is the petabyte
+  storage and cloud computing service run by NERC through
+  CEDA. <a href="https://accounts.jasmin.ac.uk/account/login/">JASMIN
+  account</a>. JASMIN helpdesk at support@jasmin.ac.uk.
+
+  <li>BADC data can be processed and analysed on JASMIN.  
+
+  <li>This is particularly useful for, e.g., ERA-Interim data, where
+  the file structure is such that the entire raw data set (16 TB)
+  would have to be otherwise downloaded to grace.  So run the data
+  conversion (at least) on LOTUS at JASMIN to subset (and put in
+  standard format) the data, then can copy over to UEA HPC for further
+  analysis.
+
+  <li>Got an account at JASMIN by following the instructions
+  at <a href="http://www.ceda.ac.uk/help/users-guide/jasmin-cems-access/">
+  http://www.ceda.ac.uk/help/users-guide/jasmin-cems-access/</a>
+
+  <li>I now have access to three JASMIN machines:
+
+  <ul>
+
+    <li>jasmin-login1.ceda.ac.uk for logging into the system
+
+    <li>xfer[12].jasmin.ac.uk for transferring data
+
+    <li>jasmin-sci1.ceda.ac.uk (or the newer sci1.jasmin.ac.uk and
+    sci2.jasmin.ac.uk) for <a href="
+    https://help.jasmin.ac.uk/article/121-sci-servers"> general
+    scientific processing</a>.
+
+  </ul>
+
+  <li>To login to JASMIN, you should first ssh to
+  jasmin-login1.ceda.ac.uk with agent forwarding enabled e.g. ssh -A
+  matthews@jasmin-login1.ceda.ac.uk, and then ssh from there to
+  jasmin-sci1.ceda.ac.uk for access to BADC and NEODC archives (/badc
+  and /neodc) and for any general processing.  To log onto
+  jasmin-login1 from grace, do
+<PRE>
+$ jexe # eval $(ssh-agent -s) # (used to be 'exec ssh-agent $SHELL')
+$ jadd # ssh-add ~/.ssh/id_rsa_jasmin
+$ passphrase (extended waxwing)
+$ jssh # ssh -A matthews@jasmin-login1.ceda.ac.uk
+</PRE>
+
+  <li>jasmin-sci1.ceda.ac.uk is the general purpose scientific
+  analysis machine and has a standard set of software installed (see
+  <a href="http://proj.badc.rl.ac.uk/cedaservices/wiki/JASMIN/ScientificAnalysisVM/Packages">
+  http://proj.badc.rl.ac.uk/cedaservices/wiki/JASMIN/ScientificAnalysisVM/Packages</a>
+  for details).
+
+  <li>Lotus
+
+  <ul>
+
+    <li>jasmin-sci1 can be very slow.  Much faster to run on
+    LOTUS, the batch processing facility.  This has the same bsub
+    submission process as hpc.  Speed up for individual jobs is
+    approximately a factor of 10 (faster access to disks?), and many
+    jobs can be submitted and run simultaneously (have had 15 running
+    simultaneously).  So speedup is at least factor of
+    150.  <a href="http://www.ceda.ac.uk/help/users-guide/lotus/">LOTUS
+    documentation</a>.  
+
+    <li>Logon onto jasmin-login1.  <PRE>$ lssh # ssh -A lotus.jc.rl.ac.uk</PRE>
+
+    <li>Edit one of preprocess_ceda_[001,002,etc].sh This contains a
+    copy of preprocess_ceda.py with a wrap around for batch
+    submission.
+
+    <li>Submit to one of
+    the <a href="http://help.ceda.ac.uk/article/274-lotus-queues">LSF
+    queues</a>. <B>NB From 30 Jun 2020, the LSF (bsub) submission
+    system will be switched off, and replaced by SLURM. This is the
+    same as ada. See email of 21 May 2020 from CEDA in computing.</B>
+
+    <li>bsub -q short-serial -W 23:59 -o tmp001.out < preprocess_ceda_001.sh #
+    to submit to lotus
+
+    <li>bjobs # to monitor jobs
+
+  </ul>
+
+  <li>Access to archive data reflects those access rights which you
+  have already been granted access as a CEDA user and we ask you to
+  abide by the same terms and conditions. Please check your current
+  access rights
+  at <a href="http://badc.nerc.ac.uk/mybadc">http://badc.nerc.ac.uk/mybadc</a>.
+
+  <li>To transfer files into/out of the JASMIN system you should
+  instead connect directly to xfer[12].jasmin.ac.uk
+
+  <li>Available transfer tools are rsync-over-ssh, scp or Bbcp - see
+  more details at
+  <a href="http://proj.badc.rl.ac.uk/cedaservices/wiki/JASMIN/Bbcp">
+  http://proj.badc.rl.ac.uk/cedaservices/wiki/JASMIN/Bbcp</a> 
+
+  <li>All machines have user home areas mounted, though these are
+  limited to 10 GB.
+
+  <li>Temporary space is also available in /work/scratch on
+  jasmin-sci1 and xfer[12].  Note that this should be regarded as
+  volatile working space, not for storing data for any length of time,
+  and shared between all users. Please do not use /tmp as temporary
+  space.
+
+  <li>My home space on jasmin was initially only 10 GB, but has now
+  been increased to 1 TB.
+
+  <li>Transfer to grace.  scp from xfer1 to afm on uearclogin02,
+  e.g., scp uwnd850*.nc
+  e058@uearclogin02.uea.ac.uk:/data/matthews/data/erainterim_plev_6h/raw/
+
+  <li>11 Oct 2019, Mike from hpc.admin asked for incoming port 22
+  (ssh) be opened to uearclogin02 from JASMIN 130.246.142.0/24 as the
+  UEA firewall had been changed.
+
+  <li>11 Oct 2019. Pull data from xfer1. Login to hpc. Set up the
+  agent forwarding to JASMIN as normal but do not ssh to it. Then on
+  hpc (interactive session) cd to e.g.,
+  /gpfs/afm/matthews/data/erainterim_plev_d/raw/.  Then e.g., "scp
+  'matthews@xfer1.jasmin.ac.uk:/group_workspaces/jasmin2/realproj/users/matthews/transfer/*.nc'
+  ."
+
+  <li>24 Oct 2019. Installed conda environment with local python and
+    iris installation on JASMIN.
+
+    <ul>
+
+      <li>On advice from Alan Iwi at CEDA support, downloaded
+      miniconda (docs.conda.io/en/latest/miniconda.html) and scp'd to
+	JASMIN and installed into /home/users/matthews/miniconda3/
+
+      <li>Then created new py36 conda environment and installed iris
+	etc. packages, using same commands as on hpc (notes from 24
+	Apr 2018).
+
+      <li>Initiate this using 'source activate py36' as on hpc.
+      
+    </ul>
+
+  <li>Use /group_workspaces/jasmin2/realproj/users/matthews/ if needed
+  (was reaching quota on home directory).
+
+  <li>Jul 2020. Major changes to JASMIN system.
+
+    <ul>
+
+      <li>The old LSF queuing system on lotus was switched off at the
+      end of Jun 2020. Has moved to SLURM (same as ada). Do not appear
+      to be able to submit SLURM job on lotus (sbatch is not in
+      queue), but can submit on new machines (sci[1,2,3,4].jasmin)
+
+      <li>python2.7 and the cdms python modules are not available on
+      the new sci[1,2,3,4] machines (considered old code).
+	
+    </ul>
+    
+</ul>
+
+<hr><!-------------------------------------------------------------->
+
+<h2><a name="iris"> Iris, cartopy, matplotlib and other python
+packages</h2>
+
+<h3>Packages</h3>
+
+<ul>
+
+  <li><a href="http://scitools.org.uk/iris/docs/latest/">Iris</a> is a
+  python library for Meteorology and Climatology, written by the Met
+  Office.
+
+  <ul>
+
+    <li>The Iris "cube" is the equivalent of a CDAT CDMS transient
+    variable.
+
+    <li>Use
+    the <a href="https://groups.google.com/forum/#!forum/scitools-iris">
+    scitools-iris Google group</a> for
+    help. Also <a href="https://github.com/SciTools/iris/issues">iris
+    issues</a> on github.
+
+  </ul>
+
+  <li><a href="http://scitools.org.uk/cartopy/">Cartopy</a> is a
+  Python package which allows the easy creation of maps, using
+  matplotlib, for the analysis and visualisation of geospatial data.
+  Cartopy comes with the Iris package.
+
+  <li><a href="http://matplotlib.org/">Matplotlib</a> is the
+  recommended visualisation package.  It is installed with the Iris
+  package.
+
+  <ul>
+
+    <li>Use matplotlib.pyplot (convention: import as plt).  There are
+    also matplotlib wrappers for the Iris cube within Iris called
+    iris.plot (convention: import as iplt) and iris.quickplot
+    (convention: import as qplt).
+
+    <li><a href="http://scitools.org.uk/iris/docs/latest/userguide/plotting_a_cube.html">iris
+    matplotlib guide</a>
+
+    <li>Color maps
+
+    <ul>
+
+      <li>Use <a href="http://colorbrewer2.org">Brewer color maps</a>
+      (<a href="http://scitools.org.uk/iris/docs/latest/userguide/plotting_a_cube.html#brewer-colour-palettes">implemented
+      in iris</a>) where possible, e.g.: 'brewer_Purples_09',
+      'brewer_RdBu_11'
+
+      <li>Others: 'coolwarm', 'Purples'
+
+    </ul>
+
+    <li>When in interactive mode, plt.show() will plot the current
+    figure to the monitor (using the backend).  If the monitor is
+    smaller than the figure size (e.g., if using a laptop monitor),
+    matplotlib rearranges (and ruins) the figure layout.  Use a
+    non-interactive backend in this case, and just save the figure
+    straight to file without first plotting on the monitor.  To do
+    this, "mpl.use('Agg')" for PNG generation, before importing
+    matplotlib.pyplot.
+
+    <li>plot_iris.py.  Stand-alone advanced plotting script for a
+    high-quality multi-panel figure.  Keep this up to date and use it
+    as the canonical script for best practice technique for matplotlib
+    plotting, and also to request help when errors occur.
+
+  </ul>
+
+  <li><a href="https://github.com/ajdawson/panel-plots/blob/master/README.rst">
+  panel-plots</a> is a small package written by Andrew Dawson to allow
+  complete control of overall figure size and panel position within
+  matplotlib.
+
+  <ul>
+
+    <li>Create an instance of FigureSizeLocator following guidance
+    below.
+
+    <li>Font size is fixed so use figwidth to effectively set font
+    size relative to panel sizes.  Iterate to a solution.  Larger
+    figwidth means smaller relative font size.
+ 
+    <li>Use figwidth and panelratio together to set both panel aspect
+    ratio and, together with nrow and ncol, the height of the figure.
+    Do not use figheight argument explicitly.
+
+    <li>Use padbottom to leave space for legends and/or any further
+    different panels to be created with another instance of
+    FigureSizeLocator
+
+
+  </ul>
+
+  <li>Met Office maintains some workshop material for training and
+  development in the public domain
+  at <a href="https://github.com/SciTools/courses">https://github.com/SciTools/courses</a>
+  for Numpy, Matplotlib, Cartopy and Iris.
+
+  <li>Mark Hedley (mark.hedley@metoffice.gov.uk) is happy to be Iris
+  contact for me at MO.
+
+  <li><a href="http://conda.pydata.org/">Conda</a> is a
+  cross-platform, Python-agnostic binary package manager, recommended
+  by Mark Hedley at MO.
+
+  <li><a href="https://binstar.org/scitools">Scitools channel</a>
+  contains links to several packages.
+
+  <li><a href="http://journals.ametsoc.org/doi/abs/10.1175/BAMS-D-15-00309.1">
+  SHARPpy</a> is a python package for plotting radiosonde data, an
+  alternative to propietorial software like RAOB.
+
+  <li><a href="https://unidata.github.io/MetPy/latest/">MetPy</a> is
+  an in-development collection of tools for weather data
+  calculations. 
+
+</ul>
+
+<h3>Installation</h3>
+
+<ul>
+
+  <li>13 Nov 2015.  Installed iris on Asus Zenbook laptop running
+  Windows 10.  First installed the Anaconda package manager (version 2
+  as iris is still running under python2).  In an Anaconda Prompt
+  window, typed 'conda install -c scitools iris' to install iris.
+
+  <li>Installed jupyter notebook on Zenbook using 'conda install
+  jupyter'.  NB 27 Jan 2016, after Windows 10 update, links from app
+  menu to run jupyter disappeared.  Use Windows command prompt, and
+  type 'jupyter notebook'.
+
+  <li>Installed spyder (python2.7) on Zenbook.
+
+  <li>(Note.  Also searched for uvcdat and cdat packages under
+  Anaconda.  Only came up with cdat-lite but could not install.)
+
+  <li><a href="http://ueapy.github.io/">ueapy web page</a> for all
+  meeting summaries etc,
+  and <a href="http://ueapy.github.io/pages/meeting-calendar.html">meeting
+  calendar</a>
+
+  <li><a href="https://github.com/ueapy/">ueapy github repository</a>
+
+  <li>28 Sep 2016.  Running iris installation on grace.  The standard
+  installation(s) set up by HPC do not work properly.  Run it using an
+  anaconda environment.  In $HOME, one-off 'source
+  setup_anaconda_on_grace.sh', which is Denis script downloaded from
+  https://github.com/ueapy/grace-python/blob/master/setup_anaconda_on_grace.sh
+  This creates an anaconda environment with python and iris module.
+  Version 3.5.  Overwrites other python stuff on grace. 'python' then
+  points to this installation.
+
+  <li>2 Nov 2016.  Installing windspharm.  
+
+  <ul>
+
+    <li><a href="http://ajdawson.github.io/windspharm/api/windspharm.iris.html">Iris
+    windspharm documentation</a>
+
+    <li>Installed windspharm module by 'conda install -c ajdawson
+    windspharm'.  However, get a GLIBC_2.14 library error when try to
+    import windspharm.
+
+    <li>Solution from Denis Sergeev.  On Andrew's channel, he has an
+    old version of windspharm and its dependency - pyspharm, which is
+    causing the error. So instead I installed windspharm 1.5.0 from
+    conda-forge channel:  $ conda install -c conda-forge windspharm
+
+    <li>However, that command updates the core python too, which has
+    conflicts with glibc library too. So you need to downgrade python
+    back to 3.5.2-0:  $ conda install python
+
+    <li>Then you can check the installation simply by running $ python
+    -c 'import windspharm'
+
+  </ul>
+
+  <li>8 Nov 2016.  Installing <a href="http://www.h5py.org">h5py</a>,
+  to read HDF5 files (for TRMM data).  In python-iris directory, conda
+  install -c scitools h5py.  This stopped iris.load and ncdump working
+  so had to reinstall (ie update) iris (and hdf5) with 'conda install
+  -c scitools iris'.
+
+  <li>Running python on grace.  ipython.  run filename.py.  If changes
+  made to the data_analysis module, import importlib;
+  importlib.reload(da).  To clear memory do %reset.
+
+  <li>16 Jan 2017.  Updating windspharm (on grace).
+
+  <ul>
+
+    <li>windspharm did not work with ERA-interim data (ValueError:
+    latitudes are neither equally-spaced or Gaussian).  
+
+    <li>Andrew Dawson - a tolerance parameter was set too small .
+    Corrected now.  Update windspharm to v1.5.1 (from 1.5.0).  On
+    grace: conda install -c conda-forge windspharm.
+
+    <li>As before, the core python was updated too, leading to
+    conflicts with glibc. conda install python (to downgrade python
+    from 3.5.2.4 to 3.5.2.0)
+
+  </ul>
+
+  <li>16 Jan 2017.  Installing binstar (on grace)
+
+  <ul>
+
+    <li>conda install binstar
+
+    <li>conda install anaconda-client
+
+    <li>binstar allows you to search for packages, e.g., 'binstar
+    search -t conda panel-plots' 
+ 
+  </ul>
+
+  <li>16 Jan 2017.
+  Installing <a href="https://github.com/ajdawson/panel-plots/blob/master/README.rst">panel-plots</a>
+  from Andrew Dawson.
+
+  <ul>
+
+    <li>Was not able to install as a package using 'conda install' as
+    it does not exist as a package!
+
+    <li>cd home/PythonScripts
+
+    <li>git clone  https://github.com/ajdawson/panel-plots
+
+    <li>cd panel-plots; python setup.py install
+
+  </ul>
+
+  <li>18 Jan 2017.  <a href="https://pypi.python.org/pypi/gsw/">Gibbs
+  SeaWater Oceanographic Package of TEOS-10</a>
+
+  <ul>
+
+    <li>Downloaded, gunzipped and untar'd package into
+    ~/home/PythonScripts/gsw-3.0.3
+
+    <li>python setup.py install
+
+    <li>import gsw # to import package
+
+  </ul>
+
+  <li>19 Jan 2017.  Replacing python installation on Zenbook for
+  Bangalore meeting.
+
+  <ul>
+
+    <li>Uninstalled anaconda3, anaconda2, and another ad hoc python
+    installation as anaconda3 would not start (configuration clashes
+    between v2 and v3?).
+
+    <li>Installed Anaconda3, version 4.2.0, running
+    python3.5.  <a href="https://www.continuum.io/">Download</a>.  Now
+    only have one installation of python on Zenbook.  Keep it this
+    way. 
+
+    <li>Install iris under anaconda3.  Run an 'Anaconda Prompt'
+    window.  'conda install -c scitools iris' fails because of an
+    incompatibility between iris and the python3.5 that is already
+    installed under Anaconda3.  Solution is to install iris from the
+    conda-forge channel.  'conda install -c conda-forge iris'.
+
+    <li>Use spyder to run python using ipython environment.
+
+    <li>Installed panel-plots following same procedure as for grace
+    (used git bash for unix shell).
+
+    <li>Installed gsw Gibbs seawater package following same procedure
+    as for grace.
+
+  </ul>
+
+  <li>19 May 2017.  Updated spyder on Asus zenbook.  Anaconda
+  prompt. conda install spyder.
+
+  <li>10 Jul 2017.  Trying to install gsw package on Chris's laptop.
+  We found that gsw is actually available to install using conda.
+  'conda install -c conda-forge gsw'.  (Found this through
+  anaconda.org and then search packages).  However, Chris needs to
+  possibly reinstall his conda environment!
+
+  <li>11 Dec 2017.  Installed metpy package (including pint units
+  package) on Asus zenbook.  conda install -c conda-forge metpy.
+
+  <li>24 Apr 2018. Moving from grace to hpc, as grace will be turned
+  off end May 2018. Also upgrade python to 3.6 and iris to v 2 etc.,
+  at same time.
+
+  <ul>
+
+    <li>Preserve py35 conda environment that works perfectly on grace
+    (it has issues with panel-plot module when run on hpc, at
+    least). Scripts using iris 1 running on grace will remain in
+    ~/home/PythonScripts/python-iris/, which is now defunct.
+
+    <li>'module load python/anaconda/4.2/3.5' (the most recent
+    version) to load conda.
+
+    <li>'conda env list' lists your conda environments. Currently
+    there are several, including: root (the default one) and py35 (the
+    one I created). The * shows the currently active environment.
+
+    <li>'source activate [env_name]' makes the env_name environment
+    (e.g., py35) the active one.
+
+    <li>Created a new conda environment py36 (from hpc) with 'conda
+    create -n py36 python=3.6 -c conda-forge'.
+
+    <li>'source activate py36' to make this environment the current
+    one, and 'conda env list' to check.
+
+    <li>Installed packages with 'conda install -c conda-forge iris
+    cartopy'. Always use the conda-forge channel now. The scitools
+    channel is redundant.
+
+    <li>'pip install panel-plots'.
+
+    <li>'conda install -c conda-forge windspharm'
+
+    <li>'conda install -c conda-forge gsw'
+
+    <li>'conda install -c conda-forge ipython' # as ipython was not in
+    the python installation. This worked, but ipython cannot import iris.
+
+  </ul>
+
+  <li>To run python on hpc: <B>Xinteractive; py36 ( module load
+  python/anaconda/4.2/3.5 ; source activate py36); ipython</B>
+  . Scripts using iris 2 and running on hpc are in
+  ~/home/PythonScripts/py36/
+
+  <li><a href=
+  "http://scitools.org.uk/iris/docs/latest/whatsnew/2.0.html" >Changes
+  to iris 2</a>. Main changes needed are:
+
+  <ul>
+
+    <li>remove all iris.future statements
+
+    <li>Change all time constraints that use numerical time values to
+    datetime objects.
+
+  </ul>
+
+  <li>6 Jul 2018. Updated windspharm with 'conda install -c conda-forge
+  windspharm'. 
+
+  <li>25 Oct 2018. On hpc, an error has developed with importing
+  panel-plots. 'from panels import FigureSizeLocator' leads to an
+  error. Tried 'pip install panel-plots' again under py36
+  environment. Said it was already satisfied, but recommended 'pip
+  install --upgrade pip' to upgrade from version 9.0.3 to latest 18.1
+  version. Did this successfully. Tried 'pip install panel-plots'
+  again, but still said it was already satisfied, so made no
+  change. However, can now import FigureSizeLocator!
+
+  <li>21 Feb 2019. Installed h5py under py36 with 'conda install -c
+  conda-forge h5py'. This also updated several other packages,
+  including numpy, python (3.6.5-1). However, now cannot import
+  iris. Updated this with 'conda install -c conda-forge iris'. 
+
+  <li>2 Aug 2019. Installed anaconda and python on new HP Elitebook.
+
+  <ul>
+
+    <li>Anaconda (Python 3.7 version) downloaded from www.anaconda.com.
+
+    <li>Anaconda Prompt. conda install -c conda-forge iris
+    cartopy. conda install spyder. conda install -c conda-forge gsw. 
+    
+  </ul>
+
+  <li>Summary of updated installation notes (from Ben)
+
+    <ul>
+
+      <li>HPC:
+
+	<ul>
+      
+	  <li>First, log onto an HPC interactive node, then run:
+
+	    <ul>
+
+	      <li>'module load python/anaconda/4.2/3.5' (the most
+	  recent version) to load conda.
+	    
+	      <li>Created a new conda environment py36 (from hpc) with
+	  'conda create -n py36 python=3.6 -c conda-forge'.
+	    
+	      <li>'source activate py36' to make this environment the
+	  current one, and 'conda env list' to check.
+	    
+	      <li>Installed packages with 'conda install -c conda-forge
+	  iris cartopy'. Always use the conda-forge channel now. The
+	  scitools channel is redundant.
+	    
+	      <li>'pip install panel-plots'.
+
+	      <li>'conda install -c conda-forge windspharm'
+
+	      <li>'conda install -c conda-forge gsw'
+
+	      <li>'conda install -c conda-forge ipython' # as ipython was
+	  not in the python installation. This worked, but ipython
+	  cannot import iris.
+		
+	    </ul>
+	
+	  <li>To run python on hpc: Xinteractive;
+
+	    <ul>
+
+	      <li>module load python/anaconda/4.2/3.5 ; source activate py36
+
+	    </ul>
+
+	</ul>
+
+      <li>JASMIN: Log onto JASMIN
+
+	<ul>
+	
+	  <li>To install:
+
+	    <ul>
+	    
+	      <li>bash
+	      /home/users/matthews/Downloads/Miniconda3-latest-Linux-x86_64.sh
+		
+	      <li>conda create -n py36 python=3.6 -c conda-forge
+
+	      <li>source activate py36
+
+	      <li>conda install -c conda-forge iris cartopy
+
+	      <li>pip install panel-plots
+
+	      <li>conda install -c conda-forge windspharm
+
+	      <li>conda install -c conda-forge gsw
+
+	      <li>conda install -c conda-forge ipython
+
+	    </ul>
+
+	  <li>To run:
+
+	    <ul>
+
+	      <li>source activate py36
+
+	      <li>ipython
+
+	    </ul>
+
+	</ul>
+		
+    </ul>
+
+</ul>
+
+<hr><!-------------------------------------------------------------->
+
+<h2><a name="git"> Git and github</h2>
+
+<ul>
+
+  <li><a href="http://gitref.org">git documentation</a>
+
+  <li><a href="https://git-scm.com/book/en/v2/">Alternative git
+  documentation</a>
+
+  <li><a href="https://github.com/">github</a>  adrianjmatthews.
+
+  <li>Have set up a python-iris repository on my github account.  Use
+  this for all new python code.
+
+  <ul>
+
+    <li>Set up git on laptop, grace and JASMIN and clone this
+    repository.
+
+    <li>Use 'git push' and 'git pull' to upload changes to and
+    download updates from repository.
+
+  </ul>
+
+  <li>On zenbook laptop, run 'git bash' app.
+
+  <ul>
+
+    <li>Initial setup of git repository
+
+    <ul>
+
+      <li>cd c:/Users/Adrian/Documents/PythonScripts/
+
+      <li>git clone https://github.com/adrianjmatthews/python-iris #
+      one-off command
+
+      <li>cd python-iris
+
+      <li>git config --global user.name adrianjmatthews # one-off
+
+      <li>git config --global user.email adrian.j.matthews@gmail.com #
+      one-off
+
+      <li>git config --global core.editor vim # as emacs is not
+      installed 
+
+      <li>git config --list # to see overall configuration
+
+    </ul>
+
+    <li>Working in the repository
+
+    <ul>
+
+      <li>cd c:/Users/Adrian/Documents/PythonScripts/python-iris
+
+      <li>Create files with vim, spyder, jupyter etc.
+
+      <li>git add 'filenames' # to add to staging area
+  
+      <li>git status
+
+      <li>git log # to see list of previous commit messages
+
+      <li>git commit -m 'message text'
+
+      <li>git push # (or is it git push github master) to push this to
+      github repository (asks for github username and password)
+
+      <li>NB when I have changed one of the files linked to the
+      repository I have to then use 'git add' again to add it back to
+      the staging area.
+
+    </ul>
+
+  </ul>
+
+  <li>On grace (login node, git not installed on interactive nodes)
+
+  <ul>
+
+    <li>Initial set up
+
+    <ul>
+
+      <li>cd /gpfs/home/e058/home/PythonScripts/
+
+      <li>git clone git://github.com/adrianjmatthews/python-iris #
+      one-off command
+
+      <li>Then follow same commands as above for laptop
+
+      <li>git config --global core.editor emacs
+
+      <li>added to .bashrc; 'export GIT_SSL_NO_VERIFY=true'
+
+    </ul>
+
+    <li>Working in the repository
+
+    <ul>
+
+      <li>cd /gpfs/home/e058/home/PythonScripts/python-iris
+
+      <li>Edit python scripts
+
+      <li>git push  https://github.com/adrianjmatthews/python-iris.git
+      master 
+
+      <li>git pull origin # Don't understand why I need to do this,
+      but it stops the "Your branch is ahead of origin/master by XX
+      commits" after pushing.
+
+    </ul>
+
+  </ul>
+
+  <li>On JASMIN (jasmin-login1)
+
+  <ul>
+
+    <li>Initial set up
+
+    <ul>
+
+      <li>cd /home/users/matthews/PythonScripts/
+
+      <li>git clone git://github.com/adrianjmatthews/python-iris #
+      one-off command
+
+      <li>Then follow same commands as above for laptop
+
+      <li>git config --global core.editor emacs
+
+    </ul>
+
+    <li>Working in the repository
+
+    <ul>
+
+      <li>cd /home/users/matthews/PythonScripts/python-iris
+
+    </ul>
+
+  </ul>
+
+  <li>19 Jan 2016.  Gave up on multiple branches(?) with git.  Just
+  update files on grace, then use git push to transfer to github.  For
+  zenbook, just scp'd files over from grace.
+
+  <li>Private github repository.  Default (and ethos) is that a github
+  account is publically visible.  However, you can have a private
+  github repository (useful for, e.g., confidential project
+  documents), if you are a student, teacher or researcher.  Add your
+  academic email address to your github account then fill in the form
+  at
+  <a href="https://education.github.com/discount_requests/new">
+  https://education.github.com/discount_requests/new</a> 
+
+  <li>16 Jun 2020. Started git and github again in training session,
+  run by Jenny Graham and Tiago Silva.
+
+    <ul>
+
+      <li>On ada.
+
+      <li>Initial set up.
+
+	<ul>
+	
+	  <li>git config --global user.name adrianjmatthews # Use your
+	  github account name.
+
+	  <li>git config --global user.email
+          adrian.j.matthews@gmail.com # Use the email your github
+          account is registered with.
+
+	  <li>git config --global color.ui auto
+
+	  <li>git config --global core.editor 'emacs -nw'
+
+	  <li>git config --global -l # lists all global settings
+
+	  <li>git config --local -l # lists all local repository settings
+
+	</ul>
+
+      <li>Set up local repository on HPC.
+
+	<ul>
+	
+	  <li>In home/PythonScripts/py36. git init.
+	    
+	  <li>git add data_analysis.py ; git commit (with message)
+	    
+	  <li>git remote add origin https://github.com/adrianjmatthews/py36.git
+
+	  <li>Use .gitignore to tell git what to ignore. This is an
+	  ASCII file that you just edit yourself.
+	    
+	</ul>
+
+      <li>Github repository.
+
+	<ul>
+	
+	  <li>Create empty repository on github website, with same
+	  name (py36)
+	    
+	  <li>git push -u origin master
+
+	  <li>For later pushes, once you have done 'git push -u origin
+	  master' once, then you can just do 'git push' from them on
+	  for later pushes.
+
+	</ul>
+	    
+    </ul>
+  
+</ul>
+
+<hr><!-------------------------------------------------------------->
+
+<h2><a name="source">Data sources</h2>
+
+<ul>
+
+  <li>The "standard" data sets are
+  multi-dimensional <a href="#gridded">gridded</a> fields with time
+  dependence.  Most of the code in data_analysis.py is written to
+  analyse these.  There are also
+  one-dimensional <a href="#time_series">time series</a> and
+  <a href="#time_invariant">time-invariant</a> data sets that are
+  treated differently.
+
+</ul>
+
+<h3><a name="gridded">Gridded data sets</a></h3>
+
+<ul>
+
+  <li>Data directory on grace/hpc is <TT>/gpfs/afm/matthews/data/</TT>
+
+  <li>Directory structure: Data grouped by source.  A source
+  (directory), e.g., <TT>ncepdoe_plev_d</TT> has three parts:
+
+  <ul>
+
+    <li>data_source : e.g., <TT>ncepdoe</TT>. The horizontal grid is
+    implicit in data_source, so related data on different horizontal
+    grids need different data_source values.
+
+    <li>level_type : e.g., <TT>plev</TT>
+
+    <li>time resolution : e.g., <TT>m</TT> for monthly, <TT>w</TT> for
+    weekly, <TT>d</TT> for daily, <TT>3h</TT> for 3-hourly, <TT>h</TT>
+    for hourly.
+
+  </ul>
+
+  <li>In most of the source directories, there are 3 subdirectories:
+
+  <ul>
+
+    <li><TT>raw</TT> : contains the raw data as downloaded from
+    external data repository
+
+    <li><TT>std</TT> : contains the data from raw, reprocessed to
+    standard configuration using preprocess.py, and filtered data,
+    data with annual cycle subtracted.
+
+    <li><TT>processed</TT> : contains time processed data such as time
+    mean, lagged composites etc.
+
+  </ul>
+
+  <li>Note that <TT>raw</TT> and <TT>std</TT> directories both contain
+  large files with e.g., daily data over many years.  Files in
+  <TT>processed</TT> directory are generally much smaller (typically
+  with no time dimension).
+
+  <li>File structure and levels.  Usually, single-level data is stored
+  in individual files, indicated by the LEVEL parameter in scripts,
+  which is then included in file names, e.g., uwnd_850_2016.nc.
+  However, for some smaller data sets (e.g., glider data), and for
+  some more processed data (and therefore smaller data size), levels
+  are combined into a single multi-level file.  The LEVEL parameter is
+  then set to 'all'.
+
+  <li>File structure and time blocks.
+
+  <ul>
+
+    <li>Depending on <TT>source</TT>, data is stored (by the time it has
+    reached the <TT>std</TT> directory) in individual files with a
+    standard size time block, determined by
+    the <TT>outfile_frequency</TT> attribute for that source, which is
+    currently either <TT>'year'</TT> or <TT>'month'</TT>.
+
+    <li>This is to have a balance between individual files not being
+    so large that data access takes too long, and not being so small
+    that there are a very large number of files so again data access
+    takes too long.
+
+    <li>A practical compromise seems to be with individual files
+    between 100 MB and 1 GB.
+
+    <li>Hence, the data in the <TT>std</TT> directory is stored in files with
+    the following name convention:
+
+    <ul>
+
+      <li><TT>outfile_frequency</TT> is <TT>'year'</TT>, file name
+      is <TT>fileprefix_????.nc</TT> where <TT>????</TT>  is the year,
+      e.g., <TT>olrinterp_toa_d/std/olr_0_2014.nc</TT>
+
+      <li><TT>outfile_frequency</TT> is <TT>'month'</TT>, file name is
+      <TT>fileprefix_??????.nc</TT> where <TT>??????</TT>  is the year
+      and month, e.g., <TT>trmm3b42v7_sfc_3h/std/ppt_1_201404.nc</TT>
+
+    </ul>
+
+  </ul>
+
+</ul>
+
+<H4>bobblemom_zlev_d</H4>
+
+<ul>
+
+  <li>MOM ocean model integration run for BoBBLE period (2016).
+
+  <li>Supplied by Vinay
+
+</ul>
+
+<H4>bobbleroms_zlev_d</H4>
+
+<ul>
+
+  <li>ROMS ocean model integration run for BoBBLE period (2016).
+
+  <li>Supplied by Vinay
+
+</ul>
+
+<H4>erainterim_plev_6h</H4>
+
+<ul>
+
+  <li>ERA-Interim reanalysis.  
+
+  <li>Dee et al. (2011).
+
+  <li>CEDA/BADC. 
+
+  <li>1979 to near present (typically one year ago). Will finish on 31
+  Aug 2019.
+
+  <li>512x256 (0.7 x ~0.7 deg N128 reduced Gaussian grid) on pressure
+  levels.  1979 onward. 1 level, 1 year = 800 MB.  40 year (to 2019) =
+  32 GB.
+
+  <li>37 levels: 1000., 975., 950., 925., 900., 875., 850., 825.,
+  800., 775., 750., 700., 650., 600., 550., 500., 450., 400., 350.,
+  300., 250., 225., 200., 175., 150., 125., 100., 70., 50., 30., 20.,
+  10., 7., 5., 3., 2., 1.
+
+  <li>However, data is stored with one file per time (310 MB), with
+  every variable at all levels in that file: ['CIWC', 'Z', 'PV', 'D',
+  'CC', 'W', 'CLWC', 'Q', 'R', 'U', 'T', 'VO', 'V', 'VPOT', 'O3',
+  'STRF'].  310 x 4 = 1.2 GB per day.  x 31 = 37 GB per month.  x 12 =
+  450 GB per year. x 36 = 16 TB for whole data set.  Use JASMIN/LOTUS
+  to preprocess.
+
+  <li>Already have a cdat script on JASMIN to preprocess.  Due to
+  complex file structure and existence of xml files, which cdat can
+  handle, keep using this cdat script for a pre-preprocessing to
+  produce one file for a single level, single variable for each year.
+  Copy these over to UEA, then run iris preprocess.py to do a final
+  preprocess!
+
+  <li>1 Dec 2016.  Data (at least, uwnd and vwnd 850 hPa) only
+  available up to 28 Feb 2013, because the xml file that accesses them
+  has not been updated since May 2013.  Asked CEDA help desk to update
+  it. 6 Jan 2017, this is now done.
+
+  <li>Alternative source's
+    
+    <ul>
+
+      <li>erainterimEK1_plev_6h # EK (equatorial Kelvin wave) filtered
+      data. For calculaton of vorticity budget, uwnd, vwnd, omega,
+      vrt, div are all EK-filtered at each latitude in
+      erainterim_plev_6h by wheelerkiladis.py, then combined into
+      erainterimEK1_plev_6h by combine_latitudes.py. vrtbudget.py is
+	then run in erainterimEK1_plev_6h on this EK-filtered data.
+
+      <li>erainterimEK2_plev_6h # Alternate EK filtered data. Here,
+      vrtbudget.py is run on non-filtered erainterim_plev_6h uwnd,
+      vwnd, etc. The outputs (dvrtdt, m_uwnd_dvrtdx, etc.) are then
+      EK-filtered at each latitude in erainterim_plev_6h by
+      wheelerkiladis.py, then combined into erainterimEK2_plev_6h by
+      combine_latitudes.py
+
+    </ul>
+    
+</ul>
+
+<H4>era5_plev_h</H4>
+
+<ul>
+
+  <li>ERA-5 reanalysis.  
+
+  <li>Hersbach and Dee (2016).
+
+  <li>CEDA/BADC does not have pressure level data. Have to get from
+  Copernicus (CDS). 
+
+  <li>1979 to near real time. Will be extended back to 1950.
+
+  <li>0.25 degrees
+
+  <li>137 levels to 0.01 hPa.
+
+  <li>1 hour time resolution.
+    
+  <li>One month of single level data is 3.0 GB.
+
+</ul>
+
+<H4>hadgem2esajhog_plev_d</H4>
+
+<ul>
+
+  <li>HadGEM2-ES CMIP5 control run 1 Dec 1984-30 Nov 2009 (Run id is ajhog)
+
+  <li>Downloaded from CEDA
+
+  <li>144 latitudes (1.25 degrees), 192 longitudes (1.875 degrees)
+
+  <li>Pressure levels (8)
+
+  <li>Daily on 360_day calendar
+  
+  <li>Time is every day, on the half day at 12 UTC, e.g., 24106.5.  In
+  preprocess.py, convert to be at 00 UTC, ie subtract 0.5 day from
+  time values.
+
+</ul>
+
+<H4>imerg_sfc_30m and imergXXX_sfc_30m</H4>
+
+<ul>
+
+  <li>Last downloads
+
+  <ul>
+
+    <li>4 Jun 2020. Data to 29 Feb 2020.
+      
+    <li>1 May 2020. Updated: last data is 31 Dec 2019.
+    
+    <li>8 Jan 2020. Updated: last data is 30 Sep 2019.
+    
+    <li>11 Oct 2019. Data to 30 Jun 2019
+
+    <li>Sep 2019. Extended back to 1 Jan 2001. Last data still 31 Mar 2019. 
+
+    <li>24 July 2019. From 1 Jan 2014 to 31 Mar 2019.
+
+  </ul>
+  
+  <li><a href="https://pmm.nasa.gov/data-access/downloads/gpm">GPM
+  information</a> 
+
+  <li>IMERG: Rainfall estimates combining data from all
+  passive-microwave instruments in the GPM Constellation.
+
+  <li>Huffman et al. (2019)
+    
+  <li>0.1 deg, 30 minute, gridded, 90N-80S (60N-60S "full"), Jun 2000
+  (as of 17 Jul 2019, they may be adding earlier data?)  to near
+  present. Latency is 2.5 months for Research / Final Run data set.
+
+  <li>Acknowledgement statement. The IMERG precipitation data were
+  supplied by the National Aeronautics and Space Administration
+  through their web site at gpm.nasa.gov.
+    
+  <li><a href="ftp://arthurhou.pps.eosdis.nasa.gov/">
+  ftp://arthurhou.pps.eosdis.nasa.gov/ </a>
+  and <a href="https://emea01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fstorm.pps.eosdis.nasa.gov&amp;data=02%7C01%7Ca.j.matthews%40uea.ac.uk%7C760981c0ac6249fc500008d69d8c0aa8%7Cc65f8795ba3d43518a070865e5d8f090%7C0%7C1%7C636869622131705029&amp;sdata=AaZPOCF21papNhqQCYs0kU1KRdZBLFU%2BrxRwwg8REe8%3D&amp;reserved=0">
+  Data Ordering web interface, STORM</a> . Access with lower case UEA
+  email as username and password.
+
+  <li>Contact is helpdesk@mail.pps.eosdis.nasa.gov. 
+
+  <li>Download
+
+  <ul>
+    
+  <li>A month of global data in netcdf format would be ~37 GB, compared
+  to 0.55 GB for 3 hourly TRMM at 0.25 deg.
+
+  <li>Have to download full global data (in HDF5 format) at each
+  time. Do this into imerg_sfc_30m/raw/YYYY/MM/DD/ Each 30 minute time
+  step is a separate file, so 48 files per directory.
+
+  <ul>
+    
+  <li>Either download manually. ftp -i arthurhou.pps.eosdis.nasa.gov ;
+  cd gpmdata/YYYY/MM/DD/imerg ; mget *.HDF5 # Each directory has 48
+  files in, each 5.3 MB. Hence, a month is 5.3MB x 48 x 30 = 7.6 GB. A
+  year is 91 GB. 20 years is 1.8 TB, Note this is much less than the
+  calculated 37 GB per month above, for a netcdf file for one variable
+  (and there are several variables in the HDF file). HDF is a compact
+  format!
+
+  <li>Or imerg_wget.py # Automates download.
+
+  </ul>
+    
+  </ul>
+
+  <li>imerg_hd5tonetcdf.py # read and convert to netcdf. Note there is
+  too much data to analyse the full global data set
+  efficiently. Create and keep a separate data set and source
+  variable) for different regions. Code these with three letters, the
+  XXX in the source name. Reference for these in sdomains in info.py
+
+  <TABLE BORDER=1>
+
+  <TR><TH>XXX <TH>Details
+
+  <TR><TD>plp <TD>Philippines. 115-130E. 5-20N. ~0.14 GB per month.
+
+  <TR><TD>mts <TD>Montserrat. 290-305E (55-70W). 10-25N. ~0.14 GB per month.
+
+  <TR><TD>mt2 <TD>Montserrat. 296-300E (60-64W). 15-19N. ~0.01 GB per month.
+
+  <TR><TD>npl <TD>Nepal. 75-90E. 20-35N. ~0.14 GB per month.
+
+  <TR><TD>np2 <TD>Nepal 2. 84-88E. 26-30N. ~0.01 GB per month.
+
+  <TR><TD>mcw <TD>Western Maritime Continent. 90-130E. 15S-20N. ~0.9
+  GB per month.
+
+  </TABLE>
+
+  <li>Then use preprocess.py as usual.
+
+</ul>
+
+<H4>metumgomlu-bd818_sfc_d</H4>
+
+<ul>
+
+  <li>MetUM-GOML control run Dec 1981 to Dec 2063 (run id is u-bd818)
+
+  <li>Downloaded from CEDA
+
+  <li>324 latitudes (0.55 degrees), 432 longitudes (0.83 degrees)
+
+  <li>Daily on 360_day calendar
+  
+  <li>Time is every day, on the half day at 12 UTC, e.g., 24106.5.  In
+  preprocess.py, convert to be at 00 UTC, ie subtract 0.5 day from
+  time values.
+
+</ul>
+
+<H4>ncepncar_sfc_d</H4>  
+
+<ul>
+
+  <li>Last download 3 Nov 2016.  Data up to 31 Oct 2016.
+
+  <li>NCEP-NCAR reanalysis.  
+
+  <li>Kalnay et al. (1996).
+
+  <li>ftp.cdc.noaa.gov. Director is ncep.reanalysis.dailyavgs
+
+  <li>144x73 (2.5 x 2.5 deg). 17 levels: [1000, 925, 850, 700, 600,
+  500, 400, 300, 250, 200, 150, 100, 70, 50, 30, 20, 10].  1948 to
+  present (typically 1 month ago).
+
+</ul>
+
+<H4>ncepdoe_plev_6h</H4>  
+
+<ul>
+
+    <li>NCEP-DOE reanalysis.  
+
+    <li>Kanamitsu et al. (2002).
+
+    <li>ftp ftp.cdc.noaa.gov.  Director is ncep.reanalysis2
+
+    <li>144x73 (2.5 x 2.5 deg).  1979 to present (typically a few days
+    ago).  1 level, 1 year = 60 MB.  40 year (to 2019) = 2.4 GB.  ftp
+    -i cdc.noaa.gov. anonymous. password is email address.
+
+</ul>
+
+<H4>ncepdoe_plev_d</H4>  
+
+<ul>
+
+    <li>As ncepdoe_plev_6h but daily averaged.
+
+    <li>Most daily averaged data (e.g., uwnd) can be downloaded
+    directly from ftp.cdc.noaa.gov, but the vorticity budget data
+    (dvrtdt etc.) are calculated (using vrtbudget.py) from the 6h
+    data, then time averaged to create the daily data.
+
+</ul>
+
+<H4>ncepdoe_sfc_d</H4>  
+
+<ul>
+
+    <li>As ncepdoe_plev_d but for surface or near-surface fields,
+    e.g., surface pressure, mean sea level pressure.
+
+</ul>
+
+<H4>ncepdoegg_zlev_d</H4>  
+
+<ul>
+
+    <li>As ncepdoe_plev_d but for near-surface fields on Gaussian grid
+    and z-levels, e.g., 10 m winds.
+
+    <li>192 x 94 horizontal grid.
+      
+</ul>
+
+<H4>ncepdoe_zlev_d</H4>  
+
+<ul>
+
+    <li>ncepdoegg Gaussian grid regridded onto ncepdoe regular 144x73 grid.
+      
+</ul>
+
+<H4>nemo_zlev_d</H4> 
+
+<ul>
+
+  <li>Marina, Ben using this.
+
+  <li>1/12 degree.
+
+  <li>36 levels in top 1000 m. 1 m resolution at surface (15 levels in
+  top 30 m) to 100 m at 1000 m.
+
+</ul>
+
+<H4>olrcdr_toa_d</H4> 
+
+<ul>
+
+  <li>NOAA OLR daily climate data record. 
+
+  <li>Lee (2014).
+
+  <li>ftp.cdc.noaa.gov.  
+
+  <li>360 x 181 (1 x 1 deg).  Daily 1 Jan 1979 to 31 Dec 2012.
+
+  <li>Replacement for olrinterp_toa_d?  Not updated that frequently
+  though.  And olrinterp_toa_d is still going unofficially.
+
+</ul>
+
+<H4>olrinterp_toa_d</H4>
+
+<ul>
+
+  <li>NOAA interpolated OLR.  
+
+  <li>Liebmann and Smith (1996).
+
+  <li>ftp cdc.noaa.gov
+
+  <li>cdc.noaa.gov.  The raw data file olr.day.mean.nc is no longer on
+  the main ESRL web/ftp site.  However, it can still be accessed on
+  the ftp site at ftp.cdc.noaa.gov/Public/csmith/OLR/. If it is not
+  updated, email cathy.smith@noaa.gov.
+
+  <li>The olr.2x file is the 2x daily OLR data set, from George
+  Kiladis, at ftp.cdc.no aa.gov/Public/gkiladis/  Have not used this.
+
+</ul>
+
+<H4>sgXXXmYYYoiZZ_zlev_h</H4>
+
+<ul>
+
+  <li>Seaglider data
+
+  <li>XXX is glider id
+
+  <li>YYY is mission number
+
+  <li>ZZ is OI (optimal interpolation) version.  Just start with 01,
+  and record details below.
+
+  <li>sg620m031oiZZ_zlev_h.  
+
+  <ul>
+
+    <li>ZZ=01. 3 hour and 2 m radii of influence.
+
+    <li>ZZ=02.  as oi01 but data masked out where coverage < 2/3.
+
+    <li>ZZ=03.  3 hour and 0.5 m, only using data from ascending
+    profiles. 
+
+  </ul>
+
+</ul>
+
+<H4>sstrey_sfc_d</H4>  
+
+<ul>
+
+  <li>This data is linearly interpolated from weekly sstrey_sfc_7d
+  data, hence there is no raw directory here.
+
+</ul>
+
+<H4>sstrey_sfc_7d</H4>  
+
+<ul>
+
+  <li>Last download 9 Dec 2016.  Data up to 27 Nov 2016.
+
+  <li>Reynolds SST. 
+
+  <li>Reynolds et al. (2002).
+
+  <li>ftp.cdc.noaa.gov. noaa.oisst.v2
+
+  <li>This weekly (7-day) data is linearly interpolated to daily, in
+  sstrey_sfc_d.  No further analysis is done on the weekly data, hence
+  there is no processed directory here.
+
+</ul>
+
+<H4>trmm3b42v7_sfc_3h</H4>
+
+<ul>
+
+  <li>Last downloads 
+
+  <ul>
+
+    <li>Note that the TRMM website says that 31 Dec 2019 will be the
+    end of the 3B42 data set anyway. Move to GPM IMERG.
+    
+    <li>15 Jan 2020. Last file from Julian day 120 in 2019 (ie 00 UTC
+    on 1 May 2019), then up to Julian day 273 (30 Sep 2019). Note that
+    day 273 will have to be downloaded at next iteration as it does
+    not yet contain 00 UTC on 1 Oct 2019.
+    
+    <li>19 Jul 2019. Last file from Julian day 334 in 2018 (ie 00 UTC
+    on 1 Dec 2018), then up to Julian day 120 (30 Apr 2019). Note that
+    day 120 will have to be downloaded at next iteration as it does
+    not yet contain 00 UTC on 1 May 2019.
+    
+    <li>18 Feb 2019. Data up to julian day 334, 30 Nov 2018. 
+
+    <li>18 Jan 2018. Data up to julian day 303, 30 Oct 2017.  NB do
+    not have any data from day 304 31 Oct 2017, as last time was
+    missing.  Because of this the last processed month is Sep 2017.
+
+  </ul>
+
+  <li>TRMM 3B42 version 7.  
+
+  <li>Huffman et al. (2007).
+
+  <li>NASA DISC.
+
+  <li>Example URL directory for HDF data is
+  http://disc2.gesdisc.eosdis.nasa.gov/data/TRMM_L3/TRMM_3B42.7/2016/134/3B42.20160513.03.7.HDF
+
+  <li>trmm_wget_convert.py to download and convert from HDF4 to HDF5,
+  and move to more convenient directory structure. 
+
+  <ul>
+
+    <li>NB The raw data at GSFC has a strange folder set up.  There is
+    a folder for each day, with individual files for each 3-hourly set
+    of data.  But the files in each folder run from 0300 on that day,
+    through 0600, 0900, 1200, 1500, 1800 and 2100, and then also 0000
+    for the <I>next</I> day.  This 0000 file can be missing in the
+    last day available.  So when I update the data set be sure to get
+    it!
+
+    <li>To set up and use wget,
+    see <a href="http://disc.sci.gsfc.nasa.gov/recipes/?q=recipes/How-to-Download-Data-Files-from-HTTP-Service-with-wget">downloading
+    with wget</a> information.
+
+    <li>The TRMM HDF files are in the old HDF4 format, and first need
+    converting to HDF5.  Use h4to5tools, downloaded from
+    https://support.hdfgroup.org/h4toh5/download.html (Linux 2.6
+    x86_64). tar -xzvf h4h5tools-2.2.2-linux-x86_64-static.tar.gz ,
+    and run, e.g., h4h5tools-2.2.2-linux-x86_64-static/bin/h4toh5
+    /gpfs/afm/matthews/data/trmm3b42v7_sfc_3h/raw/2016/134/3B42.20160513.03.7.HDF
+
+  </ul>
+
+  <li>trmm_hd5tonetcdf.py # to convert from HDF5 to netcdf, as iris
+  cannot read HDF files.  This uses the h5py package instead to read
+  them.
+
+  <li>Then use preprocess.py as usual.
+
+  <li>Alternative sources.
+
+    <ul>
+    
+      <li>trmm3b42v7_sfc_d is daily averaged trmm3b42v7_sfc_3h.
+
+      <li>trmm3b42v7p1_sfc_3h is trmm3b42v7_sfc_3h, with missing
+	values changed to zeros, by zero_missing_values.py.
+
+      <li>trmm3b42v7p1_sfc_d is then a daily averaged version of
+      trmm3b42v7p1_sfc_3h, by time_average.py.
+
+      <li>trmm3b42v7p2_sfc_3h is trmm3b42v7p1_sfc_3h, longitudinally
+      averaged from the original 0.25 degree grid to a 1 degree grid,
+      by longitude_average.py.
+
+      <li>trmm3b42v7p3_sfc_d is trmm3b42v7p1_sfc_d, regridded to a 2.5
+      x 2.5 (NCEP-DOE) grid.
+
+      <li>trmm3b42v7p4_sfc_d is trmm3b42v7p1_sfc_d, regridded to a
+      N216 MetUM grid (512 lon x 256 lat).
+
+    </ul>
+
+</ul>
+
+<H4>tropflux_sfc_d</H4>
+
+<ul>
+
+  <li>Last downloaded 28 Mar 2019.  Data up to 31 Dec 2018.
+
+  <li>Tropflux, surface fluxes calculated from ERA-Interim.
+
+  <li>Praveen Kumar et al. (2012)
+
+  <li><a href="http://www.incois.gov.in/tropflux/">www.incois.gov.in/tropflux/</a>
+
+  <li>Updated to within 3-4 months of real time.
+
+  <li>Longitudes (350) are every 1 degree, from 30.5 to 379.5 (19.5E),
+  ie there is a 10 degree missing band (over Africa).  In
+  preprocess.py add in the missing band (as missing data) and set to
+  run from 0.5 to 359.9 (360 longitudes).
+
+  <li>Latitudes (60) are every 1 degree from -29.5 to 29.5.
+
+  <li>Time is every day, on the half day at 12 UTC, e.g., 24106.5.  In
+  preprocess.py, convert to be at 00 UTC, ie subtract 0.5 day from
+  time values.
+
+  <li>Use tropflux_wget.py to retrieve data.
+
+</ul>
+
+<h3><a name="time_series">Time series</a></h3>
+
+<ul>
+
+  <li>Time series are treated in a fairly ad hoc way, as their origins
+  and raw formats are very diverse.
+
+  <li>Typically have an individual bespoke preprocessing script (e.g.,
+  preprocess_bsiso.py) to convert raw time series into a standardised
+  form.
+
+  <li>Directories:
+
+  <ul>
+
+    <li>On grace, base directory. <TT>/gpfs/home/e058/home/data</TT>
+    for one-off time series.  Under the base directory is the data
+    directory, e.g., <TT>bsiso_nl_d</TT> with its own <TT>raw</TT>
+    and <TT>std</TT> subdirectories.
+
+    <li>For one-dimensional time series created from a single grid
+    point, or box area average, of a gridded data set, use the
+    relevant <TT>std</TT> subdirectory of the gridded data set.
+
+  </ul>
+
+  <li>As with gridded data, just have one variable in one file.
+  Format for processed file name
+  is <TT>[var_name]_[level].nc</TT>, e.g., bsiso1-1_-999.nc.
+
+</ul>
+
+<H4>bobblemet_sfc_h</H4>
+
+<ul>
+
+  <li>Meteorological data from BoBBLE Jun-Jul 2016 cruise
+
+  <li>Supplied by Vijaykumar, and then processed by Ben Webber.
+
+  <li>Hourly time series
+
+  <li>20170123_BoBBLE_IISc_Jan2017_4Andrian.pptx is powerpoint from
+  Vijaykumar describing data.
+
+  <li>BoBBLE_hourly_surfmet.txt # From Vijaykumar.  First line has
+  time=180.0.  This corresponds to Julian day 180.0, which corresponds
+  to 0000 (Indian Standard Time, IST) 28 Jun 2016, which is 1830 UTC
+  on 27 Jun 2016.  "For U10, I followed a paper By Zeng et al., 1998,
+  Journal of Climate Vol2. Basically takes into account the
+  atmospheric stability functions and computed U10 from the measured
+  value.  For specific humidity at the surface I used empirical
+  formula 0.622e /( p 0.378e) where e is the saturation vapor pressure
+  comes from Buck 1981. For air, basically is the same but accounts
+  for relative humidity."
+
+  <li>BoBBLE_hourly_radiation_component.txt # From Vijaykumar.  Date
+  is a running number starting with 26 June and ending with 22 July.
+  Some issues with net radiation not being the sum of the components
+  all the time.  "Now the difference you noticed has come from the
+  additional thing I did while processing. There was malfunctioning in
+  radiation sensor, but I had another set of SW_in sensor fitted on
+  the AWS. I plugged that data in the gap wherever missing data were
+  noticed. So the net radiation what has been stored basically has a
+  component of AWS SW_in also.  Therefore net will not match if
+  computed from radiation sensor alone and that is why you are seeing
+  the difference.  Additionally, net can be computed from the
+  radiation data itself . That is absolutely fine.  Few data points at
+  the start may not be reliable therefore can be discorded, similarly
+  when sensor recovered after failure few data points may not be
+  reliable because that is warming period and senor needs to get
+  stabilized.  "
+
+  <li>bobble_hourly_met_20170125.nc # Processed by Ben.  Uses the
+  estimate from Payne (1972) to fill in the gap where I have judged
+  the upwelling SW measurements to be bad. These data points are
+  recorded in the variable QSW_flag, and both SW_up (measured) and
+  SW_up_est (estimated) are included along with SW_dn, and QSW (net
+  shortwave).
+
+  <li>preprocess_bobblemet.py # Needs to be written!
+
+</ul>
+
+<H4>bsiso_nl_d</H4>
+
+<ul>
+
+  <li>BSISO time series indices
+
+  <li>Lee et al. (2013).
+
+  <li>BSISO indices are no longer updated
+  at <a href="http://iprc.soest.hawaii.edu/users/jylee/bsiso/data/BSISO.INDEX.NORM.data">http://iprc.soest.hawaii.edu/users/jylee/bsiso/data/BSISO.INDEX.NORM.data</a>
+  since mid 2013, as June-Yi has moved to Pusan. They are now
+  available
+  at <a href="http://www.apcc21.net/ser/moni.do?lang=en">http://www.apcc21.net/ser/moni.do?lang=en</a>
+
+  <li>1 Jan 1981 to near present.
+
+  <li>Daily time series
+
+  <li>preprocess_bsiso.py
+
+</ul>
+
+<H4>rmm_nl_d</H4>
+
+<ul>
+
+  <li>Realtime Multivariate MJO (RMM) time series indices
+
+  <li>Wheeler and Hendon (2004).
+
+  <li>Acknowledgement statement. The Realtime Multivariate MJO (RMM)
+  time series indices were supplied by the Australian Bureau of
+  Meteorology through their web site at
+  poama.bom.gov.au/project/maproom/RMM.
+    
+  <li><a href="http://poama.bom.gov.au/project/maproom/RMM/">http://poama.bom.gov.au/project/maproom/RMM/</a> 
+
+  <li>1 Jun 1974 to present.
+
+  <li>Daily time series
+
+  <li>preprocess_rmm.py
+
+</ul>
+
+<h3><a name="time_invariant">Time invariant data sets</a></h3>
+
+<ul>
+
+  <li>Time invariant data sets are also treated in an ad hoc way. 
+
+  <li>On grace, base directory is <TT>/gpfs/home/e058/home/data</TT>
+  Under the base directory is the data directory,
+  e.g., <TT>gebco_sfc_ti</TT> (note that <TT>ti</TT> stands for 'time
+  invariant') with its own <TT>raw</TT> and <TT>std</TT>
+  subdirectories.
+
+  <li>As with gridded data, just have one variable in one file.
+  Format for processed file name
+  is <TT>[var_name]_[level].nc</TT>, e.g., elevation_1.nc.
+
+</ul>
+
+<H4>gebco_sfc_ti</H4>
+
+<ul>
+
+  <li>GEBCO bathymetry and topography
+
+  <li><a href="http://www.gebco.net">http://www.gebco.net</a> 
+
+  <li>Acknowledgement statement. The topography data were supplied by
+  the General Bathymetric Chart of the Oceans: GEBCO Compilation Group
+  (2019) GEBCO 2019 Grid
+  (doi:10.5285/836f016a-33be-6ddc-e053-6c86abc0788e).
+    
+  <li>GEBCO_2014 grid. Global at 30 arc-second interval, ie 43200 x
+  21600 longitude x latitude grid. 
+
+  <li>Data is stored in elevation_1.nc as a 2D array of 2-byte signed
+  integer values, saving considerably in storage.  NB This is the raw
+  data, unchanged from the download from BODC, but stored in
+  the <TT>std</TT> directory, i.e., no preprocessing was done, or was
+  necessary. 
+
+</ul>
+
+<hr><!-------------------------------------------------------------->
+
+<h2><a name="data">(netcdf) data conventions</h2>
+
+<ul>
+
+  <li>Netcdf data should be written according to these <a
+  href="http://my.unidata.ucar.edu/content/software/netcdf/BestPractices.html">
+  Best Practices</a>
+
+  <li>Also, there is an accepted list (CF-compliant) of
+  "standard_name" and "units" attributes: <a href=
+  "http://cfconventions.org/documents.html"> List of standard names
+  with detailed descriptions of variables</a>
+
+  <li>There doesn't seem to be a convention on the id/name attributes
+  though. 
+
+  <li>See var_name2standard_name in data_analysis.py for dictionary of
+  my netcdf id/name attributes, and their CF-compliant standard_name
+
+  <li>Use 'ncdump -c filename.nc' to get information on headers and
+  coordinates of netcdf file.
+    
+</ul>
+
+<hr><!-------------------------------------------------------------->
+
+<h2><a name="scripts">Python scripts</h2>
+
+<ul>
+
+  <li>Most scripts use
+  the <A HREF="./data_analysis.html">data_analysis</A> module ('pydoc
+  -w data_analysis' to update. NB it must pydoc -w data_analysis, not
+  data_analysis.py. Also need to comment out all import commands for
+  non built in modules before running pydoc).
+
+  <li>info.py.  Information on locations, sections, etc.
+
+  <li>Running multiple scripts
+
+  <ul>
+
+    <li>To submit a single script to a batch job, <TT>sbatch
+    job_ada.sub</TT> from the <I>login</I> node, as cannot submit a
+    job via the unix command line from an interactive node on ada
+    (was <TT>bsub < job_hpc.bsub</TT> on hpc).
+
+    <li>To loop over years, months, levels etc, and submit multiple
+    jobs to the batch system, <TT>run_scripts_sub.py</TT>, from
+    an <I>interactive</I> node, as interactive node needed to run
+    py36, and bizarrely you can submit a batch job from within a
+    python script on an interactive
+    node. (was <TT>run_scripts_bsub.py</TT> on hpc).
+
+    <li>To run several scripts in series from an interactive session
+    (e.g., plotting scripts), use <TT>run_scripts.py</TT>
+
+  </ul>
+
+  <li>preprocess.py.  Preprocess data using
+  data_analysis.DataConverter.
+
+  <li>Scripts that necessitate a change of 'source'
+
+  <ul>
+
+    <li>interpolate.py.  Interpolate data to higher time resolution
+    using data_analysis.ModifySource.
+
+    <li>time_average.py.  Average data to lower time resolution using
+      data_analysis.ModifySource.
+
+    <li>regrid.py. Spatially regrid data using
+    data_analysis.ModifySource.
+
+    <li>zero_missing_values.py. Set missing values to zero.
+      
+  </ul>
+
+  <li>anncycle.py.  Calculate and subtract annual cycle using
+  data_analysis.AnnualCycle.
+
+  <li>filter.py.  Time filter data using data_analysis.TimeFilter.
+
+  <li>wind.py.  Calculate psi, chi, vrt, div, wndspeed from uwnd, vwnd
+  using data_analysis.Wind.
+
+  <li>mean.py. Calculate time mean statistics using
+  data_analysis.TimeDomStats.
+
+  <li>lagged_mean.py. Calculate lagged-time mean using
+  data_analysis.TimeDomStats.
+
+  <li>diurnal_cycle.py.  Calculate diurnal cycle using
+  data_analysis.TimeDomStats.
+
+  <li>spatial_subset.py.  Create a spatially subsetted (Hovmoller or
+  box-averaged time series) field using
+  data_analysis.Spatial_Subset. [Rename and generalisation of old
+  hovmoller.py.] 
+
+  <li>curved_section.py.  Calculate an irregular section using
+  data_analysis.cube_section.
+
+  <li>truncate.py. Spectrally truncate iris cube.
+
+  <li>zero_missing_value.py. Set missing values to zero.
+    
+  <li>class CubeDiagnostics.  Scripts that use this:
+
+  <ul>
+
+    <li>mld.py.  Calculate mixed layer depth.
+
+    <li>vrtbudget.py.  Calculate vorticity budget on pressure level. 
+
+  </ul>
+
+  <li>Plotting
+
+  <ul>
+
+    <li>plot_multipanel.py. Generic multi-panel plotting script.
+
+    <li>plotter.py. Plot labels, simple functions for use in plotting.
+
+  </ul>
+
+  <li>Further docstring module documentation
+
+  <ul>
+
+    <li><a href="./iris.html">iris</a>
+
+    <li><a href="./windspharm.iris.VectorWind.html">
+    windspharm.iris.VectorWind</a>
+
+  </ul>
+
+</ul>
+
+<hr><!-------------------------------------------------------------->
+
+
+</BODY>
+</HTML>
