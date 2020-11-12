@@ -9,16 +9,17 @@ import matplotlib.pyplot as plt
 
 import data_analysis as da
 
-BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
+BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
+#BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 
-ARCHIVE=True
+ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 FILE_MASK=False # Default value
 
+VAR_NAME='uwnd'; LEVEL=925; SOURCE='era5trp_plev_h'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='erainterim_sfc_d'
-#VAR_NAME='uwnd'; 
-LEVEL=500; SOURCE='erainterim_plev_d'
+#VAR_NAME='vrt'; LEVEL=500; SOURCE='erainterim_plev_6h'
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'
 #VAR_NAME='uwnd'; LEVEL=1000; SOURCE='ncepdoe_plev_d'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='ncepdoe_sfc_d'
@@ -33,12 +34,12 @@ LEVEL=500; SOURCE='erainterim_plev_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_3h'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='imergmt2_sfc_30m'
 
-YEAR_BEG=1998; YEAR_END=2018 # if outfile_frequency is 'year' or less
+YEAR_BEG=2018; YEAR_END=2018 # if outfile_frequency is 'year' or less
 
-MONTH1=MONTH2=-999 # if outfile_frequency is 'year'
-#MONTH1=1; MONTH2=2 # if outfile_frequency is less than 'year'
+#MONTH1=MONTH2=-999 # if outfile_frequency is 'year'
+MONTH1=11; MONTH2=11 # if outfile_frequency is less than 'year'
 
-PLOT=False
+PLOT=True
 
 VERBOSE=2
 
