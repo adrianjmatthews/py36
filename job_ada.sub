@@ -1,0 +1,30 @@
+#!/bin/bash
+#SBATCH -t 24:00:00
+#SBATCH -p compute
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=e058@uea.ac.uk
+#SBATCH --job-name=ajm
+#SBATCH --exclusive
+#SBATCH -o out-%j.out
+#SBATCH -e out-%j.err
+
+# Run this script with 'sbatch job_ada.sub' from ada login node, not interactive node
+# Cancel job with scancel <job_id>
+
+# queue names: compute, hmem
+
+module load python/anaconda/2019.10/3.7
+source activate py36
+
+export DIR1='/gpfs/home/e058/home/PythonScripts/py36'
+echo $DIR1
+
+#
+# ENSURE PLOT COMMANDS ARE SWITCHED OFF
+#
+
+#python ${DIR1}/test.py
+#python ${DIR1}/combine_latitudes.py
+python ${DIR1}/lagged_mean.py
+#python ${DIR1}/imerg_wget.py
+#python ${DIR1}/filter.py
