@@ -1,5 +1,7 @@
 """Data analysis module using iris.
 
+Hello world.
+
 2018-04-25. New version for iris 2.
 
 Classes that provide iris data i/o wrappers to data analysis methods,
