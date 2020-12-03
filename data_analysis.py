@@ -291,9 +291,12 @@ def clean_callback(cube,field,filename):
     #         start of the day over which the daily average (eg NCEP data)
     #         has been carried out over.  Unfortunately, NCEP erroneously
     #         change this to 'point' in 2015.  Need to delete it.
+    for coordc in cube.coords():
+        if coordc.name() in ['time','t']:
+            time_coord=coordc
     att_list=['actual_range','coordinate_defines']
     for attribute in att_list:
-        if attribute in cube.coord('time').attributes:
+        if attribute in time_coord.attributes:
             del cube.coord('time').attributes[attribute]
     # Or set the attributes dictionary of the time coordinate to empty:
     #cube.coord('time').attributes = {}
@@ -307,7 +310,7 @@ def clean_callback(cube,field,filename):
               'NCO','creation_date','invalid_units','metodology',
               'producer_agency','time_range','website','short_name',
               'description','dataset','_NCProperties','valid_max','valid_min',
-              'tracking_id','table_id']
+              'tracking_id','table_id','date','time']
     for attribute in att_list:
         if attribute in cube.attributes:
             del cube.attributes[attribute]
@@ -1117,32 +1120,41 @@ def f_longitude_average(cube_in,nave):
         
 #==========================================================================
 
-def standardise_time_coord_units(self,verbose=True):
+def standardise_time_coord_units(cube,timename='time',tunits=False,verbose=True):
     """Convert time coordinate of cube to standard time units.
 
     Takes account of calendar of time units.
 
-    Standard time units are '[hours,days,seconds] since 1900-01-01 00:00:0.0
-    (hours, days or seconds depending on time units of input cube).
+    Standard time units are '[days,hours,,seconds] since 1900-01-01 00:00:0.0
+    (days,hours, or seconds depending on time units of input cube), or can be
+    overwritten with tunits argument.
     """
-    tcoord1=self.cube.coord('time')
+    tcoord1=cube.coord(timename)
     tunits1=tcoord1.units
     #
-    tunits2str=str(tunits1).split()[0]+' since 1900-01-01 00:00:0.0'
+    if tunits:
+        if tunits not in ['days','hours','seconds']:
+            raise UserWarning('Invalid tunits.')
+        xx=tunits
+    else:
+        xx=str(tunits1).split()[0]
+    tunits2str=xx+' since 1900-01-01 00:00:0.0'
     tunits2=cf_units.Unit(tunits2str,calendar=tunits1.calendar)
     #
     timevals2=tunits1.convert(tcoord1.points,tunits2)
-    tcoord2=iris.coords.DimCoord(timevals2,standard_name='time',var_name=tcoord1.var_name,units=tunits2)
+    tcoord2=iris.coords.DimCoord(timevals2,standard_name='time',var_name='time',units=tunits2)
     #
-    self.cube.remove_coord('time')
-    self.cube.add_dim_coord(tcoord2,0)
+    cube.remove_coord(timename)
+    cube.add_dim_coord(tcoord2,0)
     #
-    if self.verbose:
+    if verbose:
         print('Changing time coordinate to standard base time.')
         print('tunits1: {0!s}'.format(tunits1.__repr__()))
         print('tunits2: {0!s}'.format(tunits2.__repr__()))
         print('tcoord1 [0],[-1]: {0!s},{1!s}'.format(tcoord1.points[0],tcoord1.points[-1]))
         print('tcoord2 [0],[-1]: {0!s},{1!s}'.format(tcoord2.points[0],tcoord2.points[-1]))
+    #
+    return cube
 
 #==========================================================================
 
@@ -1859,9 +1871,12 @@ class DataConverter(object):
         #
         # Set input file name(s)
         if self.source in ['erainterim_plev_6h']:
-            self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+str(self.level)+'_'+str(self.year)+'_6.nc')
+            #self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+str(self.level)+'_'+str(self.year)+'_6.nc')
+            # Input files are in format .../YYYY/MM/DD/ggapYYYYMMDDHH00.nc
+            self.filein1=os.path.join(self.basedir,self.source,'raw',str(self.year),'??','??','ggap'+str(self.year)+'??????00.nc')
         elif self.source in ['erainterim_sfc_d','erainterim_plev_d']:
-            self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+str(self.level)+'_'+str(self.year)+'_d.nc')
+            #self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+str(self.level)+'_'+str(self.year)+'_d.nc')
+            raise UserWarning('Need to recode.')
         elif self.source in ['era5trp_plev_h']:
             self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_'+str(self.level)+'_'+str(self.year)+str(self.month).zfill(2)+'.nc')
         elif self.source in ['ncepdoe_plev_6h','ncepdoe_plev_d','ncepncar_plev_d']:
@@ -1939,15 +1954,13 @@ class DataConverter(object):
         else:
             raise ToDoError('Set an instruction for level_constraint.')
         #
-        # Set raw_name of variable in raw input data
+        # Set raw_name of variable in raw input data to use in loading
         # 2 Mar 2018. Issue with load_cube. Now can only load on
         # long_name attribute if it exists. Ignores raw_name 
         self.raw_name=self.name
         if self.data_source in ['erainterim',]:
-            if self.var_name in['omega']:
-                self.raw_name='vertical_air_velocity_expressed_as_tendency_of_pressure'
-            elif self.var_name in['psfc','shum']:
-                self.raw_name=self.var_name
+            if self.var_name in['div']:
+                self.raw_name='D'
         elif self.data_source in ['era5trp']:
             if self.var_name=='uwnd':
                 self.raw_name='u'
@@ -1987,25 +2000,59 @@ class DataConverter(object):
         # Load cube using a constraint on var_name because if there is a
         # long_name attribute in the netcdf file this will take precendence
         # over var_name if just using a standard load_cube call.
-        var_constraint=iris.Constraint(cube_func=(lambda c: c.var_name==self.raw_name))
-        if self.source in ['sstrey_sfc_7d','erainterim_plev_d','erainterim_plev_6h','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d']:
-            # constraint does not work with data sources listed
-            xx=iris.load(self.filein1,callback=clean_callback)
+        if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d']:
+            print('# Constraint does not work with data sources listed')
+            if level_constraint:
+                xx=iris.load(self.filein1,constraints=level_constraint,callback=clean_callback)
+            else:
+                xx=iris.load(self.filein1,callback=clean_callback)
         else:
-            xx=iris.load(self.filein1,constraints=var_constraint,callback=clean_callback)
-        if self.source not in ['hadgem2esajhog_plev_d']:
+            print('# Load using var_name')
+            var_constraint=iris.Constraint(cube_func=(lambda c: c.var_name==self.raw_name))
+            if level_constraint:
+                xx=iris.load(self.filein1,constraints=var_constraint & level_constraint,callback=clean_callback)
+            else:
+                xx=iris.load(self.filein1,constraints=var_constraint,callback=clean_callback)
+        #
+        # Convert time coordinate to standard for erainterim
+        # and rewrite latitude coordinate
+        # For vrt 500 (and presumably for other variables) some of the values on the 
+        # latitude coordinate change slightly (order 1e-6). There seems to be one
+        # set of latitude values before 2012-02-29:1800 and another slightly different
+        # set after 2012-03-01:0000. Have not checked this exhaustively, but is true
+        # for 2012 data and first day in 2013 at least. Impact of this is cannot use
+        # concatenate_cube for data either side of this critical date. Solution is to
+        # take the latitude axis of the very first time (1979-01-01:0000), and replace
+        # the latitude coordinate of all data with these values.
+        if self.source in ['erainterim_plev_6h']:
+            for cubec in xx:
+                cubec=standardise_time_coord_units(cubec,timename='t',tunits='hours')
+            xx=xx.concatenate()
+            # Extract latitude axis of 1979-01-01:0000 data and overwrite this for all data
+            filei1lat=os.path.join(self.basedir,self.source,'raw','1979','01','01','ggap197901010000.nc')
+            print('filei1lat: {0!s}'.format(filei1lat))
+            x88=iris.load_cube(filei1lat,var_constraint & level_constraint,callback=clean_callback)
+            latcoord1=x88.coord('latitude')
+            # Standardise latitude coordinate
+            for cubec in xx:
+                cubec.remove_coord('latitude')
+                cubec.add_dim_coord(latcoord1,1)
+        #
+        if self.source not in ['hadgem2esajhog_plev_d','erainterim_plev_6h']:
             ncubes=len(xx)
             if ncubes!=1:
                 raise UserWarning('Not a single cube. ncubes='+str(ncubes))
+        #
+        # Concatenate cube list to single cube
         self.cube=xx.concatenate_cube()
+        #
+        # Hack for new netcdf4 ncepdoe which have physically implausible time bounds
         xx=self.cube.coord('time')
-        xx.bounds=None # Hack for new netcdf4 ncepdoe which have physically implausible time bounds
+        xx.bounds=None
+        #
+        # Level conversion if needed
         if self.source in ['hadgem2esajhog_plev_d']:
             self.cube.coord('air_pressure').convert_units('hPa') # Convert Pa to hPa
-        if level_constraint:
-            self.cube=self.cube.extract(level_constraint & time_constraint)
-        else:
-            self.cube=self.cube.extract(time_constraint)
         #
         # Apply mask if appropriate
         if self.file_mask:
@@ -2185,7 +2232,7 @@ class DataConverter(object):
         # This means cubes cannot be concatenated.
         # Change the time coordinate to a standard base unit.
         if self.source in ['metumgomlu-bd818_sfc_d']:
-            standardise_time_coord_units(self,verbose=self.verbose)
+            self.cube=standardise_time_coord_units(self.cube,verbose=self.verbose)
         #
         # Final step. Convert cube data to 'single' precision for saving
         self.cube=create_cube(conv_float32(self.cube.data),self.cube)
