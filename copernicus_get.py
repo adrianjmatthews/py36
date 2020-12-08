@@ -7,11 +7,17 @@ import iris.quickplot as qplt
 import matplotlib.pyplot as plt
 import pdb
 
+import info
+
 BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-VAR_NAME='uwnd'; LEVEL=925; SOURCE='era5trp_plev_h'
+SDOMAIN='plp'
+
+#VAR_NAME='vwnd'; LEVEL=925; SOURCE='era5'+SDOMAIN+'_plev_h'
+VAR_NAME='vwnd'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
+
 YEAR=2018
-MONTH=11
+MONTH=9
 
 DOWNLOAD=True
 
@@ -20,14 +26,24 @@ PLOT=True
 #==========================================================================
 
 # Set Copernicus dataset name
-if SOURCE=='era5trp_plev_h':
+if SOURCE in ['era5trp_plev_h','era5plp_plev_h']:
     dataset='reanalysis-era5-pressure-levels'
+elif SOURCE in ['era5plp_sfc_h']:
+    dataset='reanalysis-era5-single-levels'
 else:
     raise UserWarning('SOURCE not recognised.')
 
 # Set Copernicus variable name
 if VAR_NAME=='uwnd':
-    variable='u_component_of_wind'
+    if SOURCE in ['era5trp_plev_h','era5plp_plev_h']:
+        variable='u_component_of_wind'
+    elif SOURCE in ['era5plp_sfc_h']:
+        variable='10m_u_component_of_wind'
+elif VAR_NAME=='vwnd':
+    if SOURCE in ['era5trp_plev_h','era5plp_plev_h']:
+        variable='v_component_of_wind'
+    elif SOURCE in ['era5plp_sfc_h']:
+        variable='10m_v_component_of_wind'
 else:
     raise UserWarning('VAR_NAME not recognised.')
 
@@ -41,6 +57,12 @@ ndays=t2.day
 print('YEAR,MONTH,ndays: {0!s}, {1!s}, {2!s}'.format(YEAR,MONTH,ndays))
 daylist=[str(xx).zfill(2) for xx in range(1,ndays+1)]
 print('daylist: {0!s}'.format(daylist))
+
+# Spatial domain for subsetting
+lon1=info.sdomains[SDOMAIN]['lon1']
+lon2=info.sdomains[SDOMAIN]['lon2']
+lat1=info.sdomains[SDOMAIN]['lat1']
+lat2=info.sdomains[SDOMAIN]['lat2']
 
 # Create download dictionary
 downloaddir={
@@ -61,7 +83,7 @@ downloaddir={
             '18:00', '19:00', '20:00',
             '21:00', '22:00', '23:00',
         ],
-        'area': [30, -180, -30, 180],
+        'area': [lat2, lon1, lat1, lon2],
     }
 print('downloaddir: {0!s}'.format(downloaddir))
 
