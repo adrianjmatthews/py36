@@ -6192,6 +6192,38 @@ class CubeDiagnostics(object):
         if self.archive:
             archive_file(self,fileout)
 
+    def f_m_vrt_div(self,level):
+        """Calculate and save m_vrt_div term only in vorticity budget at pressure level.
+
+        This is a subset of the code in f_vrtbudget, just to calculate the single term 
+        m_vrt_div. For full documentation, see f_vrtbudget.
+
+        """
+        # Read data for current time block
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x8=self.data_in['vrt_'+str(level)].extract(time_constraint)
+        x11=self.data_in['div_'+str(level)].extract(time_constraint)
+        self.vrt_level=x8.concatenate_cube()
+        self.div_level=x11.concatenate_cube()
+        #
+        ### Calculate m_vrt_div
+        pdb.set_trace()
+        m_vrt_div=-1*self.vrt_level*self.div_level
+        # Attributes
+        var_name='m_vrt_div'
+        long_name=var_name2long_name[var_name]
+        m_vrt_div.rename(long_name) # not a standard_name
+        m_vrt_div.var_name=var_name
+        m_vrt_div.units=vrt_tendency_units
+        self.m_vrt_div=m_vrt_div
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrt_div,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
     def f_vrtbudget_combine(self):
         """Combine terms in the vorticity budget.
 
