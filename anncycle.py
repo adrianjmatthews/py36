@@ -9,14 +9,19 @@ import matplotlib.pyplot as plt
 
 import data_analysis as da
 
-BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
+#BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
+BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
+
+ARCHIVE=False
+BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 # YEAR1-YEAR2 are complete years over which to calculate annual cycle
+VAR_NAME='vrt'; LEVEL=500; SOURCE='erainterim_plev_d'; YEAR1=1998; YEAR2=2018
 #VAR_NAME='vwnd'; LEVEL=850; SOURCE='erainterim_plev_d'; YEAR1=1998; YEAR2=2018
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'; YEAR1=1985; YEAR2=1993
 #VAR_NAME='vrt'; LEVEL=850; SOURCE='ncepdoe_plev_d'; YEAR1=1980; YEAR2=2015
 #VAR_NAME='wndspd'; LEVEL=1; SOURCE='ncepncar_sfc_d'; YEAR1=1979; YEAR2=2015
-VAR_NAME='zg'; LEVEL=250; SOURCE='ncepncar_plev_d'; YEAR1=1979; YEAR2=2017
+#VAR_NAME='zg'; LEVEL=250; SOURCE='ncepncar_plev_d'; YEAR1=1979; YEAR2=2017
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrinterp_toa_d'; YEAR1=2010; YEAR2=2011
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'; YEAR1=1982; YEAR2=2015
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_3h'; YEAR1=1998; YEAR2=1999
@@ -37,11 +42,11 @@ if VAR_NAME=='ppt':
 print('NHARM',NHARM)
 
 KMIN=5
-DETREND=True
+DETREND=False
 
 VERBOSE=2
 
-PLOT=True
+PLOT=False
 
 #------------------------------------------------------------------
 
@@ -58,6 +63,8 @@ descriptor['nharm']=NHARM
 descriptor['basedir']=BASEDIR
 descriptor['kmin']=KMIN
 descriptor['detrend']=DETREND
+descriptor['archive']=ARCHIVE
+descriptor['basedir_archive']=BASEDIR_ARCHIVE
 
 # Create instance of AnnualCycle object
 aa=da.AnnualCycle(**descriptor)
@@ -77,7 +84,7 @@ aa.f_anncycle_smooth()
 
 # Either create and save anomaly data (smooothed annual cycle subtracted),
 # or read in previously calculated anomaly data
-aa.f_subtract_anncycle()
+#aa.f_subtract_anncycle()
 #aa.f_read_subtract_anncycle()
 
 if PLOT:
