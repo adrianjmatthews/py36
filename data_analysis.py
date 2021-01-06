@@ -3166,13 +3166,8 @@ class ModifySource(object):
                 x11=create_cube(x4,self.cube_in,new_axis=time_coord)
                 cm=iris.coords.CellMethod('point','time',comments='daily mean from f_time_mean method 2')
                 x11.add_cell_method(cm)
-                # Need to change frequency attribute of new cube. 
-                # NB have coded this below
-                # but have not checked it, hence pdb.set_trace(). Remove this comment and
-                # set_trace when checked.
-                print('Changing frequency attribute from {0!s} to {1!s}'.format(x11.frequency,self.frequency))
-                x11.frequency=self.frequency
-                pdb.set_trace()
+                print('Changing frequency attribute from {0!s} to {1!s}'.format(x11.attributes['frequency'],self.frequency))
+                x11.attributes['frequency']=self.frequency
             else:
                 raise UserWarning('Invalid method option.')
         else:
