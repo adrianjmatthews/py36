@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 
 import data_analysis as da
 
-#BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
-BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
+BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
+#BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
@@ -18,12 +18,14 @@ BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 SUBDIR='std'
 
 #VAR_NAME='div'; LEVEL=850; SOURCE1='ncepdoe_plev_6h'; SOURCE2='ncepdoe_plev_d'
-#VAR_NAME='shum'; LEVEL=850; SOURCE1='erainterim_plev_6h'; SOURCE2='erainterim_plev_d'
-VAR_NAME='ppt'; LEVEL=1; SOURCE1='trmm3b42v7_sfc_3h'; SOURCE2='trmm3b42v7_sfc_d'
+VAR_NAME='vrt'; LEVEL=500; SOURCE1='erainterim_plev_6h'; SOURCE2='erainterim_plev_d'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE1='trmm3b42v7_sfc_3h'; SOURCE2='trmm3b42v7_sfc_d'
 
-#YEAR=2017
-#MONTH=-999
-#MONTH=10
+
+#YEAR=1998
+YEAR=range(1998,2018+1)
+MONTH=[-999] # Dummy value if outfile_frequency is 'year'
+#MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
 
 PLOT=False
 
@@ -45,10 +47,14 @@ descriptor['source2']=SOURCE2
 # Create instance of ModifySource object
 aa=da.ModifySource(**descriptor)
 
-print('# YEAR:{0!s}; MONTH:{1!s}'.format(YEAR,MONTH))
-aa.year=YEAR
-aa.month=MONTH
-aa.f_time_average(method=2)
+iter_year=da.iter_generator(YEAR)
+iter_month=da.iter_generator(MONTH)
+for year in iter_year:
+    for month in iter_month:
+        print('### year={0!s} month={1!s}'.format(year,month))
+        aa.year=year
+        aa.month=month
+        aa.f_time_average(method=2)
 
 if PLOT:
     if True:
