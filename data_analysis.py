@@ -6208,13 +6208,13 @@ class CubeDiagnostics(object):
         self.div_level=x11.concatenate_cube()
         #
         ### Calculate m_vrt_div
-        pdb.set_trace()
         m_vrt_div=-1*self.vrt_level*self.div_level
         # Attributes
         var_name='m_vrt_div'
         long_name=var_name2long_name[var_name]
         m_vrt_div.rename(long_name) # not a standard_name
         m_vrt_div.var_name=var_name
+        vrt_tendency_units='s-2'
         m_vrt_div.units=vrt_tendency_units
         self.m_vrt_div=m_vrt_div
         fileout=self.file_data_out.replace('VAR_NAME',var_name)
