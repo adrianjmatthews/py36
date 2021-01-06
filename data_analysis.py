@@ -312,7 +312,7 @@ def clean_callback(cube,field,filename):
               'NCO','creation_date','invalid_units','metodology',
               'producer_agency','time_range','website','short_name',
               'description','dataset','_NCProperties','valid_max','valid_min',
-              'tracking_id','table_id','date','time']
+              'tracking_id','table_id','date','time','name']
     for attribute in att_list:
         if attribute in cube.attributes:
             del cube.attributes[attribute]
@@ -2064,7 +2064,7 @@ class DataConverter(object):
         # the latitude coordinate of all data with these values.
         if self.source in ['erainterim_plev_6h']:
             for cubec in xx:
-                cubec=standardise_time_coord_units(cubec,timename='t',tunits='hours')
+                cubec=standardise_time_coord_units(cubec,timename='t',tunits='days')
             xx=xx.concatenate()
             # Extract latitude axis of 1979-01-01:0000 data and overwrite this for all data
             filei1lat=os.path.join(self.basedir,self.source,'raw','1979','01','01','ggap197901010000.nc')
