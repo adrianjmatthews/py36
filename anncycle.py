@@ -16,7 +16,7 @@ ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 # YEAR1-YEAR2 are complete years over which to calculate annual cycle
-VAR_NAME='vrt'; LEVEL=500; SOURCE='erainterim_plev_d'; YEAR1=1998; YEAR2=2018
+VAR_NAME='vrt'; LEVEL=500; SOURCE='erainterim_plev_6h'; YEAR1=1998; YEAR2=2018
 #VAR_NAME='vwnd'; LEVEL=850; SOURCE='erainterim_plev_d'; YEAR1=1998; YEAR2=2018
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'; YEAR1=1985; YEAR2=1993
 #VAR_NAME='vrt'; LEVEL=850; SOURCE='ncepdoe_plev_d'; YEAR1=1980; YEAR2=2015
@@ -35,6 +35,11 @@ TIME1=TIME2=False
 #TIME1=datetime.datetime(2017,1,1); TIME2=False
 #TIME1=False;  TIME2=datetime.datetime(1980,12,31)
 #TIME1=datetime.datetime(1998,1,1);  TIME2=datetime.datetime(1998,12,31)
+
+# ANNCYCLE_SOURCE is e.g., 'erainterim_plev_d' if subtracting annual cycle of daily 
+# data from higher frequency (e.g., 6h) data.
+# Set to False to switch off
+ANNCYCLE_SOURCE='erainterim_plev_d'
 
 NHARM=3
 if VAR_NAME=='ppt':
@@ -59,6 +64,7 @@ descriptor['year1']=YEAR1
 descriptor['year2']=YEAR2
 descriptor['time1']=TIME1
 descriptor['time2']=TIME2
+descriptor['anncycle_source']=ANNCYCLE_SOURCE
 descriptor['nharm']=NHARM
 descriptor['basedir']=BASEDIR
 descriptor['kmin']=KMIN
@@ -75,16 +81,22 @@ if aa.detrend:
     #aa.f_read_trend()
 
 # Either create and save raw annual cycle or read in previously calculated one
-aa.f_anncycle_raw()
+#aa.f_anncycle_raw()
 #aa.f_read_anncycle_raw()
 
 # Either create and save smoothed annual cycle or read in previously calculated one
-aa.f_anncycle_smooth()
+#aa.f_anncycle_smooth()
 #aa.f_read_anncycle_smooth()
+
+# Create or read higher frequency annual cycle if needed
+if aa.anncycle_source:
+    #aa.f_expand_anncycle_smooth()
+    aa.f_read_expanded_anncycle_smooth()
+    pass
 
 # Either create and save anomaly data (smooothed annual cycle subtracted),
 # or read in previously calculated anomaly data
-#aa.f_subtract_anncycle()
+aa.f_subtract_anncycle()
 #aa.f_read_subtract_anncycle()
 
 if PLOT:

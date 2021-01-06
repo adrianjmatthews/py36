@@ -919,7 +919,10 @@ def create_counter_from_mask(cube_in,verbose=False):
 #==========================================================================
 
 def find_npd(source):
-    """Find npd (number per day from source string."""
+    """Find npd (number per day from source string.
+
+    Output : npd
+    """
     xx=source.split('_')
     source_frequency=xx[2]
     if source_frequency[-1]!='h':
@@ -4409,6 +4412,18 @@ class AnnualCycle(object):
 
     self.data_anncycle_rm : iris cube list of anomaly data with annual
     cycle subtracted.
+
+    self.anncycle_source : Usually False. Creation of raw and smoothed
+    annual cycle is currently only available for daily data (frequency
+    of 'd'). If using daily data throughout, set anncycle_source to
+    False. However, higher frequency (e.g., '6h') data can be
+    processed. The raw and smoothed annual cycles must first be
+    calculated separately from daily data (recommended to set detrend
+    to False), using f_anncycle_raw and f_anncycle_smooth. Then, the
+    smoothed annual cycle of daily data can be subtracted from the
+    higher frequency e.g., 6h, input data, using
+    f_subtract_anncycle. To do this, set anncycle_source to e.g.,
+    'erainterim_plev_d'.
     
     self.file_data_in : path name for file(s) of input data.  Contains a
     wild card ???? character, which will be replaced by, e.g., year
@@ -4437,19 +4452,22 @@ class AnnualCycle(object):
     self.time2: If False, calculate anomalies from annual cycle up to
     end of data set.  If datetime.datetime object, calculate anomalies
     from annual cycle up to this time.
-    
+
     """
 
     def __init__(self,**descriptor):
         """Initialise from descriptor dictionary.
 
         Compulsory keywords: 'verbose','source','var_name','level',
-        'basedir','year1','year2','time1','time2','nharm','detrend'.
+        'basedir','year1','year2','time1','time2','nharm','detrend', 
+        'anncycle_source'.
         """
         self.__dict__.update(descriptor)
         self.descriptor=descriptor
         self.name=var_name2long_name[self.var_name]
         source_info(self)
+        if self.detrend and self.anncycle_source:
+            raise UserWarning('Stop. Have not considered impact of detrending on expanding annual cycle to higher frequency.')
         self.frac_crit=0.01
         self.file_data_in=os.path.join(self.basedir,self.source,'std',
               self.var_name+'_'+str(self.level)+'_'+self.wildcard+'.nc')
@@ -4462,11 +4480,22 @@ class AnnualCycle(object):
         self.file_anncycle_raw=os.path.join(self.basedir,self.source,
               'processed',self.var_name+'_'+str(self.level)+'_ac_raw_'+\
               str(self.year1)+'_'+str(self.year2)+'.nc')
-        self.file_anncycle_smooth=os.path.join(self.basedir,self.source,
+        xx1=self.source
+        if self.anncycle_source:
+            xx1=self.anncycle_source
+        self.file_anncycle_smooth=os.path.join(self.basedir,xx1,
               'processed',self.var_name+'_'+str(self.level)+'_ac_smooth_'+\
               str(self.year1)+'_'+str(self.year2)+'.nc')
         if self.calendar=='gregorian':
             self.file_anncycle_smooth_leap=self.file_anncycle_smooth.replace('.','_leap.')
+        #
+        if self.anncycle_source:
+            self.file_expanded_anncycle_smooth=os.path.join(self.basedir,self.source,
+                  'processed',self.var_name+'_'+str(self.level)+'_ac_smooth_expanded_'+\
+                  str(self.year1)+'_'+str(self.year2)+'.nc')
+            if self.calendar=='gregorian':
+                self.file_expanded_anncycle_smooth_leap=self.file_expanded_anncycle_smooth.replace('.','_leap.')
+        #
         self.file_anncycle_rm=os.path.join(self.basedir,self.source,'std',
               self.var_name+'_'+str(self.level)+'_rac_'+self.wildcard+'.nc')
         self.data_in=iris.load(self.file_data_in,self.name)
@@ -4849,6 +4878,8 @@ class AnnualCycle(object):
         Create data_anncycle_smooth_leap attribute if calendar is gregorian.
         
         """
+        if self.frequency!='d':
+            raise ToDoError('Annual cycle presently only coded up for daily data.')
         # Calculate annual mean
         print('data_anncycle_raw.shape: {0!s}'.format(self.data_anncycle_raw.shape))
         self.data_mean=self.data_anncycle_raw.collapsed('time',iris.analysis.MEAN)
@@ -4986,6 +5017,73 @@ class AnnualCycle(object):
         if self.calendar=='gregorian':
             self.data_anncycle_smooth_leap=iris.load_cube(self.file_anncycle_smooth_leap,self.name)
 
+    def f_expand_anncycle_smooth(self):
+        """Expand smoothed annual cycle of daily data for higher frequency input data.
+
+        For e.g., Gregorian non-leap year, the daily data smoothed
+        annual cycle has 365 days. If the input data is '6h', then the
+        expanded annual cycle will have 365*4=1460 days, with the
+        daily values repeated as necessary. Here, the 1 Jan data will
+        be copied 4 times, for 0000, 0600, 1200, 1800 on 1
+        Jan. Similarly for 2 Jan, etc.
+
+        Create data_expanded_anncycle_smooth attribute, and
+        data_expanded_anncycle_smooth_leap attribute if calendar is
+        Gregorian.
+
+        """
+        if not self.anncycle_source:
+            raise UserWarning('Only call this function if using higher than daily frequency input data.')
+        npd=find_npd(self.source)
+        fracday=1/npd
+        print('npd,fracday: {0!s}, {1!s}'.format(npd,fracday))
+        def expanded_anncycle(anncycle_d,npd):
+            tcoord_d=anncycle_d.coord('time')
+            tcoord_hf_vals=[]
+            for dayc in tcoord_d.points:
+                for ii in range(npd):
+                    xx=dayc+ii*fracday
+                    tcoord_hf_vals.append(xx)
+            tcoord_hf=iris.coords.DimCoord(tcoord_hf_vals,standard_name='time',units=tcoord_d.units)
+            shape_d=anncycle_d.shape
+            shape_hf=(shape_d[0]*npd,)+shape_d[1:]
+            print('shape_d,shape_hf: {0!s}, {1!s}'.format(shape_d,shape_hf))
+            x1=1e20*np.ones(shape_hf) # create empty array then overwrite
+            ntime_d=tcoord_d.shape[0]
+            for itime in range(ntime_d):
+                xx=anncycle_d.data[itime]
+                for ii in range(npd):
+                    kk=itime*npd+ii
+                    print(itime,ii,kk)
+                    x1[kk]=xx
+            x2=create_cube(x1,anncycle_d,new_axis=tcoord_hf)
+            x2.attributes['frequency']=self.frequency
+            cm=iris.coords.CellMethod('mean','time',comments='Smoothed annual cycle: daily expanded to '+self.frequency)
+            x2.add_cell_method(cm)
+            return x2
+        # Standard year
+        self.data_expanded_anncycle_smooth=expanded_anncycle(self.data_anncycle_smooth,npd)
+        iris.save(self.data_expanded_anncycle_smooth,self.file_expanded_anncycle_smooth)
+        if self.archive:
+            archive_file(self,self.file_expanded_anncycle_smooth)
+        # Leap year
+        if self.calendar=='gregorian':
+            self.data_expanded_anncycle_smooth_leap=expanded_anncycle(self.data_anncycle_smooth_leap,npd)
+            iris.save(self.data_expanded_anncycle_smooth_leap,self.file_expanded_anncycle_smooth_leap)
+            if self.archive:
+                archive_file(self,self.file_expanded_anncycle_smooth_leap)
+
+    def f_read_expanded_anncycle_smooth(self):
+        """Read previously calculated expanded smoothed annual cycle.
+
+        Create data_anncycle_smooth and data_anncycle_smooth_leap
+        attributes.
+        
+        """
+        self.data_anncycle_smooth=iris.load_cube(self.file_expanded_anncycle_smooth,self.name)
+        if self.calendar=='gregorian':
+            self.data_anncycle_smooth_leap=iris.load_cube(self.file_expanded_anncycle_smooth_leap,self.name)
+
     def f_subtract_anncycle(self):
         """Subtract (trend and) smoothed annual cycle from input data to create anomaly data.
 
@@ -5019,23 +5117,23 @@ class AnnualCycle(object):
             print('yearc,leap: {0!s}, {1!s}'.format(yearc,leap))
             # Set start and end times for input and anncycle data
             if self.calendar=='gregorian':
-                time_beg_in=datetime.datetime(yearc,1,1)
+                time_beg_in=datetime.datetime(yearc,1,1,0,0)
                 if time_beg_in<self.time1:
                     time_beg_in=self.time1
-                time_end_in=datetime.datetime(yearc,12,31)
+                time_end_in=datetime.datetime(yearc,12,31,23,59)
                 if time_end_in>self.time2:
                     time_end_in=self.time2
-                time_beg_anncycle=datetime.datetime(smooth_year_number,time_beg_in.month,time_beg_in.day)
-                time_end_anncycle=datetime.datetime(smooth_year_number,time_end_in.month,time_end_in.day)
+                time_beg_anncycle=datetime.datetime(smooth_year_number,time_beg_in.month,time_beg_in.day,0,0)
+                time_end_anncycle=datetime.datetime(smooth_year_number,time_end_in.month,time_end_in.day,23,59)
             elif self.calendar=='360_day':
-                time_beg_in=cftime.Datetime360Day(yearc,1,1)
+                time_beg_in=cftime.Datetime360Day(yearc,1,1,0,0)
                 if time_beg_in<self.time1:
                     time_beg_in=self.time1
-                time_end_in=cftime.Datetime360Day(yearc,12,30)
+                time_end_in=cftime.Datetime360Day(yearc,12,30,23,59)
                 if time_end_in>self.time2:
                     time_end_in=self.time2
-                time_beg_anncycle=cftime.Datetime360Day(smooth_year_number,time_beg_in.month,time_beg_in.day)
-                time_end_anncycle=cftime.Datetime360Day(smooth_year_number,time_end_in.month,time_end_in.day)
+                time_beg_anncycle=cftime.Datetime360Day(smooth_year_number,time_beg_in.month,time_beg_in.day,0,0)
+                time_end_anncycle=cftime.Datetime360Day(smooth_year_number,time_end_in.month,time_end_in.day,23,59)
             else:
                 raise UserWarning('Invalid calendar.')
             print(time_beg_in,time_end_in,time_beg_anncycle,time_end_anncycle)
