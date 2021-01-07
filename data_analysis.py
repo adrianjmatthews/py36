@@ -4419,11 +4419,17 @@ class AnnualCycle(object):
     False. However, higher frequency (e.g., '6h') data can be
     processed. The raw and smoothed annual cycles must first be
     calculated separately from daily data (recommended to set detrend
-    to False), using f_anncycle_raw and f_anncycle_smooth. Then, the
-    smoothed annual cycle of daily data can be subtracted from the
-    higher frequency e.g., 6h, input data, using
-    f_subtract_anncycle. To do this, set anncycle_source to e.g.,
-    'erainterim_plev_d'.
+    to False), using f_anncycle_raw and f_anncycle_smooth (with
+    anncycle_source set to False). Then, run anncycle.py again, with
+    SOURCE set to the higher frequency source (e.g.,
+    'erainterim_plev_6h'), and anncycle_source set to the daily
+    resolution source, e.g.,
+    'erainterim_plev_d'. f_read_anncycle_smooth will be directed to
+    read in the previously calculated smoothed annual cycle of daily
+    data. This smoothed annual cycle of daily data is then expanded to
+    the higher frequency using f_expand_anncycle_smooth, and can then
+    be subtracted from the higher frequency e.g., 6h, input data,
+    using f_subtract_anncycle.
     
     self.file_data_in : path name for file(s) of input data.  Contains a
     wild card ???? character, which will be replaced by, e.g., year
@@ -5056,7 +5062,7 @@ class AnnualCycle(object):
                     kk=itime*npd+ii
                     print(itime,ii,kk)
                     x1[kk]=xx
-            x2=create_cube(x1,anncycle_d,new_axis=tcoord_hf)
+            x2=create_cube(conv_float32(x1),anncycle_d,new_axis=tcoord_hf)
             x2.attributes['frequency']=self.frequency
             cm=iris.coords.CellMethod('mean','time',comments='Smoothed annual cycle: daily expanded to '+self.frequency)
             x2.add_cell_method(cm)

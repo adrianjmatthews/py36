@@ -86,17 +86,17 @@ if aa.detrend:
 
 # Either create and save smoothed annual cycle or read in previously calculated one
 #aa.f_anncycle_smooth()
-#aa.f_read_anncycle_smooth()
+aa.f_read_anncycle_smooth()
 
-# Create or read higher frequency annual cycle if needed
+# Create or read higher frequency smoothed annual cycle from daily annual cycle if needed
 if aa.anncycle_source:
-    #aa.f_expand_anncycle_smooth()
-    aa.f_read_expanded_anncycle_smooth()
+    aa.f_expand_anncycle_smooth()
+    #aa.f_read_expanded_anncycle_smooth()
     pass
 
 # Either create and save anomaly data (smooothed annual cycle subtracted),
 # or read in previously calculated anomaly data
-aa.f_subtract_anncycle()
+#aa.f_subtract_anncycle()
 #aa.f_read_subtract_anncycle()
 
 if PLOT:
