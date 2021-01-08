@@ -5078,6 +5078,10 @@ class AnnualCycle(object):
             iris.save(self.data_expanded_anncycle_smooth_leap,self.file_expanded_anncycle_smooth_leap)
             if self.archive:
                 archive_file(self,self.file_expanded_anncycle_smooth_leap)
+        # Overwrite data_anncycle_smooth and data_anncycle_smooth_leap with expanded versions
+        self.data_anncycle_smooth=self.data_expanded_anncycle_smooth
+        if self.calendar=='gregorian':
+            self.data_anncycle_smooth_leap=self.data_expanded_anncycle_smooth_leap
 
     def f_read_expanded_anncycle_smooth(self):
         """Read previously calculated expanded smoothed annual cycle.
