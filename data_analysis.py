@@ -131,6 +131,10 @@ var_name2long_name={
     'm_uwnd_dvrtdx':'minus_eastward_wind_times_zonal_derivative_of_atmosphere_relative_vorticity',
     'm_vwnd_dvrtdy':'minus_northward_wind_times_meridional_derivative_of_atmosphere_relative_vorticity',
     'm_vrt_div':'minus_divergence_of_wind_times_atmosphere_relative_vorticity',
+    'm_vrtbar_divbar':'minus_time_mean_divergence_of_wind_times_time_mean_atmosphere_relative_vorticity',
+    'm_vrtbar_divprime':'minus_time_perturbation_divergence_of_wind_times_time_mean_atmosphere_relative_vorticity',
+    'm_vrtprime_divbar':'minus_time_mean_divergence_of_wind_times_time_perturbation_atmosphere_relative_vorticity',
+    'm_vrtprime_divprime':'minus_time_perturbation_divergence_of_wind_times_time_perturbation_atmosphere_relative_vorticity',
     'nhfd':'surface_downward_heat_flux_in_sea_water',
     'olr':'toa_outgoing_longwave_flux',
     'omega':'lagrangian_tendency_of_air_pressure',
@@ -5581,10 +5585,16 @@ class CubeDiagnostics(object):
         # Empty dictionaries to fill later
         self.filein={}
         self.data_in={}
+        self.fileanncycle={}
+        self.fileanncycleleap={}
+        self.data_anncycle={}
+        self.data_anncycleleap={}
+        # 
         try:
             dummy=self.filepre
         except AttributeError:
             self.filepre=''
+        #
         self.file_data_out=os.path.join(self.basedir,self.source,'std','VAR_NAME_'+str(self.level)+self.filepre+'_'+self.wildcard+'.nc')
         if self.verbose:
             print(self)        
@@ -5618,7 +5628,34 @@ class CubeDiagnostics(object):
                 'filein: {1.filein!s} \n'+\
                 'data_in: {1.data_in!s} \n'+h2b
             print(ss.format(var_name,self))
-            
+
+    def f_read_anncycle(self,var_name,level,verbose=False):
+        """Read annual cycle.
+
+        For use generally in diagnostics where a term is decomposed into 
+        annual cycle and anomaly parts, e.g.,
+        PQ = Pbar Qbar + Pbar Qprime + Pprime Qbar + Pprime Qprime
+
+        Add entry to the dictionary attributes self.fileanncycle and
+        self.data_anncycle (and self.fileanncycleleap and
+        self.data_anncycleleap if needed).
+        """
+        name=var_name2long_name[var_name]
+        self.fileanncycle[var_name+'_'+str(level)]=os.path.join(self.basedir,self.source,'processed',var_name+'_'+str(level)+self.filepreanncycle+'.nc')
+        self.data_anncycle[var_name+'_'+str(level)]=iris.load_cube(self.fileanncycle[var_name+'_'+str(level)],name)
+        if self.calendar=='gregorian':
+            self.fileanncycleleap[var_name+'_'+str(level)]=os.path.join(self.basedir,self.source,'processed',var_name+'_'+str(level)+self.filepreanncycle+'_leap.nc')
+            self.data_anncycleleap[var_name+'_'+str(level)]=iris.load_cube(self.fileanncycleleap[var_name+'_'+str(level)],name)
+        if verbose:
+            ss=h2a+'f_read_anncycle \n'+\
+                'var_name: {0!s} \n'+\
+                'fileanncyle: {1.fileanncycle!s} \n'+\
+                'data_anncycle: {1.data_anncycle!s} \n'
+            if self.calendar=='gregorian':
+                ss+='fileanncyleleap: {1.fileanncycleleap!s} \n'+\
+                'data_anncycleleap: {1.data_anncycleleap!s} \n'
+            ss+=h2b
+            print(ss.format(var_name,self))
 
     def f_mld(self,method=1,zzsfc=1.0,deltatsc=1.0):
         """Calculate mixed layer depth.
@@ -6324,6 +6361,130 @@ class CubeDiagnostics(object):
         fileout=replace_wildcard_with_time(self,fileout)
         print('fileout: {0!s}'.format(fileout))
         iris.save(self.m_vrt_div,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_m_vrt_div_annpert(self,level):
+        """Calculate and save m_vrt_div terms decomposed into anncycle and perturbation parts.
+
+        Both vorticity (vrt) and divergence (div) terms have been
+        previously separated into annual cycle and perturbation parts:
+
+        vrt = vrtbar + vrtprime
+        div = divbar + divprime
+
+        where bar refers to annual cycle part and prime refers to anomaly from annual cycle.
+
+        m_vrt_div = -1*vrt*div
+                  = -1*(vrtbar+vrtprime)*(divbar+divprime)
+                  = -1*vrtbar*divbar -1*vrtbar*divprime -1*vrtprime*divbar -1*vrtprime*vrtprime
+                  =  m_vrtbar_divbar +m_vrtbar_divprime =m_vrtprime_divbar +m_vrtprime_vrtprime
+
+
+        Calculate attributes:
+
+        m_vrtbar_divbar
+        m_vrtbar_divprime
+        m_vrtprime_divbar
+        m_vrtprime_divprime
+        """
+        # Read vrtprime and divprime data for current time block
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x8=self.data_in['vrt_'+str(level)].extract(time_constraint)
+        x11=self.data_in['div_'+str(level)].extract(time_constraint)
+        vrtprime=x8.concatenate_cube()
+        divprime=x11.concatenate_cube()
+        #
+        # Set annual cycles for this year (regular or leap year) and extract data for current time block
+        vrtbar=self.data_anncycle['vrt_'+str(level)]
+        divbar=self.data_anncycle['div_'+str(level)]
+        if divmod(self.year,4)[1]==0 and self.calendar=='gregorian':
+            vrtbar=self.data_anncycleleap['vrt_'+str(level)]
+            divbar=self.data_anncycleleap['div_'+str(level)]
+        tcoord_anncycle=vrtbar.coord('time')
+        anncycle_year=tcoord_anncycle.units.num2date(tcoord_anncycle.points[0]).year
+        xx=self.time1
+        x1=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        xx=self.time2
+        x2=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        print('anncycle_year,x1,x2: {0!s}, {1!s}, {2!s}'.format(anncycle_year,x1,x2))
+        time_anncycle_constraint=set_time_constraint(x1,x2,calendar=self.calendar)
+        vrtbar=vrtbar.extract(time_anncycle_constraint)
+        divbar=divbar.extract(time_anncycle_constraint)
+        #
+        ### Calculate m_vrtbar_divbar
+        m_vrtbar_divbar=-1*vrtbar*divbar
+        # Reset time axis to current year
+        m_vrtbar_divbar=create_cube(m_vrtbar_divbar.data,vrtprime)
+        # Attributes
+        var_name='m_vrtbar_divbar'
+        long_name=var_name2long_name[var_name]
+        m_vrtbar_divbar.rename(long_name) # not a standard_name
+        m_vrtbar_divbar.var_name=var_name
+        vrt_tendency_units='s-2'
+        m_vrtbar_divbar.units=vrt_tendency_units
+        self.m_vrtbar_divbar=m_vrtbar_divbar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtbar_divbar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vrtbar_divprime
+        m_vrtbar_divprime=-1*vrtbar.data*divprime.data
+        # Set time axis to current year
+        m_vrtbar_divprime=create_cube(m_vrtbar_divprime,vrtprime)
+        # Attributes
+        var_name='m_vrtbar_divprime'
+        long_name=var_name2long_name[var_name]
+        m_vrtbar_divprime.rename(long_name) # not a standard_name
+        m_vrtbar_divprime.var_name=var_name
+        m_vrtbar_divprime.units=vrt_tendency_units
+        self.m_vrtbar_divprime=m_vrtbar_divprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtbar_divprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vrtprime_divbar
+        m_vrtprime_divbar=-1*vrtprime.data*divbar.data
+        # Set time axis to current year
+        m_vrtprime_divbar=create_cube(m_vrtprime_divbar,vrtprime)
+        # Attributes
+        var_name='m_vrtprime_divbar'
+        long_name=var_name2long_name[var_name]
+        m_vrtprime_divbar.rename(long_name) # not a standard_name
+        m_vrtprime_divbar.var_name=var_name
+        m_vrtprime_divbar.units=vrt_tendency_units
+        self.m_vrtprime_divbar=m_vrtprime_divbar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtprime_divbar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vrtprime_divprime
+        m_vrtprime_divprime=-1*vrtprime*divprime
+        # Attributes
+        var_name='m_vrtprime_divprime'
+        long_name=var_name2long_name[var_name]
+        m_vrtprime_divprime.rename(long_name) # not a standard_name
+        m_vrtprime_divprime.var_name=var_name
+        m_vrtprime_divprime.units=vrt_tendency_units
+        self.m_vrtprime_divprime=m_vrtprime_divprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtprime_divprime,fileout)
         if self.archive:
             archive_file(self,fileout)
 
