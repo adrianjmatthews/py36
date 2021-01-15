@@ -1997,8 +1997,11 @@ class DataConverter(object):
         # long_name attribute if it exists. Ignores raw_name 
         self.raw_name=self.name
         if self.data_source in ['erainterim',]:
-            if self.var_name in['div']:
-                self.raw_name='D'
+            erainterim_raw_names={'div':'D', 'vrt':'VO', 'uwnd':'U', 'vwnd':'V', 'omega':'W' }
+            if self.var_name in erainterim_raw_names.keys():
+                self.raw_name=erainterim_raw_names[self.var_name]
+            else:
+                raise UserWarning('var_name not recognised.')
         elif self.data_source in ['era5trp','era5plp'] and self.level_type=='plev':
             if self.var_name=='uwnd':
                 self.raw_name='u'
@@ -2076,6 +2079,7 @@ class DataConverter(object):
             # Extract latitude axis of 1979-01-01:0000 data and overwrite this for all data
             filei1lat=os.path.join(self.basedir,self.source,'raw','1979','01','01','ggap197901010000.nc')
             print('filei1lat: {0!s}'.format(filei1lat))
+            pdb.set_trace()
             x88=iris.load_cube(filei1lat,var_constraint & level_constraint,callback=clean_callback)
             latcoord1=x88.coord('latitude')
             # Standardise latitude coordinate
