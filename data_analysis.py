@@ -2079,7 +2079,6 @@ class DataConverter(object):
             # Extract latitude axis of 1979-01-01:0000 data and overwrite this for all data
             filei1lat=os.path.join(self.basedir,self.source,'raw','1979','01','01','ggap197901010000.nc')
             print('filei1lat: {0!s}'.format(filei1lat))
-            pdb.set_trace()
             x88=iris.load_cube(filei1lat,var_constraint & level_constraint,callback=clean_callback)
             latcoord1=x88.coord('latitude')
             # Standardise latitude coordinate
