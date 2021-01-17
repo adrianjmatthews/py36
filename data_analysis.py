@@ -2003,8 +2003,11 @@ class DataConverter(object):
         # long_name attribute if it exists. Ignores raw_name 
         self.raw_name=self.name
         if self.data_source in ['erainterim',]:
-            if self.var_name in['div']:
-                self.raw_name='D'
+            erainterim_raw_names={'div':'D', 'vrt':'VO', 'uwnd':'U', 'vwnd':'V', 'omega':'W' }
+            if self.var_name in erainterim_raw_names.keys():
+                self.raw_name=erainterim_raw_names[self.var_name]
+            else:
+                raise UserWarning('var_name not recognised.')
         elif self.data_source in ['era5trp','era5plp'] and self.level_type=='plev':
             if self.var_name=='uwnd':
                 self.raw_name='u'
