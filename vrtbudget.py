@@ -14,13 +14,13 @@ ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 SOURCE='erainterim_plev_6h'
-LEVEL_BELOW=550; LEVEL=500; LEVEL_ABOVE=450
+LEVEL_BELOW=875; LEVEL=850; LEVEL_ABOVE=825
 
 FILEPRE='_rac' # '', '_rac', etc.
 FILEPREANNCYCLE='_ac_smooth_expanded_1998_2018' # if decomposing into annual cycle and perturbation
 
-#YEAR=1998
-YEAR=range(1999,2018+1)
+YEAR=1998
+#YEAR=range(1998,2018+1)
 MONTH=[-999] # Dummy value if outfile_frequency is 'year'
 #MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
 
@@ -45,7 +45,7 @@ aa=da.CubeDiagnostics(**descriptor)
 
 # Lazy read data
 #aa.f_read_data('uwnd',LEVEL_BELOW)
-#aa.f_read_data('uwnd',LEVEL)
+aa.f_read_data('uwnd',LEVEL)
 #aa.f_read_data('uwnd',LEVEL_ABOVE)
 #aa.f_read_data('vwnd',LEVEL_BELOW)
 #aa.f_read_data('vwnd',LEVEL)
@@ -54,11 +54,12 @@ aa=da.CubeDiagnostics(**descriptor)
 aa.f_read_data('vrt',LEVEL)
 #aa.f_read_data('vrt',LEVEL_ABOVE)
 #aa.f_read_data('omega',LEVEL)
-aa.f_read_data('div',LEVEL)
+#aa.f_read_data('div',LEVEL)
 
 # Read annual cycle data if needed
+aa.f_read_anncycle('uwnd',LEVEL,verbose=VERBOSE)
 aa.f_read_anncycle('vrt',LEVEL,verbose=VERBOSE)
-aa.f_read_anncycle('div',LEVEL,verbose=VERBOSE)
+#aa.f_read_anncycle('div',LEVEL,verbose=VERBOSE)
 
 iter_year=da.iter_generator(YEAR)
 iter_month=da.iter_generator(MONTH)
@@ -74,8 +75,9 @@ for year in iter_year:
         # Only calculate m_vrt_div term, for diagnostic purposes
         #aa.f_m_vrt_div(LEVEL)
         #
-        # Calculate m_vrt_div term decomposed into annual cycle and perturbation combinations
-        aa.f_m_vrt_div_annpert(LEVEL)
+        # Calculate individual terms decomposed into annual cycle and perturbation combinations
+        #aa.f_m_vrt_div_annpert(LEVEL)
+        aa.f_m_uwnd_dvrtdx_annpert(LEVEL)
         pass
 
 if PLOT:
