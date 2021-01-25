@@ -105,6 +105,7 @@ var_name2long_name={
     'domegady_duwnddp':'meridional_derivative_of_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_zonal_wind',
     'dummy':'dummy_variable',
     'dvrtdt':'tendency_of_atmosphere_relative_vorticity',
+    'dvwnddx':'zonal_derivative_of_northward_wind',
     'elevation':'height_above_reference_ellipsoid',
     'ew':'water_vapor_partial_pressure_in_air',
     'freq':'frequency',
@@ -126,6 +127,7 @@ var_name2long_name={
     'mu':'atmosphere_overturning_potential',
     'm_beta_vwnd':'minus_meridional_derivative_of_coriolis_parameter_times_northward_wind',
     'm_domegadx_dvwnddp':'minus_zonal_derivative_of_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_northward_wind',
+    'm_duwnddy':'minus_meridional_derivative_of_eastward_wind',
     'm_ff_div':'minus_coriolis_parameter_times_atmosphere_relative_vorticity',
     'm_omega_dvrtdp':'minus_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_atmosphere_relative_vorticity',
     'm_uwnd_dvrtdx':'minus_eastward_wind_times_zonal_derivative_of_atmosphere_relative_vorticity',
@@ -6758,6 +6760,60 @@ class CubeDiagnostics(object):
         fileout=fileout.replace(self.filepre,'')
         print('fileout: {0!s}'.format(fileout))
         iris.save(self.m_vwndprime_dvrtdyprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_vrt_components(self,level):
+        """Calculate and save dvwnddx and m_duwnddy contributions to vorticity.
+
+        dvwndx = vorticity calculated from (0,vwnd)
+        m_duwndy = vorticity calculated from (uwnd,0)
+
+        Create attributes:
+
+        dvwnddx
+        m_duwnddy
+        """
+        # Read uwnd and vwnd data for current time block
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['uwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in['vwnd_'+str(level)].extract(time_constraint)
+        self.uwnd=x1.concatenate_cube()
+        self.vwnd=x2.concatenate_cube()
+        # Create dummy cube of zeroes
+        zeros=np.zeros(self.uwnd.data.shape)
+        zeros=create_cube(zeros,self.uwnd,new_var_name='dummy')
+        # Find value of south2north
+        self.south2north=f_south2north(self.uwnd,verbose=self.verbose)
+        # Calculate dvwnddx and save
+        ww=VectorWind(zeros,self.vwnd)
+        self.dvwnddx=ww.vorticity()
+        if self.south2north:
+            self.dvwnddx=lat_direction(self.dvwnddx,'s2n')
+        var_name='dvwnddx'
+        long_name=var_name2long_name[var_name]
+        self.dvwnddx.rename(long_name) # not a standard_name
+        self.dvwnddx.var_name=var_name
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.dvwnddx,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        # Calculate m_duwnddy and save
+        ww=VectorWind(self.uwnd,zeros)
+        self.m_duwnddy=ww.vorticity()
+        if self.south2north:
+            self.m_duwnddy=lat_direction(self.m_duwnddy,'s2n')
+        var_name='m_duwnddy'
+        long_name=var_name2long_name[var_name]
+        self.m_duwnddy.rename(long_name) # not a standard_name
+        self.m_duwnddy.var_name=var_name
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_duwnddy,fileout)
         if self.archive:
             archive_file(self,fileout)
 

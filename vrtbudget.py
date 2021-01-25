@@ -48,17 +48,17 @@ aa=da.CubeDiagnostics(**descriptor)
 aa.f_read_data('uwnd',LEVEL)
 #aa.f_read_data('uwnd',LEVEL_ABOVE)
 #aa.f_read_data('vwnd',LEVEL_BELOW)
-#aa.f_read_data('vwnd',LEVEL)
+aa.f_read_data('vwnd',LEVEL)
 #aa.f_read_data('vwnd',LEVEL_ABOVE)
 #aa.f_read_data('vrt',LEVEL_BELOW)
-aa.f_read_data('vrt',LEVEL)
+#aa.f_read_data('vrt',LEVEL)
 #aa.f_read_data('vrt',LEVEL_ABOVE)
 #aa.f_read_data('omega',LEVEL)
 #aa.f_read_data('div',LEVEL)
 
 # Read annual cycle data if needed
-aa.f_read_anncycle('uwnd',LEVEL,verbose=VERBOSE)
-aa.f_read_anncycle('vrt',LEVEL,verbose=VERBOSE)
+#aa.f_read_anncycle('vwnd',LEVEL,verbose=VERBOSE)
+#aa.f_read_anncycle('vrt',LEVEL,verbose=VERBOSE)
 #aa.f_read_anncycle('div',LEVEL,verbose=VERBOSE)
 
 iter_year=da.iter_generator(YEAR)
@@ -75,9 +75,13 @@ for year in iter_year:
         # Only calculate m_vrt_div term, for diagnostic purposes
         #aa.f_m_vrt_div(LEVEL)
         #
+        # Calculate dvwnddx and m_duwnddy contributions to vorticity, for diagnostic purposes
+        aa.f_vrt_components(LEVEL)
+        #
         # Calculate individual terms decomposed into annual cycle and perturbation combinations
         #aa.f_m_vrt_div_annpert(LEVEL)
-        aa.f_m_uwnd_dvrtdx_annpert(LEVEL)
+        #aa.f_m_uwnd_dvrtdx_annpert(LEVEL)
+        #aa.f_m_vwnd_dvrtdy_annpert(LEVEL)
         pass
 
 if PLOT:
