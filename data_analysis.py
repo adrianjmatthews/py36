@@ -134,6 +134,10 @@ var_name2long_name={
     'm_uwndprime_dvrtdxbar':'minus_time_perturbation_eastward_wind_times_time_mean_zonal_derivative_of_atmosphere_relative_vorticity',
     'm_uwndprime_dvrtdxprime':'minus_time_perturbation_eastward_wind_times_time_perturbation_zonal_derivative_of_atmosphere_relative_vorticity',
     'm_vwnd_dvrtdy':'minus_northward_wind_times_meridional_derivative_of_atmosphere_relative_vorticity',
+    'm_vwndbar_dvrtdybar':'minus_time_mean_northward_wind_times_time_mean_meridional_derivative_of_atmosphere_relative_vorticity',
+    'm_vwndbar_dvrtdyprime':'minus_time_mean_northward_wind_times_time_perturbation_meridional_derivative_of_atmosphere_relative_vorticity',
+    'm_vwndprime_dvrtdybar':'minus_time_perturbation_northward_wind_times_time_mean_meridional_derivative_of_atmosphere_relative_vorticity',
+    'm_vwndprime_dvrtdyprime':'minus_time_perturbation_northward_wind_times_time_perturbation_meridional_derivative_of_atmosphere_relative_vorticity',
     'm_vrt_div':'minus_divergence_of_wind_times_atmosphere_relative_vorticity',
     'm_vrtbar_divbar':'minus_time_mean_divergence_of_wind_times_time_mean_atmosphere_relative_vorticity',
     'm_vrtbar_divprime':'minus_time_perturbation_divergence_of_wind_times_time_mean_atmosphere_relative_vorticity',
@@ -6384,6 +6388,8 @@ class CubeDiagnostics(object):
         m_vrtprime_divprime
         """
         # Read vrtprime and divprime data for current time block
+        if self.filepre!='_rac':
+            raise UserWarning('Must read data with annual cycle removed, for perturbation.')
         self.time1,self.time2=block_times(self,verbose=self.verbose)
         time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
         x1=self.data_in['vrt_'+str(level)].extract(time_constraint)
@@ -6499,6 +6505,8 @@ class CubeDiagnostics(object):
         m_uwndprime_dvrtdxprime
         """
         # Read uwndprime and vrtprime data for current time block
+        if self.filepre!='_rac':
+            raise UserWarning('Must read data with annual cycle removed, for perturbation.')
         self.time1,self.time2=block_times(self,verbose=self.verbose)
         time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
         x1=self.data_in['uwnd_'+str(level)].extract(time_constraint)
@@ -6614,6 +6622,142 @@ class CubeDiagnostics(object):
         fileout=fileout.replace(self.filepre,'')
         print('fileout: {0!s}'.format(fileout))
         iris.save(self.m_uwndprime_dvrtdxprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_m_vwnd_dvrtdy_annpert(self,level):
+        """Calculate and save m_vwnd_dvrtdy terms decomposed into anncycle and perturbation parts.
+
+        Both vwnd and vorticity (vrt) terms have been
+        previously separated into annual cycle and perturbation parts:
+
+        Behaves similarly to f_m_uwnd_dvrtdx_annpert()
+
+        Calculate attributes:
+
+        m_vwndbar_dvrtdybar
+        m_vwndbar_dvrtdyprime
+        m_vwndprime_dvrtdybar
+        m_vwndprime_dvrtdyprime
+        """
+        # Read vwndprime and vrtprime data for current time block
+        if self.filepre!='_rac':
+            raise UserWarning('Must read data with annual cycle removed, for perturbation.')
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['vwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in['vrt_'+str(level)].extract(time_constraint)
+        vwndprime=x1.concatenate_cube()
+        vrtprime=x2.concatenate_cube()
+        #
+        # Set annual cycles for this year (regular or leap year) and extract data for current time block
+        vwndbar=self.data_anncycle['vwnd_'+str(level)]
+        vrtbar=self.data_anncycle['vrt_'+str(level)]
+        if divmod(self.year,4)[1]==0 and self.calendar=='gregorian':
+            vwndbar=self.data_anncycleleap['vwnd_'+str(level)]
+            vrtbar=self.data_anncycleleap['vrt_'+str(level)]
+        tcoord_anncycle=vwndbar.coord('time')
+        anncycle_year=tcoord_anncycle.units.num2date(tcoord_anncycle.points[0]).year
+        xx=self.time1
+        x1=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        xx=self.time2
+        x2=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        print('anncycle_year,x1,x2: {0!s}, {1!s}, {2!s}'.format(anncycle_year,x1,x2))
+        time_anncycle_constraint=set_time_constraint(x1,x2,calendar=self.calendar)
+        vwndbar=vwndbar.extract(time_anncycle_constraint)
+        vrtbar=vrtbar.extract(time_anncycle_constraint)
+        #
+        # Find value of south2north
+        self.south2north=f_south2north(vwndbar,verbose=self.verbose)
+        #
+        # Calculate dvrtdybar
+        # ww is dummy VectorWind instance using available data: vwndbar and vrtbar!!
+        ww=VectorWind(vwndbar,vrtbar)
+        dvrtdxbar,dvrtdybar=ww.gradient(vrtbar)
+        if self.south2north:
+            dvrtdxbar=lat_direction(dvrtdxbar,'s2n')
+            dvrtdybar=lat_direction(dvrtdybar,'s2n')
+        #
+        # Calculate dvrtdyprime
+        # ww is dummy VectorWind instance using available data: vwndprime and vrtprime!!
+        ww=VectorWind(vwndprime,vrtprime)
+        dvrtdxprime,dvrtdyprime=ww.gradient(vrtprime)
+        if self.south2north:
+            dvrtdxprime=lat_direction(dvrtdxprime,'s2n')
+            dvrtdyprime=lat_direction(dvrtdyprime,'s2n')
+        #
+        ### Calculate m_vwndbar_dvrtdybar
+        m_vwndbar_dvrtdybar=-1*vwndbar*dvrtdybar
+        # Reset time axis to current year
+        m_vwndbar_dvrtdybar=create_cube(m_vwndbar_dvrtdybar.data,vrtprime)
+        # Attributes
+        var_name='m_vwndbar_dvrtdybar'
+        long_name=var_name2long_name[var_name]
+        m_vwndbar_dvrtdybar.rename(long_name) # not a standard_name
+        m_vwndbar_dvrtdybar.var_name=var_name
+        vrt_tendency_units='s-2'
+        m_vwndbar_dvrtdybar.units=vrt_tendency_units
+        self.m_vwndbar_dvrtdybar=m_vwndbar_dvrtdybar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndbar_dvrtdybar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vwndbar_dvrtdyprime
+        m_vwndbar_dvrtdyprime=-1*vwndbar.data*dvrtdyprime.data
+        # Set time axis to current year
+        m_vwndbar_dvrtdyprime=create_cube(m_vwndbar_dvrtdyprime,vrtprime)
+        # Attributes
+        var_name='m_vwndbar_dvrtdyprime'
+        long_name=var_name2long_name[var_name]
+        m_vwndbar_dvrtdyprime.rename(long_name) # not a standard_name
+        m_vwndbar_dvrtdyprime.var_name=var_name
+        m_vwndbar_dvrtdyprime.units=vrt_tendency_units
+        self.m_vwndbar_dvrtdyprime=m_vwndbar_dvrtdyprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndbar_dvrtdyprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vwndprime_dvrtdybar
+        m_vwndprime_dvrtdybar=-1*vwndprime.data*dvrtdybar.data
+        # Set time axis to current year
+        m_vwndprime_dvrtdybar=create_cube(m_vwndprime_dvrtdybar,vrtprime)
+        # Attributes
+        var_name='m_vwndprime_dvrtdybar'
+        long_name=var_name2long_name[var_name]
+        m_vwndprime_dvrtdybar.rename(long_name) # not a standard_name
+        m_vwndprime_dvrtdybar.var_name=var_name
+        m_vwndprime_dvrtdybar.units=vrt_tendency_units
+        self.m_vwndprime_dvrtdybar=m_vwndprime_dvrtdybar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndprime_dvrtdybar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vwndprime_dvrtdyprime
+        m_vwndprime_dvrtdyprime=-1*vwndprime*dvrtdyprime
+        # Attributes
+        var_name='m_vwndprime_dvrtdyprime'
+        long_name=var_name2long_name[var_name]
+        m_vwndprime_dvrtdyprime.rename(long_name) # not a standard_name
+        m_vwndprime_dvrtdyprime.var_name=var_name
+        m_vwndprime_dvrtdyprime.units=vrt_tendency_units
+        self.m_vwndprime_dvrtdyprime=m_vwndprime_dvrtdyprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndprime_dvrtdyprime,fileout)
         if self.archive:
             archive_file(self,fileout)
 
