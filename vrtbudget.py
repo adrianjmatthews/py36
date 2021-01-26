@@ -24,7 +24,7 @@ YEAR=1998
 MONTH=[-999] # Dummy value if outfile_frequency is 'year'
 #MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
 
-PLOT=False
+PLOT=True
 
 VERBOSE=2
 
@@ -76,7 +76,10 @@ for year in iter_year:
         #aa.f_m_vrt_div(LEVEL)
         #
         # Calculate dvwnddx and m_duwnddy contributions to vorticity, for diagnostic purposes
-        aa.f_vrt_components(LEVEL)
+        #aa.f_vrt_components(LEVEL)
+        #
+        # Calculate duwnddx and dvwnddy contributions to divergence, for diagnostic purposes
+        aa.f_div_components(LEVEL)
         #
         # Calculate individual terms decomposed into annual cycle and perturbation combinations
         #aa.f_m_vrt_div_annpert(LEVEL)
@@ -85,7 +88,7 @@ for year in iter_year:
         pass
 
 if PLOT:
-    x1=aa.m_vrtprime_divbar
+    x1=aa.duwnddx
     tcoord=x1.coord('time')
     time1=tcoord.units.num2date(tcoord.points[-1])
     time_constraint=iris.Constraint(time=time1)

@@ -105,7 +105,9 @@ var_name2long_name={
     'domegady_duwnddp':'meridional_derivative_of_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_zonal_wind',
     'dummy':'dummy_variable',
     'dvrtdt':'tendency_of_atmosphere_relative_vorticity',
+    'duwnddx':'zonal_derivative_of_eastward_wind',
     'dvwnddx':'zonal_derivative_of_northward_wind',
+    'dvwnddy':'meridional_derivative_of_northward_wind',
     'elevation':'height_above_reference_ellipsoid',
     'ew':'water_vapor_partial_pressure_in_air',
     'freq':'frequency',
@@ -6814,6 +6816,60 @@ class CubeDiagnostics(object):
         fileout=replace_wildcard_with_time(self,fileout)
         print('fileout: {0!s}'.format(fileout))
         iris.save(self.m_duwnddy,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_div_components(self,level):
+        """Calculate and save duwnddx and dvwnddy contributions to divergence.
+
+        duwnddx = divergence calculated from (uwnd,0)
+        dvwnddy = divergence calculated from (0,vwnd)
+
+        Create attributes:
+
+        duwnddx
+        dvwnddy
+        """
+        # Read uwnd and vwnd data for current time block
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['uwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in['vwnd_'+str(level)].extract(time_constraint)
+        self.uwnd=x1.concatenate_cube()
+        self.vwnd=x2.concatenate_cube()
+        # Create dummy cube of zeroes
+        zeros=np.zeros(self.uwnd.data.shape)
+        zeros=create_cube(zeros,self.uwnd,new_var_name='dummy')
+        # Find value of south2north
+        self.south2north=f_south2north(self.uwnd,verbose=self.verbose)
+        # Calculate duwnddx and save
+        ww=VectorWind(self.uwnd,zeros)
+        self.duwnddx=ww.divergence()
+        if self.south2north:
+            self.duwnddx=lat_direction(self.duwnddx,'s2n')
+        var_name='duwnddx'
+        long_name=var_name2long_name[var_name]
+        self.duwnddx.rename(long_name) # not a standard_name
+        self.duwnddx.var_name=var_name
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.duwnddx,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        # Calculate dvwnddy and save
+        ww=VectorWind(zeros,self.vwnd)
+        self.dvwnddy=ww.divergence()
+        if self.south2north:
+            self.dvwnddy=lat_direction(self.dvwnddy,'s2n')
+        var_name='dvwnddy'
+        long_name=var_name2long_name[var_name]
+        self.dvwnddy.rename(long_name) # not a standard_name
+        self.dvwnddy.var_name=var_name
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.dvwnddy,fileout)
         if self.archive:
             archive_file(self,fileout)
 
