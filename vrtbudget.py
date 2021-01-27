@@ -19,12 +19,12 @@ LEVEL_BELOW=875; LEVEL=850; LEVEL_ABOVE=825
 FILEPRE='_rac' # '', '_rac', etc.
 FILEPREANNCYCLE='_ac_smooth_expanded_1998_2018' # if decomposing into annual cycle and perturbation
 
-YEAR=1998
-#YEAR=range(1998,2018+1)
+#YEAR=2018
+YEAR=range(2014,2017+1)
 MONTH=[-999] # Dummy value if outfile_frequency is 'year'
 #MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
 
-PLOT=True
+PLOT=False
 
 VERBOSE=2
 
