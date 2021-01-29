@@ -1674,6 +1674,41 @@ class TimeDomain(object):
         else:
             raise UserWarning('Time domain must be of type "event" to calculate number of days.')
 
+    def f_histogram_months(self):
+        """Create histogram of occurence of months in (timebeg) of time domain.
+
+        Print statistics of occurence during standard seasons.
+
+        Create histogram_months attribute.
+        """
+        hist=np.zeros((12,))
+        for xx in self.datetimes:
+            monthc=xx[0].month
+            indexc=monthc-1
+            hist[indexc]=hist[indexc]+1
+        print('hist: {0!s}'.format(hist))
+        ntot=hist.sum()
+        print('ntot: {0!s}'.format(ntot))
+        ndjf=hist[11]+hist[0]+hist[1]
+        fracdjf=ndjf/ntot
+        print('ndjf,fracdjf: {0!s}, {1!s}'.format(ndjf,fracdjf))
+        nmam=hist[2]+hist[3]+hist[4]
+        fracmam=nmam/ntot
+        print('nmam,fracmam: {0!s}, {1!s}'.format(nmam,fracmam))
+        njja=hist[5]+hist[6]+hist[7]
+        fracjja=njja/ntot
+        print('njja,fracjja: {0!s}, {1!s}'.format(njja,fracjja))
+        nson=hist[8]+hist[9]+hist[10]
+        fracson=nson/ntot
+        print('nson,fracson: {0!s}, {1!s}'.format(nson,fracson))
+        nndjfma=hist[10]+hist[11]+hist[0]+hist[1]+hist[2]+hist[3]
+        fracndjfma=nndjfma/ntot
+        print('nndjfma,fracndjfma: {0!s}, {1!s}'.format(nndjfma,fracndjfma))
+        nmjjaso=ntot-nndjfma
+        fracmjjaso=1-fracndjfma
+        print('nmjjaso,fracmjjaso: {0!s}, {1!s}'.format(nmjjaso,fracmjjaso))
+        self.histogram_months=hist
+
     def info(self):
         """Calculate and print information on time domain."""
         self.read_ascii()
