@@ -12,12 +12,10 @@ import data_analysis as da
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-ARCHIVE=True
+ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-#VAR_NAME='uwnd'; 
-LEVEL=500; SOURCE='erainterim_plev_d'; 
-#TDOMAINID='ann9818'
+VAR_NAME='vwnd'; LEVEL=850; SOURCE='erainterim_plev_d'; TDOMAINID='CCEK75E98-18-0.5-6h'
 #VAR_NAME='swpd'; LEVEL='all'; SOURCE='sg613m031oi01_zlev_h'; TDOMAINID='boballsg'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_d'; TDOMAINID='jjas98-12'
 #VAR_NAME='vwnd'; LEVEL=850; SOURCE='erainterim_plev_d'; TDOMAINID='cckw75Epm10gt109812'
@@ -29,6 +27,13 @@ LEVEL=500; SOURCE='erainterim_plev_d';
 
 FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
 
+# Usually will calculate time mean from e.g., daily data. Set DATA_FROM_ANNCYCLE to False for this.
+# To calculate time mean from annual cycle (i.e., to get a mean background state for selected dates)
+#   set DATA_FROM_ANNCYCLE to a 2-tuple of (year_beg,year_end) from which annual cycle was calculated
+#   e.g., (1998,2018)
+#DATA_FROM_ANNCYCLE=False
+DATA_FROM_ANNCYCLE=(1998,2018)
+
 # Optional parameters for use in null distribution calculation
 #NMC=10; PERCENTILES_NULL=[1,2.5,5,10,20,30,50,70,80,90,95,97.5,99]; MAX_DAY_SHIFT=15
 #TIME_FIRST=datetime.datetime(1998,1,1)
@@ -37,7 +42,7 @@ FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
 LAZY_LOAD=True
 VERBOSE=2
 
-PLOT=False
+PLOT=True
 
 #==========================================================================
 
@@ -51,6 +56,7 @@ descriptor['basedir']=BASEDIR
 descriptor['archive']=ARCHIVE
 descriptor['basedir_archive']=BASEDIR_ARCHIVE
 descriptor['filepre']=FILEPRE
+descriptor['data_from_anncycle']=DATA_FROM_ANNCYCLE
 if 'NMC' in locals():
     descriptor['nmc']=NMC
 if 'PERCENTILES_NULL' in locals():

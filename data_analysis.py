@@ -2409,7 +2409,7 @@ class TimeDomStats(object):
         """Initialise from descriptor dictionary.
 
         Compulsory keywords: 'verbose','source','var_name','level',
-        'basedir','tdomainid','filepre'.
+        'basedir','tdomainid','filepre','data_from_anncycle'.
 
         Optional keywords: 'nmc','percentiles_null','max_day_shift',
         'time_first','time_last'.
@@ -2418,7 +2418,7 @@ class TimeDomStats(object):
         self.descriptor=descriptor
         self.name=var_name2long_name[self.var_name]
         source_info(self)
-        # Input data
+        # Input data for regular data
         self.filein1=os.path.join(self.basedir,self.source,'std',self.var_name+'_'+str(self.level)+self.filepre+'_'+self.wildcard+'.nc')
         self.data_in=iris.load(self.filein1,self.name)
         if not lazy_load:
@@ -2426,6 +2426,14 @@ class TimeDomStats(object):
             # Potentially speeds up processing
             time_constraint=set_time_constraint(time_first,time_last,calendar=self.calendar,verbose=self.verbose)
             self.data_in=self.data_in.extract(time_constraint)
+        # Input data if calculating statistics from a selection of the annual cycle
+        # e.g., to calculate the mean background state over dates in a time domain
+        if self.data_from_anncycle:
+            file_anncycle=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+'_ac_smooth_'+str(self.data_from_anncycle[0])+'_'+str(self.data_from_anncycle[1])+'.nc')
+            self.data_in_anncycle=iris.load_cube(file_anncycle,self.name)
+            tcoord=self.data_in_anncycle.coord('time')
+            tunits=tcoord.units
+            self.data_from_anncycle_year=tcoord.units.num2date(tcoord.points[0]).year
         # Time domain
         try:
             dummy1=self.tdomain
@@ -2478,14 +2486,27 @@ class TimeDomStats(object):
                 time_end=eventc[1]
                 print('time_beg,time_end: {0!s}, {1!s}'.format(time_beg,time_end))
                 time_constraint=set_time_constraint(time_beg,time_end,calendar=self.calendar,verbose=self.verbose)
+                if self.data_from_anncycle:
+                    raise UserWarning('Event type time domains not suitable for use with annual cycle input data.')
             elif self.tdomain.type=='single':
                 timec=eventc[0]
                 print('timec: {0!s}'.format(timec))
+                if self.data_from_anncycle:
+                    # Set time constraint to select month,day of current event from annual cycle
+                    if self.calendar=='gregorian' and timec.month==2 and timec.day==29:
+                        dayc=28
+                    else:
+                        dayc=timec.day
+                    timec=timec.__class__(self.data_from_anncycle_year,timec.month,dayc,0,0)
+                    print('timec: {0!s}'.format(timec))
                 time_constraint=set_time_constraint(timec,False,calendar=self.calendar,verbose=self.verbose)
             else:
                 raise UserWarning('Invalid tdomain.type')
-            x1=self.data_in.extract(time_constraint)
-            x2=concatenate_cube(x1)
+            if self.data_from_anncycle:
+                x2=self.data_in_anncycle.extract(time_constraint)
+            else:
+                x1=self.data_in.extract(time_constraint)
+                x2=concatenate_cube(x1)
             if self.tdomain.type=='event':
                 ntime=x2.coord('time').shape[0]
             elif self.tdomain.type=='single':
