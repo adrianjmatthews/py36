@@ -2449,6 +2449,11 @@ class TimeDomStats(object):
         self.fileout_mean=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_'+self.tdomainid+'.nc')
         self.fileout_lagged_mean=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_'+self.tdomainid+'_lag.nc')
         self.fileout_dc=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_'+self.tdomainid+'_dc.nc')
+        if self.data_from_anncycle:
+            # Overwrite output file names (lagged mean, and diurnal cycle files not defined)
+            self.fileout_mean=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_anncycle_'+self.tdomainid+'.nc')
+            self.fileout_lagged_mean=''
+            self.fileout_dc=''
         if self.verbose:
             print(self)
         
