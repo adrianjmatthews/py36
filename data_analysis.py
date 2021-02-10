@@ -1993,7 +1993,7 @@ class DataConverter(object):
         # long_name attribute if it exists. Ignores raw_name 
         self.raw_name=self.name
         if self.data_source in ['erainterim',]:
-            if self.var_name in['div']:
+            if self.var_name in ['div']:
                 self.raw_name='D'
         elif self.data_source in ['era5trp','era5plp'] and self.level_type=='plev':
             if self.var_name=='uwnd':
