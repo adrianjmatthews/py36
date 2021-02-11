@@ -32,8 +32,8 @@ import shutil
 #FILENAME='anncycle.py'
 #FILENAME='time_average.py'
 #FILENAME='filter.py'
-#FILENAME='spatial_subset.py'
-FILENAME='mean.py'
+FILENAME='spatial_subset.py'
+#FILENAME='mean.py'
 #FILENAME='time_average.py'
 #FILENAME='lagged_mean.py'
 #FILENAME='vwndptap.py'
@@ -121,13 +121,13 @@ LOOPVAR4= ['X'] # dummy value if not needed
 #LOOPVAR4=['dvrtdt','m_uwnd_dvrtdx','m_vwnd_dvrtdy','m_omega_dvrtdp','m_vrt_div','m_ff_div','m_beta_vwnd','m_domegadx_dvwnddp','domegady_duwnddp','source_dvrtdt','res_dvrtdt']
 #LOOPVAR4=['dvrtdt','m_uwnd_dvrtdx','m_vwnd_dvrtdy','m_omega_dvrtdp','m_vrt_div','m_ff_div','m_beta_vwnd','m_domegadx_dvwnddp','domegady_duwnddp','source_dvrtdt','res_dvrtdt','vrt_horiz_adv','vrt_stretch','vrt_tilt']
 #LOOPVAR4=['lat','lon','tsc','sa']
-#LOOPVAR4=['121.45','121.55']
+LOOPVAR4=['120.55','120.65','120.75','120.85']
 
 ######################################################
-#LOOPVAR5= ['X'] # dummy value if not needed
+LOOPVAR5= ['X'] # dummy value if not needed
 ######################################################
 #LOOPVAR5=[1000,975,950,925,900,875,850,825,800,775,750,700,650,600,550,500,450,400,350,300,250,225,200,175,150,125,100]
-LOOPVAR5=[1000,925,850,700,600,500,400,300,250,200,150,100,70,50,30,20,10]
+#LOOPVAR5=[1000,925,850,700,600,500,400,300,250,200,150,100,70,50,30,20,10]
 
 #--------------------------------------------------------------------
 
@@ -234,7 +234,7 @@ for var1 in LOOPVAR1:
                     fout=open(os.path.join(dir2,'subfile'),'w')
                     fout.write('#!/bin/bash\n')
                     fout.write('#SBATCH -t 23:59:00\n')
-                    fout.write('#SBATCH -p compute\n')
+                    fout.write('#SBATCH -p compute-16-64\n')
                     fout.write('#SBATCH --mem '+memory+'\n')
                     fout.write('#SBATCH --mail-type=NONE\n')
                     fout.write('#SBATCH --mail-user=e058@uea.ac.uk\n')
