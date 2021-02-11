@@ -105,6 +105,9 @@ var_name2long_name={
     'domegady_duwnddp':'meridional_derivative_of_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_zonal_wind',
     'dummy':'dummy_variable',
     'dvrtdt':'tendency_of_atmosphere_relative_vorticity',
+    'duwnddx':'zonal_derivative_of_eastward_wind',
+    'dvwnddx':'zonal_derivative_of_northward_wind',
+    'dvwnddy':'meridional_derivative_of_northward_wind',
     'elevation':'height_above_reference_ellipsoid',
     'ew':'water_vapor_partial_pressure_in_air',
     'freq':'frequency',
@@ -126,11 +129,24 @@ var_name2long_name={
     'mu':'atmosphere_overturning_potential',
     'm_beta_vwnd':'minus_meridional_derivative_of_coriolis_parameter_times_northward_wind',
     'm_domegadx_dvwnddp':'minus_zonal_derivative_of_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_northward_wind',
+    'm_duwnddy':'minus_meridional_derivative_of_eastward_wind',
     'm_ff_div':'minus_coriolis_parameter_times_atmosphere_relative_vorticity',
     'm_omega_dvrtdp':'minus_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_atmosphere_relative_vorticity',
     'm_uwnd_dvrtdx':'minus_eastward_wind_times_zonal_derivative_of_atmosphere_relative_vorticity',
+    'm_uwndbar_dvrtdxbar':'minus_time_mean_eastward_wind_times_time_mean_zonal_derivative_of_atmosphere_relative_vorticity',
+    'm_uwndbar_dvrtdxprime':'minus_time_mean_eastward_wind_times_time_perturbation_zonal_derivative_of_atmosphere_relative_vorticity',
+    'm_uwndprime_dvrtdxbar':'minus_time_perturbation_eastward_wind_times_time_mean_zonal_derivative_of_atmosphere_relative_vorticity',
+    'm_uwndprime_dvrtdxprime':'minus_time_perturbation_eastward_wind_times_time_perturbation_zonal_derivative_of_atmosphere_relative_vorticity',
     'm_vwnd_dvrtdy':'minus_northward_wind_times_meridional_derivative_of_atmosphere_relative_vorticity',
+    'm_vwndbar_dvrtdybar':'minus_time_mean_northward_wind_times_time_mean_meridional_derivative_of_atmosphere_relative_vorticity',
+    'm_vwndbar_dvrtdyprime':'minus_time_mean_northward_wind_times_time_perturbation_meridional_derivative_of_atmosphere_relative_vorticity',
+    'm_vwndprime_dvrtdybar':'minus_time_perturbation_northward_wind_times_time_mean_meridional_derivative_of_atmosphere_relative_vorticity',
+    'm_vwndprime_dvrtdyprime':'minus_time_perturbation_northward_wind_times_time_perturbation_meridional_derivative_of_atmosphere_relative_vorticity',
     'm_vrt_div':'minus_divergence_of_wind_times_atmosphere_relative_vorticity',
+    'm_vrtbar_divbar':'minus_time_mean_divergence_of_wind_times_time_mean_atmosphere_relative_vorticity',
+    'm_vrtbar_divprime':'minus_time_perturbation_divergence_of_wind_times_time_mean_atmosphere_relative_vorticity',
+    'm_vrtprime_divbar':'minus_time_mean_divergence_of_wind_times_time_perturbation_atmosphere_relative_vorticity',
+    'm_vrtprime_divprime':'minus_time_perturbation_divergence_of_wind_times_time_perturbation_atmosphere_relative_vorticity',
     'nhfd':'surface_downward_heat_flux_in_sea_water',
     'olr':'toa_outgoing_longwave_flux',
     'omega':'lagrangian_tendency_of_air_pressure',
@@ -656,14 +672,7 @@ def truncate(cube_in,truncation):
     """
 
     # Find value of south2north
-    lat_coord=cube_in.coord('latitude')
-    lat_beg=lat_coord.points[0]
-    lat_end=lat_coord.points[-1]
-    if lat_beg<lat_end:
-        south2north=True
-    else:
-        south2north=False
-    print('lat_beg, lat_end, south2north: {0!s}, {1!s}, {2!s} '.format(lat_beg,lat_end,south2north))
+    south2north=f_south2north(cube_in,verbose=True)
     # Create spoof uwnd and vwnd cubes to initiate VectorWind instance.
     uwnd=create_cube(cube_in.data,cube_in,new_var_name='uwnd')
     vwnd=create_cube(cube_in.data,cube_in,new_var_name='vwnd')
@@ -695,14 +704,7 @@ def inverse_laplacian(cube_in):
     """
 
     # Find value of south2north
-    lat_coord=cube_in.coord('latitude')
-    lat_beg=lat_coord.points[0]
-    lat_end=lat_coord.points[-1]
-    if lat_beg<lat_end:
-        south2north=True
-    else:
-        south2north=False
-    print('lat_beg, lat_end, south2north: {0!s}, {1!s}, {2!s} '.format(lat_beg,lat_end,south2north))
+    south2north=f_south2north(cube_in,verbose=True)
     # Create spoof uwnd and vwnd cubes to initiate VectorWind instance.
     uwnd=create_cube(cube_in.data,cube_in,new_var_name='uwnd')
     vwnd=create_cube(cube_in.data,cube_in,new_var_name='vwnd')
@@ -742,14 +744,7 @@ def gradient(cube_in):
     fields.
     """
     # Find value of south2north
-    lat_coord=cube_in.coord('latitude')
-    lat_beg=lat_coord.points[0]
-    lat_end=lat_coord.points[-1]
-    if lat_beg<lat_end:
-        south2north=True
-    else:
-        south2north=False
-    print('lat_beg, lat_end, south2north: {0!s}, {1!s}, {2!s} '.format(lat_beg,lat_end,south2north))
+    south2north=f_south2north(cube_in,verbose=True)
     # Create spoof uwnd and vwnd cubes to initiate VectorWind instance.
     uwnd=create_cube(cube_in.data,cube_in,new_var_name='uwnd')
     vwnd=create_cube(cube_in.data,cube_in,new_var_name='vwnd')
@@ -1214,6 +1209,29 @@ def f_wind_from_direction(uwnd,vwnd):
 
 #==========================================================================
 
+def f_south2north(cube,verbose=False):
+    """Determine whether latitude axis of iris cube runs south2north or not.
+
+    Input: cube : iris cube
+
+    Output: south2north : Boolean variable. True if latitude axis of
+    cube runs south to north, False if it runs north to south.
+
+    Return south2north.
+    """
+    lat_coord=cube.coord('latitude')
+    lat_beg=lat_coord.points[0]
+    lat_end=lat_coord.points[-1]
+    if lat_beg<lat_end:
+        south2north=True
+    else:
+        south2north=False
+    if verbose:
+        print('f_south2north: lat_beg, lat_end, south2north: {0!s}, {1!s}, {2!s} '.format(lat_beg,lat_end,south2north))
+    return south2north
+
+#==========================================================================
+
 class ToDoError(UserWarning):
 
     """An exception that indicates I need to write some more code.
@@ -1656,6 +1674,41 @@ class TimeDomain(object):
         else:
             raise UserWarning('Time domain must be of type "event" to calculate number of days.')
 
+    def f_histogram_months(self):
+        """Create histogram of occurence of months in (timebeg) of time domain.
+
+        Print statistics of occurence during standard seasons.
+
+        Create histogram_months attribute.
+        """
+        hist=np.zeros((12,))
+        for xx in self.datetimes:
+            monthc=xx[0].month
+            indexc=monthc-1
+            hist[indexc]=hist[indexc]+1
+        print('hist: {0!s}'.format(hist))
+        ntot=hist.sum()
+        print('ntot: {0!s}'.format(ntot))
+        ndjf=hist[11]+hist[0]+hist[1]
+        fracdjf=ndjf/ntot
+        print('ndjf,fracdjf: {0!s}, {1!s}'.format(ndjf,fracdjf))
+        nmam=hist[2]+hist[3]+hist[4]
+        fracmam=nmam/ntot
+        print('nmam,fracmam: {0!s}, {1!s}'.format(nmam,fracmam))
+        njja=hist[5]+hist[6]+hist[7]
+        fracjja=njja/ntot
+        print('njja,fracjja: {0!s}, {1!s}'.format(njja,fracjja))
+        nson=hist[8]+hist[9]+hist[10]
+        fracson=nson/ntot
+        print('nson,fracson: {0!s}, {1!s}'.format(nson,fracson))
+        nndjfma=hist[10]+hist[11]+hist[0]+hist[1]+hist[2]+hist[3]
+        fracndjfma=nndjfma/ntot
+        print('nndjfma,fracndjfma: {0!s}, {1!s}'.format(nndjfma,fracndjfma))
+        nmjjaso=ntot-nndjfma
+        fracmjjaso=1-fracndjfma
+        print('nmjjaso,fracmjjaso: {0!s}, {1!s}'.format(nmjjaso,fracmjjaso))
+        self.histogram_months=hist
+
     def info(self):
         """Calculate and print information on time domain."""
         self.read_ascii()
@@ -1993,8 +2046,11 @@ class DataConverter(object):
         # long_name attribute if it exists. Ignores raw_name 
         self.raw_name=self.name
         if self.data_source in ['erainterim',]:
-            if self.var_name in ['div']:
-                self.raw_name='D'
+            erainterim_raw_names={'div':'D', 'vrt':'VO', 'uwnd':'U', 'vwnd':'V', 'omega':'W' }
+            if self.var_name in erainterim_raw_names.keys():
+                self.raw_name=erainterim_raw_names[self.var_name]
+            else:
+                raise UserWarning('var_name not recognised.')
         elif self.data_source in ['era5trp','era5plp'] and self.level_type=='plev':
             if self.var_name=='uwnd':
                 self.raw_name='u'
@@ -2353,7 +2409,7 @@ class TimeDomStats(object):
         """Initialise from descriptor dictionary.
 
         Compulsory keywords: 'verbose','source','var_name','level',
-        'basedir','tdomainid','filepre'.
+        'basedir','tdomainid','filepre','data_from_anncycle'.
 
         Optional keywords: 'nmc','percentiles_null','max_day_shift',
         'time_first','time_last'.
@@ -2362,7 +2418,7 @@ class TimeDomStats(object):
         self.descriptor=descriptor
         self.name=var_name2long_name[self.var_name]
         source_info(self)
-        # Input data
+        # Input data for regular data
         self.filein1=os.path.join(self.basedir,self.source,'std',self.var_name+'_'+str(self.level)+self.filepre+'_'+self.wildcard+'.nc')
         self.data_in=iris.load(self.filein1,self.name)
         if not lazy_load:
@@ -2370,6 +2426,14 @@ class TimeDomStats(object):
             # Potentially speeds up processing
             time_constraint=set_time_constraint(time_first,time_last,calendar=self.calendar,verbose=self.verbose)
             self.data_in=self.data_in.extract(time_constraint)
+        # Input data if calculating statistics from a selection of the annual cycle
+        # e.g., to calculate the mean background state over dates in a time domain
+        if self.data_from_anncycle:
+            file_anncycle=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+'_ac_smooth_'+str(self.data_from_anncycle[0])+'_'+str(self.data_from_anncycle[1])+'.nc')
+            self.data_in_anncycle=iris.load_cube(file_anncycle,self.name)
+            tcoord=self.data_in_anncycle.coord('time')
+            tunits=tcoord.units
+            self.data_from_anncycle_year=tcoord.units.num2date(tcoord.points[0]).year
         # Time domain
         try:
             dummy1=self.tdomain
@@ -2385,6 +2449,11 @@ class TimeDomStats(object):
         self.fileout_mean=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_'+self.tdomainid+'.nc')
         self.fileout_lagged_mean=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_'+self.tdomainid+'_lag.nc')
         self.fileout_dc=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_'+self.tdomainid+'_dc.nc')
+        if self.data_from_anncycle:
+            # Overwrite output file names (lagged mean, and diurnal cycle files not defined)
+            self.fileout_mean=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_anncycle_'+self.tdomainid+'.nc')
+            self.fileout_lagged_mean=''
+            self.fileout_dc=''
         if self.verbose:
             print(self)
         
@@ -2422,14 +2491,27 @@ class TimeDomStats(object):
                 time_end=eventc[1]
                 print('time_beg,time_end: {0!s}, {1!s}'.format(time_beg,time_end))
                 time_constraint=set_time_constraint(time_beg,time_end,calendar=self.calendar,verbose=self.verbose)
+                if self.data_from_anncycle:
+                    raise UserWarning('Event type time domains not suitable for use with annual cycle input data.')
             elif self.tdomain.type=='single':
                 timec=eventc[0]
                 print('timec: {0!s}'.format(timec))
+                if self.data_from_anncycle:
+                    # Set time constraint to select month,day of current event from annual cycle
+                    if self.calendar=='gregorian' and timec.month==2 and timec.day==29:
+                        dayc=28
+                    else:
+                        dayc=timec.day
+                    timec=timec.__class__(self.data_from_anncycle_year,timec.month,dayc,0,0)
+                    print('timec: {0!s}'.format(timec))
                 time_constraint=set_time_constraint(timec,False,calendar=self.calendar,verbose=self.verbose)
             else:
                 raise UserWarning('Invalid tdomain.type')
-            x1=self.data_in.extract(time_constraint)
-            x2=concatenate_cube(x1)
+            if self.data_from_anncycle:
+                x2=self.data_in_anncycle.extract(time_constraint)
+            else:
+                x1=self.data_in.extract(time_constraint)
+                x2=concatenate_cube(x1)
             if self.tdomain.type=='event':
                 ntime=x2.coord('time').shape[0]
             elif self.tdomain.type=='single':
@@ -4001,14 +4083,7 @@ class Wind(object):
         self.uwnd=x1.concatenate_cube()
         self.vwnd=x2.concatenate_cube()
         # Find value of south2north
-        lat_coord=self.uwnd.coord('latitude')
-        lat_beg=lat_coord.points[0]
-        lat_end=lat_coord.points[-1]
-        if lat_beg<lat_end:
-            self.south2north=True
-        else:
-            self.south2north=False
-        print('lat_beg, lat_end, south2north: {0!s}, {1!s}, {2!s} '.format(lat_beg,lat_end,self.south2north))
+        self.south2north=f_south2north(cube_in,verbose=True)
         # Create VectorWind instance
         self.ww=VectorWind(self.uwnd,self.vwnd)
         # Both psi and chi
@@ -5078,6 +5153,10 @@ class AnnualCycle(object):
             iris.save(self.data_expanded_anncycle_smooth_leap,self.file_expanded_anncycle_smooth_leap)
             if self.archive:
                 archive_file(self,self.file_expanded_anncycle_smooth_leap)
+        # Overwrite data_anncycle_smooth and data_anncycle_smooth_leap with expanded versions
+        self.data_anncycle_smooth=self.data_expanded_anncycle_smooth
+        if self.calendar=='gregorian':
+            self.data_anncycle_smooth_leap=self.data_expanded_anncycle_smooth_leap
 
     def f_read_expanded_anncycle_smooth(self):
         """Read previously calculated expanded smoothed annual cycle.
@@ -5577,10 +5656,16 @@ class CubeDiagnostics(object):
         # Empty dictionaries to fill later
         self.filein={}
         self.data_in={}
+        self.fileanncycle={}
+        self.fileanncycleleap={}
+        self.data_anncycle={}
+        self.data_anncycleleap={}
+        # 
         try:
             dummy=self.filepre
         except AttributeError:
             self.filepre=''
+        #
         self.file_data_out=os.path.join(self.basedir,self.source,'std','VAR_NAME_'+str(self.level)+self.filepre+'_'+self.wildcard+'.nc')
         if self.verbose:
             print(self)        
@@ -5614,7 +5699,34 @@ class CubeDiagnostics(object):
                 'filein: {1.filein!s} \n'+\
                 'data_in: {1.data_in!s} \n'+h2b
             print(ss.format(var_name,self))
-            
+
+    def f_read_anncycle(self,var_name,level,verbose=False):
+        """Read annual cycle.
+
+        For use generally in diagnostics where a term is decomposed into 
+        annual cycle and anomaly parts, e.g.,
+        PQ = Pbar Qbar + Pbar Qprime + Pprime Qbar + Pprime Qprime
+
+        Add entry to the dictionary attributes self.fileanncycle and
+        self.data_anncycle (and self.fileanncycleleap and
+        self.data_anncycleleap if needed).
+        """
+        name=var_name2long_name[var_name]
+        self.fileanncycle[var_name+'_'+str(level)]=os.path.join(self.basedir,self.source,'processed',var_name+'_'+str(level)+self.filepreanncycle+'.nc')
+        self.data_anncycle[var_name+'_'+str(level)]=iris.load_cube(self.fileanncycle[var_name+'_'+str(level)],name)
+        if self.calendar=='gregorian':
+            self.fileanncycleleap[var_name+'_'+str(level)]=os.path.join(self.basedir,self.source,'processed',var_name+'_'+str(level)+self.filepreanncycle+'_leap.nc')
+            self.data_anncycleleap[var_name+'_'+str(level)]=iris.load_cube(self.fileanncycleleap[var_name+'_'+str(level)],name)
+        if verbose:
+            ss=h2a+'f_read_anncycle \n'+\
+                'var_name: {0!s} \n'+\
+                'fileanncyle: {1.fileanncycle!s} \n'+\
+                'data_anncycle: {1.data_anncycle!s} \n'
+            if self.calendar=='gregorian':
+                ss+='fileanncyleleap: {1.fileanncycleleap!s} \n'+\
+                'data_anncycleleap: {1.data_anncycleleap!s} \n'
+            ss+=h2b
+            print(ss.format(var_name,self))
 
     def f_mld(self,method=1,zzsfc=1.0,deltatsc=1.0):
         """Calculate mixed layer depth.
@@ -6023,14 +6135,7 @@ class CubeDiagnostics(object):
         self.div_level=x11.concatenate_cube()
         #
         # Find value of south2north
-        lat_coord=self.uwnd_level.coord('latitude')
-        lat_beg=lat_coord.points[0]
-        lat_end=lat_coord.points[-1]
-        if lat_beg<lat_end:
-            self.south2north=True
-        else:
-            self.south2north=True
-        print('lat_beg, lat_end, south2north: {0!s}, {1!s}, {2!s} '.format(lat_beg,lat_end,self.south2north))
+        self.south2north=f_south2north(uwnd_level,verbose=self.verbose)
         #
         ### Calculate dvrtdt
         lfwdfirsttime=False
@@ -6108,7 +6213,7 @@ class CubeDiagnostics(object):
         if self.archive:
             archive_file(self,fileout)
         #
-        ### Calculate m_uwnd_dvrtdx and m_vwnd_dvrtdx
+        ### Calculate m_uwnd_dvrtdx and m_vwnd_dvrtdy
         ww=VectorWind(self.uwnd_level,self.vwnd_level)
         dvrtdx,dvrtdy=ww.gradient(self.vrt_level)
         if self.south2north:
@@ -6320,6 +6425,512 @@ class CubeDiagnostics(object):
         fileout=replace_wildcard_with_time(self,fileout)
         print('fileout: {0!s}'.format(fileout))
         iris.save(self.m_vrt_div,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_m_vrt_div_annpert(self,level):
+        """Calculate and save m_vrt_div terms decomposed into anncycle and perturbation parts.
+
+        Both vorticity (vrt) and divergence (div) terms have been
+        previously separated into annual cycle and perturbation parts:
+
+        vrt = vrtbar + vrtprime
+        div = divbar + divprime
+
+        where bar refers to annual cycle part and prime refers to anomaly from annual cycle.
+
+        m_vrt_div = -1*vrt*div
+                  = -1*(vrtbar+vrtprime)*(divbar+divprime)
+                  = -1*vrtbar*divbar -1*vrtbar*divprime -1*vrtprime*divbar -1*vrtprime*vrtprime
+                  =  m_vrtbar_divbar +m_vrtbar_divprime =m_vrtprime_divbar +m_vrtprime_vrtprime
+
+
+        Calculate attributes:
+
+        m_vrtbar_divbar
+        m_vrtbar_divprime
+        m_vrtprime_divbar
+        m_vrtprime_divprime
+        """
+        # Read vrtprime and divprime data for current time block
+        if self.filepre!='_rac':
+            raise UserWarning('Must read data with annual cycle removed, for perturbation.')
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['vrt_'+str(level)].extract(time_constraint)
+        x2=self.data_in['div_'+str(level)].extract(time_constraint)
+        vrtprime=x1.concatenate_cube()
+        divprime=x2.concatenate_cube()
+        #
+        # Set annual cycles for this year (regular or leap year) and extract data for current time block
+        vrtbar=self.data_anncycle['vrt_'+str(level)]
+        divbar=self.data_anncycle['div_'+str(level)]
+        if divmod(self.year,4)[1]==0 and self.calendar=='gregorian':
+            vrtbar=self.data_anncycleleap['vrt_'+str(level)]
+            divbar=self.data_anncycleleap['div_'+str(level)]
+        tcoord_anncycle=vrtbar.coord('time')
+        anncycle_year=tcoord_anncycle.units.num2date(tcoord_anncycle.points[0]).year
+        xx=self.time1
+        x1=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        xx=self.time2
+        x2=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        print('anncycle_year,x1,x2: {0!s}, {1!s}, {2!s}'.format(anncycle_year,x1,x2))
+        time_anncycle_constraint=set_time_constraint(x1,x2,calendar=self.calendar)
+        vrtbar=vrtbar.extract(time_anncycle_constraint)
+        divbar=divbar.extract(time_anncycle_constraint)
+        #
+        ### Calculate m_vrtbar_divbar
+        m_vrtbar_divbar=-1*vrtbar*divbar
+        # Reset time axis to current year
+        m_vrtbar_divbar=create_cube(m_vrtbar_divbar.data,vrtprime)
+        # Attributes
+        var_name='m_vrtbar_divbar'
+        long_name=var_name2long_name[var_name]
+        m_vrtbar_divbar.rename(long_name) # not a standard_name
+        m_vrtbar_divbar.var_name=var_name
+        vrt_tendency_units='s-2'
+        m_vrtbar_divbar.units=vrt_tendency_units
+        self.m_vrtbar_divbar=m_vrtbar_divbar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtbar_divbar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vrtbar_divprime
+        m_vrtbar_divprime=-1*vrtbar.data*divprime.data
+        # Set time axis to current year
+        m_vrtbar_divprime=create_cube(m_vrtbar_divprime,vrtprime)
+        # Attributes
+        var_name='m_vrtbar_divprime'
+        long_name=var_name2long_name[var_name]
+        m_vrtbar_divprime.rename(long_name) # not a standard_name
+        m_vrtbar_divprime.var_name=var_name
+        m_vrtbar_divprime.units=vrt_tendency_units
+        self.m_vrtbar_divprime=m_vrtbar_divprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtbar_divprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vrtprime_divbar
+        m_vrtprime_divbar=-1*vrtprime.data*divbar.data
+        # Set time axis to current year
+        m_vrtprime_divbar=create_cube(m_vrtprime_divbar,vrtprime)
+        # Attributes
+        var_name='m_vrtprime_divbar'
+        long_name=var_name2long_name[var_name]
+        m_vrtprime_divbar.rename(long_name) # not a standard_name
+        m_vrtprime_divbar.var_name=var_name
+        m_vrtprime_divbar.units=vrt_tendency_units
+        self.m_vrtprime_divbar=m_vrtprime_divbar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtprime_divbar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vrtprime_divprime
+        m_vrtprime_divprime=-1*vrtprime*divprime
+        # Attributes
+        var_name='m_vrtprime_divprime'
+        long_name=var_name2long_name[var_name]
+        m_vrtprime_divprime.rename(long_name) # not a standard_name
+        m_vrtprime_divprime.var_name=var_name
+        m_vrtprime_divprime.units=vrt_tendency_units
+        self.m_vrtprime_divprime=m_vrtprime_divprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtprime_divprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_m_uwnd_dvrtdx_annpert(self,level):
+        """Calculate and save m_uwnd_dvrtdx terms decomposed into anncycle and perturbation parts.
+
+        Both uwnd and vorticity (vrt) terms have been
+        previously separated into annual cycle and perturbation parts:
+
+        Behaves similarly to f_m_vrt_div_annpert()
+
+        Calculate attributes:
+
+        m_uwndbar_dvrtdxbar
+        m_uwndbar_dvrtdxprime
+        m_uwndprime_dvrtdxbar
+        m_uwndprime_dvrtdxprime
+        """
+        # Read uwndprime and vrtprime data for current time block
+        if self.filepre!='_rac':
+            raise UserWarning('Must read data with annual cycle removed, for perturbation.')
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['uwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in['vrt_'+str(level)].extract(time_constraint)
+        uwndprime=x1.concatenate_cube()
+        vrtprime=x2.concatenate_cube()
+        #
+        # Set annual cycles for this year (regular or leap year) and extract data for current time block
+        uwndbar=self.data_anncycle['uwnd_'+str(level)]
+        vrtbar=self.data_anncycle['vrt_'+str(level)]
+        if divmod(self.year,4)[1]==0 and self.calendar=='gregorian':
+            uwndbar=self.data_anncycleleap['uwnd_'+str(level)]
+            vrtbar=self.data_anncycleleap['vrt_'+str(level)]
+        tcoord_anncycle=uwndbar.coord('time')
+        anncycle_year=tcoord_anncycle.units.num2date(tcoord_anncycle.points[0]).year
+        xx=self.time1
+        x1=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        xx=self.time2
+        x2=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        print('anncycle_year,x1,x2: {0!s}, {1!s}, {2!s}'.format(anncycle_year,x1,x2))
+        time_anncycle_constraint=set_time_constraint(x1,x2,calendar=self.calendar)
+        uwndbar=uwndbar.extract(time_anncycle_constraint)
+        vrtbar=vrtbar.extract(time_anncycle_constraint)
+        #
+        # Find value of south2north
+        self.south2north=f_south2north(uwndbar,verbose=self.verbose)
+        #
+        # Calculate dvrtdxbar
+        # ww is dummy VectorWind instance using available data: uwndbar and vrtbar!!
+        ww=VectorWind(uwndbar,vrtbar)
+        dvrtdxbar,dvrtdybar=ww.gradient(vrtbar)
+        if self.south2north:
+            dvrtdxbar=lat_direction(dvrtdxbar,'s2n')
+            dvrtdybar=lat_direction(dvrtdybar,'s2n')
+        #
+        # Calculate dvrtdxprime
+        # ww is dummy VectorWind instance using available data: uwndprime and vrtprime!!
+        ww=VectorWind(uwndprime,vrtprime)
+        dvrtdxprime,dvrtdyprime=ww.gradient(vrtprime)
+        if self.south2north:
+            dvrtdxprime=lat_direction(dvrtdxprime,'s2n')
+            dvrtdyprime=lat_direction(dvrtdyprime,'s2n')
+        #
+        ### Calculate m_uwndbar_dvrtdxbar
+        m_uwndbar_dvrtdxbar=-1*uwndbar*dvrtdxbar
+        # Reset time axis to current year
+        m_uwndbar_dvrtdxbar=create_cube(m_uwndbar_dvrtdxbar.data,vrtprime)
+        # Attributes
+        var_name='m_uwndbar_dvrtdxbar'
+        long_name=var_name2long_name[var_name]
+        m_uwndbar_dvrtdxbar.rename(long_name) # not a standard_name
+        m_uwndbar_dvrtdxbar.var_name=var_name
+        vrt_tendency_units='s-2'
+        m_uwndbar_dvrtdxbar.units=vrt_tendency_units
+        self.m_uwndbar_dvrtdxbar=m_uwndbar_dvrtdxbar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_uwndbar_dvrtdxbar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_uwndbar_dvrtdxprime
+        m_uwndbar_dvrtdxprime=-1*uwndbar.data*dvrtdxprime.data
+        # Set time axis to current year
+        m_uwndbar_dvrtdxprime=create_cube(m_uwndbar_dvrtdxprime,vrtprime)
+        # Attributes
+        var_name='m_uwndbar_dvrtdxprime'
+        long_name=var_name2long_name[var_name]
+        m_uwndbar_dvrtdxprime.rename(long_name) # not a standard_name
+        m_uwndbar_dvrtdxprime.var_name=var_name
+        m_uwndbar_dvrtdxprime.units=vrt_tendency_units
+        self.m_uwndbar_dvrtdxprime=m_uwndbar_dvrtdxprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_uwndbar_dvrtdxprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_uwndprime_dvrtdxbar
+        m_uwndprime_dvrtdxbar=-1*uwndprime.data*dvrtdxbar.data
+        # Set time axis to current year
+        m_uwndprime_dvrtdxbar=create_cube(m_uwndprime_dvrtdxbar,vrtprime)
+        # Attributes
+        var_name='m_uwndprime_dvrtdxbar'
+        long_name=var_name2long_name[var_name]
+        m_uwndprime_dvrtdxbar.rename(long_name) # not a standard_name
+        m_uwndprime_dvrtdxbar.var_name=var_name
+        m_uwndprime_dvrtdxbar.units=vrt_tendency_units
+        self.m_uwndprime_dvrtdxbar=m_uwndprime_dvrtdxbar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_uwndprime_dvrtdxbar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_uwndprime_dvrtdxprime
+        m_uwndprime_dvrtdxprime=-1*uwndprime*dvrtdxprime
+        # Attributes
+        var_name='m_uwndprime_dvrtdxprime'
+        long_name=var_name2long_name[var_name]
+        m_uwndprime_dvrtdxprime.rename(long_name) # not a standard_name
+        m_uwndprime_dvrtdxprime.var_name=var_name
+        m_uwndprime_dvrtdxprime.units=vrt_tendency_units
+        self.m_uwndprime_dvrtdxprime=m_uwndprime_dvrtdxprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_uwndprime_dvrtdxprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_m_vwnd_dvrtdy_annpert(self,level):
+        """Calculate and save m_vwnd_dvrtdy terms decomposed into anncycle and perturbation parts.
+
+        Both vwnd and vorticity (vrt) terms have been
+        previously separated into annual cycle and perturbation parts:
+
+        Behaves similarly to f_m_uwnd_dvrtdx_annpert()
+
+        Calculate attributes:
+
+        m_vwndbar_dvrtdybar
+        m_vwndbar_dvrtdyprime
+        m_vwndprime_dvrtdybar
+        m_vwndprime_dvrtdyprime
+        """
+        # Read vwndprime and vrtprime data for current time block
+        if self.filepre!='_rac':
+            raise UserWarning('Must read data with annual cycle removed, for perturbation.')
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['vwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in['vrt_'+str(level)].extract(time_constraint)
+        vwndprime=x1.concatenate_cube()
+        vrtprime=x2.concatenate_cube()
+        #
+        # Set annual cycles for this year (regular or leap year) and extract data for current time block
+        vwndbar=self.data_anncycle['vwnd_'+str(level)]
+        vrtbar=self.data_anncycle['vrt_'+str(level)]
+        if divmod(self.year,4)[1]==0 and self.calendar=='gregorian':
+            vwndbar=self.data_anncycleleap['vwnd_'+str(level)]
+            vrtbar=self.data_anncycleleap['vrt_'+str(level)]
+        tcoord_anncycle=vwndbar.coord('time')
+        anncycle_year=tcoord_anncycle.units.num2date(tcoord_anncycle.points[0]).year
+        xx=self.time1
+        x1=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        xx=self.time2
+        x2=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        print('anncycle_year,x1,x2: {0!s}, {1!s}, {2!s}'.format(anncycle_year,x1,x2))
+        time_anncycle_constraint=set_time_constraint(x1,x2,calendar=self.calendar)
+        vwndbar=vwndbar.extract(time_anncycle_constraint)
+        vrtbar=vrtbar.extract(time_anncycle_constraint)
+        #
+        # Find value of south2north
+        self.south2north=f_south2north(vwndbar,verbose=self.verbose)
+        #
+        # Calculate dvrtdybar
+        # ww is dummy VectorWind instance using available data: vwndbar and vrtbar!!
+        ww=VectorWind(vwndbar,vrtbar)
+        dvrtdxbar,dvrtdybar=ww.gradient(vrtbar)
+        if self.south2north:
+            dvrtdxbar=lat_direction(dvrtdxbar,'s2n')
+            dvrtdybar=lat_direction(dvrtdybar,'s2n')
+        #
+        # Calculate dvrtdyprime
+        # ww is dummy VectorWind instance using available data: vwndprime and vrtprime!!
+        ww=VectorWind(vwndprime,vrtprime)
+        dvrtdxprime,dvrtdyprime=ww.gradient(vrtprime)
+        if self.south2north:
+            dvrtdxprime=lat_direction(dvrtdxprime,'s2n')
+            dvrtdyprime=lat_direction(dvrtdyprime,'s2n')
+        #
+        ### Calculate m_vwndbar_dvrtdybar
+        m_vwndbar_dvrtdybar=-1*vwndbar*dvrtdybar
+        # Reset time axis to current year
+        m_vwndbar_dvrtdybar=create_cube(m_vwndbar_dvrtdybar.data,vrtprime)
+        # Attributes
+        var_name='m_vwndbar_dvrtdybar'
+        long_name=var_name2long_name[var_name]
+        m_vwndbar_dvrtdybar.rename(long_name) # not a standard_name
+        m_vwndbar_dvrtdybar.var_name=var_name
+        vrt_tendency_units='s-2'
+        m_vwndbar_dvrtdybar.units=vrt_tendency_units
+        self.m_vwndbar_dvrtdybar=m_vwndbar_dvrtdybar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndbar_dvrtdybar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vwndbar_dvrtdyprime
+        m_vwndbar_dvrtdyprime=-1*vwndbar.data*dvrtdyprime.data
+        # Set time axis to current year
+        m_vwndbar_dvrtdyprime=create_cube(m_vwndbar_dvrtdyprime,vrtprime)
+        # Attributes
+        var_name='m_vwndbar_dvrtdyprime'
+        long_name=var_name2long_name[var_name]
+        m_vwndbar_dvrtdyprime.rename(long_name) # not a standard_name
+        m_vwndbar_dvrtdyprime.var_name=var_name
+        m_vwndbar_dvrtdyprime.units=vrt_tendency_units
+        self.m_vwndbar_dvrtdyprime=m_vwndbar_dvrtdyprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndbar_dvrtdyprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vwndprime_dvrtdybar
+        m_vwndprime_dvrtdybar=-1*vwndprime.data*dvrtdybar.data
+        # Set time axis to current year
+        m_vwndprime_dvrtdybar=create_cube(m_vwndprime_dvrtdybar,vrtprime)
+        # Attributes
+        var_name='m_vwndprime_dvrtdybar'
+        long_name=var_name2long_name[var_name]
+        m_vwndprime_dvrtdybar.rename(long_name) # not a standard_name
+        m_vwndprime_dvrtdybar.var_name=var_name
+        m_vwndprime_dvrtdybar.units=vrt_tendency_units
+        self.m_vwndprime_dvrtdybar=m_vwndprime_dvrtdybar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndprime_dvrtdybar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vwndprime_dvrtdyprime
+        m_vwndprime_dvrtdyprime=-1*vwndprime*dvrtdyprime
+        # Attributes
+        var_name='m_vwndprime_dvrtdyprime'
+        long_name=var_name2long_name[var_name]
+        m_vwndprime_dvrtdyprime.rename(long_name) # not a standard_name
+        m_vwndprime_dvrtdyprime.var_name=var_name
+        m_vwndprime_dvrtdyprime.units=vrt_tendency_units
+        self.m_vwndprime_dvrtdyprime=m_vwndprime_dvrtdyprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndprime_dvrtdyprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_vrt_components(self,level):
+        """Calculate and save dvwnddx and m_duwnddy contributions to vorticity.
+
+        dvwndx = vorticity calculated from (0,vwnd)
+        m_duwndy = vorticity calculated from (uwnd,0)
+
+        Create attributes:
+
+        dvwnddx
+        m_duwnddy
+        """
+        # Read uwnd and vwnd data for current time block
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['uwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in['vwnd_'+str(level)].extract(time_constraint)
+        self.uwnd=x1.concatenate_cube()
+        self.vwnd=x2.concatenate_cube()
+        # Create dummy cube of zeroes
+        zeros=np.zeros(self.uwnd.data.shape)
+        zeros=create_cube(zeros,self.uwnd,new_var_name='dummy')
+        # Find value of south2north
+        self.south2north=f_south2north(self.uwnd,verbose=self.verbose)
+        # Calculate dvwnddx and save
+        ww=VectorWind(zeros,self.vwnd)
+        self.dvwnddx=ww.vorticity()
+        if self.south2north:
+            self.dvwnddx=lat_direction(self.dvwnddx,'s2n')
+        var_name='dvwnddx'
+        long_name=var_name2long_name[var_name]
+        self.dvwnddx.rename(long_name) # not a standard_name
+        self.dvwnddx.var_name=var_name
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.dvwnddx,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        # Calculate m_duwnddy and save
+        ww=VectorWind(self.uwnd,zeros)
+        self.m_duwnddy=ww.vorticity()
+        if self.south2north:
+            self.m_duwnddy=lat_direction(self.m_duwnddy,'s2n')
+        var_name='m_duwnddy'
+        long_name=var_name2long_name[var_name]
+        self.m_duwnddy.rename(long_name) # not a standard_name
+        self.m_duwnddy.var_name=var_name
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_duwnddy,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_div_components(self,level):
+        """Calculate and save duwnddx and dvwnddy contributions to divergence.
+
+        duwnddx = divergence calculated from (uwnd,0)
+        dvwnddy = divergence calculated from (0,vwnd)
+
+        Create attributes:
+
+        duwnddx
+        dvwnddy
+        """
+        # Read uwnd and vwnd data for current time block
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['uwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in['vwnd_'+str(level)].extract(time_constraint)
+        self.uwnd=x1.concatenate_cube()
+        self.vwnd=x2.concatenate_cube()
+        # Create dummy cube of zeroes
+        zeros=np.zeros(self.uwnd.data.shape)
+        zeros=create_cube(zeros,self.uwnd,new_var_name='dummy')
+        # Find value of south2north
+        self.south2north=f_south2north(self.uwnd,verbose=self.verbose)
+        # Calculate duwnddx and save
+        ww=VectorWind(self.uwnd,zeros)
+        self.duwnddx=ww.divergence()
+        if self.south2north:
+            self.duwnddx=lat_direction(self.duwnddx,'s2n')
+        var_name='duwnddx'
+        long_name=var_name2long_name[var_name]
+        self.duwnddx.rename(long_name) # not a standard_name
+        self.duwnddx.var_name=var_name
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.duwnddx,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        # Calculate dvwnddy and save
+        ww=VectorWind(zeros,self.vwnd)
+        self.dvwnddy=ww.divergence()
+        if self.south2north:
+            self.dvwnddy=lat_direction(self.dvwnddy,'s2n')
+        var_name='dvwnddy'
+        long_name=var_name2long_name[var_name]
+        self.dvwnddy.rename(long_name) # not a standard_name
+        self.dvwnddy.var_name=var_name
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.dvwnddy,fileout)
         if self.archive:
             archive_file(self,fileout)
 
