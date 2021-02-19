@@ -34,6 +34,7 @@ sdomains['mts']={'lon1':290, 'lon2':305, 'lat1':10, 'lat2':25, 'desc':'Caribbean
 sdomains['mt2']={'lon1':296, 'lon2':300, 'lat1':15, 'lat2':19, 'desc':'Montserrat'}
 sdomains['npl']={'lon1':75, 'lon2':90, 'lat1':20, 'lat2':35, 'desc':'Nepal'}
 sdomains['np2']={'lon1':84, 'lon2':88, 'lat1':26, 'lat2':30, 'desc':'Nepal region 2'}
+sdomains['bar']={'lon1':302, 'lon2':304, 'lat1':13, 'lat2':15, 'desc':'Eureca4 glider near Barbados'}
 
 class LevelWidths(object):
     """Calculate level widths from a set of levels. 

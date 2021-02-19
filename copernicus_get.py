@@ -11,13 +11,13 @@ import info
 
 BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-SDOMAIN='plp'
+SDOMAIN='bar'
 
 #VAR_NAME='vwnd'; LEVEL=925; SOURCE='era5'+SDOMAIN+'_plev_h'
 VAR_NAME='vwnd'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
 
-YEAR=2018
-MONTH=9
+YEAR=2020
+MONTH=2
 
 DOWNLOAD=True
 
@@ -28,7 +28,7 @@ PLOT=True
 # Set Copernicus dataset name
 if SOURCE in ['era5trp_plev_h','era5plp_plev_h']:
     dataset='reanalysis-era5-pressure-levels'
-elif SOURCE in ['era5plp_sfc_h']:
+elif SOURCE in ['era5plp_sfc_h','era5bar_sfc_h']:
     dataset='reanalysis-era5-single-levels'
 else:
     raise UserWarning('SOURCE not recognised.')
@@ -37,12 +37,12 @@ else:
 if VAR_NAME=='uwnd':
     if SOURCE in ['era5trp_plev_h','era5plp_plev_h']:
         variable='u_component_of_wind'
-    elif SOURCE in ['era5plp_sfc_h']:
+    elif SOURCE in ['era5plp_sfc_h','era5bar_sfc_h']:
         variable='10m_u_component_of_wind'
 elif VAR_NAME=='vwnd':
     if SOURCE in ['era5trp_plev_h','era5plp_plev_h']:
         variable='v_component_of_wind'
-    elif SOURCE in ['era5plp_sfc_h']:
+    elif SOURCE in ['era5plp_sfc_h','era5bar_sfc_h']:
         variable='10m_v_component_of_wind'
 else:
     raise UserWarning('VAR_NAME not recognised.')
