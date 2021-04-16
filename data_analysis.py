@@ -229,11 +229,11 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimEK2','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
+    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimEK2','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
-    if aa.source in ['erainterim_sfc_d','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimEK2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
+    if aa.source in ['erainterim_sfc_d','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimEK2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
     elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h']:
@@ -1155,6 +1155,32 @@ def standardise_time_coord_units(cube,timename='time',tunits=False,verbose=True)
         print('tcoord2 [0],[-1]: {0!s},{1!s}'.format(tcoord2.points[0],tcoord2.points[-1]))
     #
     return cube
+
+#==========================================================================
+
+def check_coord_values_match(cube1,cube2):
+    """Check the coordinate values in two cubes match.
+
+    Inputs: <cube1>,<cube2>: Two iris cubes.
+
+    Checks that both cubes have the same coordinate names, and that
+    all the coordinate values are identical.
+
+    If they do, return True.
+    If they do not, raise an exception.
+    """
+
+    coordnames=[xx.name() for xx in cube1.coords()]
+    coordnames2=[xx.name() for xx in cube2.coords()]
+    if coordnames!=coordnames2:
+        raise UserWarning('Coordinate names do not match between cubes.')
+    for coordnamec in coordnames:
+        print('Checking all values in {0!s} coordinate match.'.format(coordnamec))
+        if np.all(cube1.coord(coordnamec).points==cube2.coord(coordnamec).points):
+            print('Ok. All values match.')
+        else:
+            raise UserWarning('Values do not match.')
+    return True
 
 #==========================================================================
 
@@ -6135,7 +6161,7 @@ class CubeDiagnostics(object):
         self.div_level=x11.concatenate_cube()
         #
         # Find value of south2north
-        self.south2north=f_south2north(uwnd_level,verbose=self.verbose)
+        self.south2north=f_south2north(self.uwnd_level,verbose=self.verbose)
         #
         ### Calculate dvrtdt
         lfwdfirsttime=False
