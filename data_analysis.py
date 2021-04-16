@@ -5682,6 +5682,8 @@ class CubeDiagnostics(object):
         # Empty dictionaries to fill later
         self.filein={}
         self.data_in={}
+        self.filein_source2={}
+        self.data_in_source2={}
         self.fileanncycle={}
         self.fileanncycleleap={}
         self.data_anncycle={}
@@ -5724,6 +5726,22 @@ class CubeDiagnostics(object):
                 'var_name: {0!s} \n'+\
                 'filein: {1.filein!s} \n'+\
                 'data_in: {1.data_in!s} \n'+h2b
+            print(ss.format(var_name,self))
+
+    def f_read_data_source2(self,var_name,level,verbose=False):
+        """Lazy read cube(s) of var_name at level for current time block.
+
+        Add entry to the dictionary attributes self.filein_source2 and
+        self.data_in_source2.
+        """
+        name=var_name2long_name[var_name]
+        self.filein_source2[var_name+'_'+str(level)]=os.path.join(self.basedir,self.source2,'std',var_name+'_'+str(level)+self.filepre+'_'+self.wildcard+'.nc')
+        self.data_in_source2[var_name+'_'+str(level)]=iris.load(self.filein_source2[var_name+'_'+str(level)],name)
+        if verbose:
+            ss=h2a+'f_read_data_source2 \n'+\
+                'var_name: {0!s} \n'+\
+                'filein_source2: {1.filein_source2!s} \n'+\
+                'data_in_source2: {1.data_in_source2!s} \n'+h2b
             print(ss.format(var_name,self))
 
     def f_read_anncycle(self,var_name,level,verbose=False):
@@ -6547,6 +6565,126 @@ class CubeDiagnostics(object):
         ### Calculate m_vrtprime_divbar
         m_vrtprime_divbar=-1*vrtprime.data*divbar.data
         # Set time axis to current year
+        m_vrtprime_divbar=create_cube(m_vrtprime_divbar,vrtprime)
+        # Attributes
+        var_name='m_vrtprime_divbar'
+        long_name=var_name2long_name[var_name]
+        m_vrtprime_divbar.rename(long_name) # not a standard_name
+        m_vrtprime_divbar.var_name=var_name
+        m_vrtprime_divbar.units=vrt_tendency_units
+        self.m_vrtprime_divbar=m_vrtprime_divbar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtprime_divbar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vrtprime_divprime
+        m_vrtprime_divprime=-1*vrtprime*divprime
+        # Attributes
+        var_name='m_vrtprime_divprime'
+        long_name=var_name2long_name[var_name]
+        m_vrtprime_divprime.rename(long_name) # not a standard_name
+        m_vrtprime_divprime.var_name=var_name
+        m_vrtprime_divprime.units=vrt_tendency_units
+        self.m_vrtprime_divprime=m_vrtprime_divprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtprime_divprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_m_vrt_div_pertremainder(self,level):
+        """Calculate and save m_vrt_div terms decomposed into remainder and perturbation parts.
+
+        This is basically the same as f_m_vrt_div_annpert, except that
+        the prime terms are now from some kind of perturbation or
+        filtered (e.g., CCKW filtered, EK1) input vrt and div, and the
+        bar terms are from the remainder (e.g., total vrt minus the
+        filtered vrt, calculated in subtract.py, e.g., NEK1).
+
+        Both vorticity (vrt) and divergence (div) terms have been
+        previously separated into remainder and perturbation parts
+        (remainder is total minus perturbation, calculated using subtract.py):
+
+        vrt = vrtbar + vrtprime
+        div = divbar + divprime
+
+        where bar refers to remainder part and prime refers to perturbation part.
+
+        m_vrt_div = -1*vrt*div
+                  = -1*(vrtbar+vrtprime)*(divbar+divprime)
+                  = -1*vrtbar*divbar -1*vrtbar*divprime -1*vrtprime*divbar -1*vrtprime*vrtprime
+                  =  m_vrtbar_divbar +m_vrtbar_divprime =m_vrtprime_divbar +m_vrtprime_vrtprime
+
+
+        Calculate attributes:
+
+        m_vrtbar_divbar
+        m_vrtbar_divprime
+        m_vrtprime_divbar
+        m_vrtprime_divprime
+
+        """
+        # Read vrtprime and divprime data for current time block
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['vrt_'+str(level)].extract(time_constraint)
+        x2=self.data_in['div_'+str(level)].extract(time_constraint)
+        vrtprime=x1.concatenate_cube()
+        divprime=x2.concatenate_cube()
+        #
+        # Read vrtbar and divbar data for current time block
+        x1=self.data_in_source2['vrt_'+str(level)].extract(time_constraint)
+        x2=self.data_in_source2['div_'+str(level)].extract(time_constraint)
+        vrtbar=x1.concatenate_cube()
+        divbar=x2.concatenate_cube()
+        #
+        # Following code is identical to that in f_m_vrt_div_annpert
+        #
+        ### Calculate m_vrtbar_divbar
+        m_vrtbar_divbar=-1*vrtbar*divbar
+        m_vrtbar_divbar=create_cube(m_vrtbar_divbar.data,vrtprime)
+        # Attributes
+        var_name='m_vrtbar_divbar'
+        long_name=var_name2long_name[var_name]
+        m_vrtbar_divbar.rename(long_name) # not a standard_name
+        m_vrtbar_divbar.var_name=var_name
+        vrt_tendency_units='s-2'
+        m_vrtbar_divbar.units=vrt_tendency_units
+        self.m_vrtbar_divbar=m_vrtbar_divbar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtbar_divbar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vrtbar_divprime
+        m_vrtbar_divprime=-1*vrtbar.data*divprime.data
+        m_vrtbar_divprime=create_cube(m_vrtbar_divprime,vrtprime)
+        # Attributes
+        var_name='m_vrtbar_divprime'
+        long_name=var_name2long_name[var_name]
+        m_vrtbar_divprime.rename(long_name) # not a standard_name
+        m_vrtbar_divprime.var_name=var_name
+        m_vrtbar_divprime.units=vrt_tendency_units
+        self.m_vrtbar_divprime=m_vrtbar_divprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vrtbar_divprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vrtprime_divbar
+        m_vrtprime_divbar=-1*vrtprime.data*divbar.data
         m_vrtprime_divbar=create_cube(m_vrtprime_divbar,vrtprime)
         # Attributes
         var_name='m_vrtprime_divbar'
