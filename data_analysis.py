@@ -1605,8 +1605,15 @@ class TimeDomain(object):
                 time2=datetime.datetime(2014,12,31)
                 time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
                 amp_threshold=1
+            elif counter=='005':
+                # As '001', but for 1998-2018
+                header1+='Index amplitude >=1, time range 1 Jan 1998 to 31 Dec 2018 \n'
+                time1=datetime.datetime(1998,1,1)
+                time2=datetime.datetime(2018,12,31)
+                time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+                amp_threshold=1
             else:
-                raise UserWarning('counter is not valid.')
+                raise UserWarning('Counter is not valid.')
             # Seasons
             if season=='djf':
                 valid_months=[12,1,2]
@@ -1614,6 +1621,8 @@ class TimeDomain(object):
                 valid_months=[11,12,1,2,3,4]
             elif season=='m2o':
                 valid_months=[5,6,7,8,9,10]
+            elif season=='all':
+                valid_months=[1,2,3,4,5,6,7,8,9,10,11,12]
             else:
                 raise UserWarning('season is not valid.')
             # Category
@@ -1654,8 +1663,7 @@ class TimeDomain(object):
             # Loop over time
             for timevalc in time_coord.points:
                 timecompc=time_units.num2date(timevalc)
-                raise ToDoError('Recode time constraint to use datetime.datetime')
-                time_constraint2=iris.Constraint(time=timevalc)
+                time_constraint2=set_time_constraint(timecompc,False)
                 # Extract index amplitude and category at current time
                 ampc=float(x1a.extract(time_constraint2).data)
                 catc=float(x2a.extract(time_constraint2).data)
