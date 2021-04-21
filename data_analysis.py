@@ -495,6 +495,7 @@ def block_times(aa,verbose=False):
     outfile_frequency:  e.g., 'year' or 'month'
     year: integer for current year, e.g., 2016
     month: integer for current month, in range 1 to 12.
+    calendar
 
     Returns time,time2 which are datetime.datetime objects (if
     aa.calendar is 'gregorian') or cftime.Datetime360Day objects (if
@@ -1266,6 +1267,18 @@ class ToDoError(UserWarning):
     different situation."""
 
     pass
+
+#==========================================================================
+
+class Dummy(object):
+
+    """A dummy class.
+
+    Can set any attributes. Use when a class object is needed with certain attributes."""
+
+    def __init__(self):
+        """Initialise dummy class object."""
+        self.verbose=True
 
 #==========================================================================
 
@@ -2962,6 +2975,14 @@ class TimeFilter(object):
     
     self.fileout1 : path name for file of output (filtered) data.
     
+    self.splitblock : The rolling_window method used for filtering
+    requires large memory, especially if the number of weights is
+    large. If enough memory is not available (job will fail with
+    memory error), set splitblock to True. This will split each block
+    (of, e.g., one year if outfile_frequency is 'year') up into
+    smaller blocks (e.g., months), run the rolling_window on each
+    smaller block, then recombine.
+
     """
 
     def __init__(self,**descriptor):
@@ -3076,7 +3097,37 @@ class TimeFilter(object):
         xx1=xx1.concatenate_cube()
         self.data_current=xx1
         # Apply filter
-        xx1=self.data_current.rolling_window('time',iris.analysis.SUM,self.nweights,weights=self.weights)
+        if self.splitblock:
+            if self.outfile_frequency=='year':
+                print('Split current year block into months, filter each month, then concatenate filtered output.')
+                # Create dummy class object to call block_times and set attributes for each month
+                monthc=Dummy()
+                monthc.outfile_frequency='month'
+                monthc.calendar=self.calendar
+                monthc.year=self.year
+                monthc.filtered=iris.cube.CubeList([])
+                for imonth in range(1,12+1):
+                    print('## imonth: {0!s}'.format(imonth))
+                    monthc.month=imonth
+                    monthc.timeout1,monthc.timeout2=block_times(monthc,verbose=self.verbose)
+                    monthc.timein1=monthc.timeout1-self.timedelta
+                    monthc.timein2=monthc.timeout2+self.timedelta
+                    if self.verbose==2:
+                        ss=h2a+'timein1: {0.timein1!s} \n'+\
+                            'timeout1: {0.timeout1!s} \n'+\
+                            'timeout2: {0.timeout2!s} \n'+\
+                            'timein2: {0.timein2!s} \n'+h2b
+                        print(ss.format(monthc))
+                    monthc.time_constraint=set_time_constraint(monthc.timein1,monthc.timein2,calendar=monthc.calendar,verbose=monthc.verbose)
+                    monthc.data_current=self.data_current.extract(monthc.time_constraint)
+                    xx1=monthc.data_current.rolling_window('time',iris.analysis.SUM,self.nweights,weights=self.weights)
+                    monthc.filtered.append(xx1)
+                xx1=monthc.filtered.concatenate_cube()
+            else:
+                raise ToDoError('Code up for other outfile frequencies.')
+        else:
+            xx1=self.data_current.rolling_window('time',iris.analysis.SUM,self.nweights,weights=self.weights)
+
         # Create a cube from this numpy array
         xx1=create_cube(conv_float32(xx1.data),xx1)
         # Subtract filtered data from original data if required

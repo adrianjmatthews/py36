@@ -15,7 +15,7 @@ BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 ARCHIVE=True
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-VAR_NAME='vrt'; LEVEL=500; SOURCE='erainterim_plev_d'
+VAR_NAME='vrt'; LEVEL=850; SOURCE='erainterim_plev_d'
 #VAR_NAME='vrt'; LEVEL=850; SOURCE='ncepdoe_plev_d'
 #VAR_NAME='ta'; LEVEL=50; SOURCE='ncepncar_plev_d'
 #VAR_NAME='wndspd'; LEVEL=1; SOURCE='ncepncar_sfc_d'
@@ -23,14 +23,16 @@ VAR_NAME='vrt'; LEVEL=500; SOURCE='erainterim_plev_d'
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_d'
 
-FILTER='l30_n241' # 'rm5_n5' 'h20_n241' 'b20_200_n241' etc.
+FILTER='b20_200_n241' # 'rm5_n5' 'h20_n241' 'b20_200_n241' etc.
 
-FILEPRE='' # e.g., '', '_rac',
+FILEPRE='_rac' # e.g., '', '_rac',
 SUBTRACT=False
 
-YEAR_BEG=1998; YEAR_END=2018
+YEAR_BEG=2010; YEAR_END=2010
 MONTH1=MONTH2=-999 # Set both MONTH1 and MONTH2 to same (irrelevant) value if outfile_frequency is 'year'
 #MONTH1=1; MONTH2=1 # Set month ranges if outfile_frequency is less than 'year'
+
+SPLITBLOCK=True
 
 VERBOSE=2
 
@@ -49,6 +51,7 @@ descriptor['archive']=ARCHIVE
 descriptor['basedir_archive']=BASEDIR_ARCHIVE
 descriptor['filepre']=FILEPRE
 descriptor['filter']=FILTER
+descriptor['splitblock']=FILTER
 
 # Create instance of TimeFilter object
 aa=da.TimeFilter(**descriptor)
