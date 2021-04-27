@@ -229,11 +229,11 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimEK2','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
+    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimEK2','erainterimEK3','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
-    if aa.source in ['erainterim_sfc_d','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimEK2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
+    if aa.source in ['erainterim_sfc_d','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimEK2_plev_6h',,'erainterimEK3_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
     elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h']:
@@ -1623,6 +1623,13 @@ class TimeDomain(object):
                 header1+='Index amplitude >=1, time range 1 Jan 1998 to 31 Dec 2018 \n'
                 time1=datetime.datetime(1998,1,1)
                 time2=datetime.datetime(2018,12,31)
+                time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+                amp_threshold=1
+            elif counter=='006':
+                # As '005', but for 1999-2017
+                header1+='Index amplitude >=1, time range 1 Jan 1998 to 31 Dec 2018 \n'
+                time1=datetime.datetime(1999,1,1)
+                time2=datetime.datetime(2017,12,31)
                 time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
                 amp_threshold=1
             else:
@@ -6913,6 +6920,125 @@ class CubeDiagnostics(object):
         if self.archive:
             archive_file(self,fileout)
 
+    def f_m_uwnd_dvrtdx_pertremainder(self,level):
+        """Calculate and save m_uwnd_dvrtdx terms decomposed into remainder and perturbation parts.
+
+        Behaves similarly to f_m_vrt_div_pertremainder()
+
+        Calculate attributes:
+
+        m_uwndbar_dvrtdxbar
+        m_uwndbar_dvrtdxprime
+        m_uwndprime_dvrtdxbar
+        m_uwndprime_dvrtdxprime
+        """
+        # Read uwndprime and vrtprime data for current time block
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['uwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in['vrt_'+str(level)].extract(time_constraint)
+        uwndprime=x1.concatenate_cube()
+        vrtprime=x2.concatenate_cube()
+        #
+        # Read uwndbar and vrtbar data for current time block
+        x1=self.data_in_source2['uwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in_source2['vrt_'+str(level)].extract(time_constraint)
+        uwndbar=x1.concatenate_cube()
+        vrtbar=x2.concatenate_cube()
+        #
+        # Following code is identical to that in f_m_uwnd_dvrtdx_annpert
+        #
+        # Find value of south2north
+        self.south2north=f_south2north(uwndbar,verbose=self.verbose)
+        #
+        # Calculate dvrtdxbar
+        # ww is dummy VectorWind instance using available data: uwndbar and vrtbar!!
+        ww=VectorWind(uwndbar,vrtbar)
+        dvrtdxbar,dvrtdybar=ww.gradient(vrtbar)
+        if self.south2north:
+            dvrtdxbar=lat_direction(dvrtdxbar,'s2n')
+            dvrtdybar=lat_direction(dvrtdybar,'s2n')
+        #
+        # Calculate dvrtdxprime
+        # ww is dummy VectorWind instance using available data: uwndprime and vrtprime!!
+        ww=VectorWind(uwndprime,vrtprime)
+        dvrtdxprime,dvrtdyprime=ww.gradient(vrtprime)
+        if self.south2north:
+            dvrtdxprime=lat_direction(dvrtdxprime,'s2n')
+            dvrtdyprime=lat_direction(dvrtdyprime,'s2n')
+        #
+        ### Calculate m_uwndbar_dvrtdxbar
+        m_uwndbar_dvrtdxbar=-1*uwndbar*dvrtdxbar
+        m_uwndbar_dvrtdxbar=create_cube(m_uwndbar_dvrtdxbar.data,vrtprime)
+        # Attributes
+        var_name='m_uwndbar_dvrtdxbar'
+        long_name=var_name2long_name[var_name]
+        m_uwndbar_dvrtdxbar.rename(long_name) # not a standard_name
+        m_uwndbar_dvrtdxbar.var_name=var_name
+        vrt_tendency_units='s-2'
+        m_uwndbar_dvrtdxbar.units=vrt_tendency_units
+        self.m_uwndbar_dvrtdxbar=m_uwndbar_dvrtdxbar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_uwndbar_dvrtdxbar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_uwndbar_dvrtdxprime
+        m_uwndbar_dvrtdxprime=-1*uwndbar.data*dvrtdxprime.data
+        m_uwndbar_dvrtdxprime=create_cube(m_uwndbar_dvrtdxprime,vrtprime)
+        # Attributes
+        var_name='m_uwndbar_dvrtdxprime'
+        long_name=var_name2long_name[var_name]
+        m_uwndbar_dvrtdxprime.rename(long_name) # not a standard_name
+        m_uwndbar_dvrtdxprime.var_name=var_name
+        m_uwndbar_dvrtdxprime.units=vrt_tendency_units
+        self.m_uwndbar_dvrtdxprime=m_uwndbar_dvrtdxprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_uwndbar_dvrtdxprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_uwndprime_dvrtdxbar
+        m_uwndprime_dvrtdxbar=-1*uwndprime.data*dvrtdxbar.data
+        m_uwndprime_dvrtdxbar=create_cube(m_uwndprime_dvrtdxbar,vrtprime)
+        # Attributes
+        var_name='m_uwndprime_dvrtdxbar'
+        long_name=var_name2long_name[var_name]
+        m_uwndprime_dvrtdxbar.rename(long_name) # not a standard_name
+        m_uwndprime_dvrtdxbar.var_name=var_name
+        m_uwndprime_dvrtdxbar.units=vrt_tendency_units
+        self.m_uwndprime_dvrtdxbar=m_uwndprime_dvrtdxbar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_uwndprime_dvrtdxbar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_uwndprime_dvrtdxprime
+        m_uwndprime_dvrtdxprime=-1*uwndprime*dvrtdxprime
+        # Attributes
+        var_name='m_uwndprime_dvrtdxprime'
+        long_name=var_name2long_name[var_name]
+        m_uwndprime_dvrtdxprime.rename(long_name) # not a standard_name
+        m_uwndprime_dvrtdxprime.var_name=var_name
+        m_uwndprime_dvrtdxprime.units=vrt_tendency_units
+        self.m_uwndprime_dvrtdxprime=m_uwndprime_dvrtdxprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_uwndprime_dvrtdxprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
     def f_m_vwnd_dvrtdy_annpert(self,level):
         """Calculate and save m_vwnd_dvrtdy terms decomposed into anncycle and perturbation parts.
 
@@ -7016,6 +7142,125 @@ class CubeDiagnostics(object):
         ### Calculate m_vwndprime_dvrtdybar
         m_vwndprime_dvrtdybar=-1*vwndprime.data*dvrtdybar.data
         # Set time axis to current year
+        m_vwndprime_dvrtdybar=create_cube(m_vwndprime_dvrtdybar,vrtprime)
+        # Attributes
+        var_name='m_vwndprime_dvrtdybar'
+        long_name=var_name2long_name[var_name]
+        m_vwndprime_dvrtdybar.rename(long_name) # not a standard_name
+        m_vwndprime_dvrtdybar.var_name=var_name
+        m_vwndprime_dvrtdybar.units=vrt_tendency_units
+        self.m_vwndprime_dvrtdybar=m_vwndprime_dvrtdybar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndprime_dvrtdybar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vwndprime_dvrtdyprime
+        m_vwndprime_dvrtdyprime=-1*vwndprime*dvrtdyprime
+        # Attributes
+        var_name='m_vwndprime_dvrtdyprime'
+        long_name=var_name2long_name[var_name]
+        m_vwndprime_dvrtdyprime.rename(long_name) # not a standard_name
+        m_vwndprime_dvrtdyprime.var_name=var_name
+        m_vwndprime_dvrtdyprime.units=vrt_tendency_units
+        self.m_vwndprime_dvrtdyprime=m_vwndprime_dvrtdyprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndprime_dvrtdyprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
+    def f_m_vwnd_dvrtdy_pertremainder(self,level):
+        """Calculate and save m_vwnd_dvrtdy terms decomposed into remainder and perturbation parts.
+
+        Behaves similarly to f_m_uwnd_dvrtdx_pertremainder()
+
+        Calculate attributes:
+
+        m_vwndbar_dvrtdybar
+        m_vwndbar_dvrtdyprime
+        m_vwndprime_dvrtdybar
+        m_vwndprime_dvrtdyprime
+        """
+        # Read vwndprime and vrtprime data for current time block
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['vwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in['vrt_'+str(level)].extract(time_constraint)
+        vwndprime=x1.concatenate_cube()
+        vrtprime=x2.concatenate_cube()
+        #
+        # Read vwndbar and vrtbar data for current time block
+        x1=self.data_in_source2['vwnd_'+str(level)].extract(time_constraint)
+        x2=self.data_in_source2['vrt_'+str(level)].extract(time_constraint)
+        vwndbar=x1.concatenate_cube()
+        vrtbar=x2.concatenate_cube()
+        #
+        # Following code is identical to that in f_m_vwnd_dvrtdy_annpert
+        #
+        # Find value of south2north
+        self.south2north=f_south2north(vwndbar,verbose=self.verbose)
+        #
+        # Calculate dvrtdybar
+        # ww is dummy VectorWind instance using available data: vwndbar and vrtbar!!
+        ww=VectorWind(vwndbar,vrtbar)
+        dvrtdxbar,dvrtdybar=ww.gradient(vrtbar)
+        if self.south2north:
+            dvrtdxbar=lat_direction(dvrtdxbar,'s2n')
+            dvrtdybar=lat_direction(dvrtdybar,'s2n')
+        #
+        # Calculate dvrtdyprime
+        # ww is dummy VectorWind instance using available data: vwndprime and vrtprime!!
+        ww=VectorWind(vwndprime,vrtprime)
+        dvrtdxprime,dvrtdyprime=ww.gradient(vrtprime)
+        if self.south2north:
+            dvrtdxprime=lat_direction(dvrtdxprime,'s2n')
+            dvrtdyprime=lat_direction(dvrtdyprime,'s2n')
+        #
+        ### Calculate m_vwndbar_dvrtdybar
+        m_vwndbar_dvrtdybar=-1*vwndbar*dvrtdybar
+        m_vwndbar_dvrtdybar=create_cube(m_vwndbar_dvrtdybar.data,vrtprime)
+        # Attributes
+        var_name='m_vwndbar_dvrtdybar'
+        long_name=var_name2long_name[var_name]
+        m_vwndbar_dvrtdybar.rename(long_name) # not a standard_name
+        m_vwndbar_dvrtdybar.var_name=var_name
+        vrt_tendency_units='s-2'
+        m_vwndbar_dvrtdybar.units=vrt_tendency_units
+        self.m_vwndbar_dvrtdybar=m_vwndbar_dvrtdybar
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndbar_dvrtdybar,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vwndbar_dvrtdyprime
+        m_vwndbar_dvrtdyprime=-1*vwndbar.data*dvrtdyprime.data
+        m_vwndbar_dvrtdyprime=create_cube(m_vwndbar_dvrtdyprime,vrtprime)
+        # Attributes
+        var_name='m_vwndbar_dvrtdyprime'
+        long_name=var_name2long_name[var_name]
+        m_vwndbar_dvrtdyprime.rename(long_name) # not a standard_name
+        m_vwndbar_dvrtdyprime.var_name=var_name
+        m_vwndbar_dvrtdyprime.units=vrt_tendency_units
+        self.m_vwndbar_dvrtdyprime=m_vwndbar_dvrtdyprime
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        fileout=fileout.replace(self.filepre,'')
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.m_vwndbar_dvrtdyprime,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+        #
+        ### Calculate m_vwndprime_dvrtdybar
+        m_vwndprime_dvrtdybar=-1*vwndprime.data*dvrtdybar.data
         m_vwndprime_dvrtdybar=create_cube(m_vwndprime_dvrtdybar,vrtprime)
         # Attributes
         var_name='m_vwndprime_dvrtdybar'
