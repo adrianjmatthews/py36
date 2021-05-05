@@ -11,7 +11,7 @@ months_Jan={1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Au
 months_1_Jan={1:'1 Jan', 2:'1 Feb', 3:'1 Mar', 4:'1 Apr', 5:'1 May', 6:'1 Jun', 7:'1 Jul', 8:'1 Aug', 9:'1 Sep', 10:'1 Oct', 11:'1 Nov', 12:'1 Dec'}
 months_J={1:'J', 2:'F', 3:'M', 4:'A', 5:'M', 6:'J', 7:'J', 8:'A', 9:'S', 10:'O', 11:'N', 12:'D'}
 
-def lonlat2string(val,lonlat,ndigits=2):
+def lonlat2string(val,lonlat,ndigits=2,format=0):
     """Return a string of form e.g., '5$^\{circ}$N'.
 
     Use to create longitude and latitude axes labels for plotting.
@@ -21,6 +21,9 @@ def lonlat2string(val,lonlat,ndigits=2):
     val is a float or integer, e.g., 5, -112.5
 
     lonlat is a string, either 'lon' or 'lat'
+
+    format : 0, format strings with degree sign
+             1, format strings without degree sign
 
     Outputs:
 
@@ -62,7 +65,13 @@ def lonlat2string(val,lonlat,ndigits=2):
         else:
             raise ValueError('latitude must be in range -90 <= val <= 90')
     # Create string
-    lonlatstring=str(xx)+'$^\circ$'+sign
+    if format==0:
+        str1='$^\circ$'
+    elif format==1:
+        str1=''
+    else:
+        raise UserWarning('Invalid format argument.')
+    lonlatstring=str(xx)+str1+sign
     return lonlatstring
 
 def suppress_label(labels,tickmarks,val):
