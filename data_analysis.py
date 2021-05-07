@@ -229,11 +229,11 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimEK2','erainterimEK3','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
+    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
-    if aa.source in ['erainterim_sfc_d','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
+    if aa.source in ['erainterim_sfc_d','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
     elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h']:
@@ -4041,6 +4041,8 @@ class Wind(object):
     self.wndspd : iris cube of wind speed
     self.uwndchi : iris cube of eastward component of irrotational wind
     self.vwndchi : iris cube of northward component of irrotational wind
+    self.duwnddx : iris cube of zonal derivative of eastward wind
+    self.dvwnddy : iris cube of meridional derivative of northward wind
 
     self.flag_psi : Boolean flag to compute streamfunction
     or not.
@@ -4118,6 +4120,16 @@ class Wind(object):
             self.var_name_vwndchi='vwndchi'
             self.name_vwndchi=var_name2long_name[self.var_name_vwndchi]
             self.file_data_vwndchi=self.file_data.replace('VAR_NAME',self.var_name_vwndchi)
+        # duwnddx
+        if self.flag_duwnddx:
+            self.var_name_duwnddx='duwnddx'
+            self.name_duwnddx=var_name2long_name[self.var_name_duwnddx]
+            self.file_data_duwnddx=self.file_data.replace('VAR_NAME',self.var_name_duwnddx)
+        # dvwnddy
+        if self.flag_dvwnddy:
+            self.var_name_dvwnddy='dvwnddy'
+            self.name_dvwnddy=var_name2long_name[self.var_name_dvwnddy]
+            self.file_data_dvwnddy=self.file_data.replace('VAR_NAME',self.var_name_dvwnddy)
         #
         source_info(self)
         self.data_uwnd=iris.load(self.file_data_uwnd,self.name_uwnd)
@@ -4149,6 +4161,10 @@ class Wind(object):
                 ss+='file_data_uwndchi: {0.file_data_uwndchi!s} \n'
             if self.flag_vwndchi:
                 ss+='file_data_vwndchi: {0.file_data_vwndchi!s} \n'
+            if self.flag_duwnddx:
+                ss+='file_data_duwnddx: {0.file_data_duwnddx!s} \n'
+            if self.flag_dvwnddy:
+                ss+='file_data_dvwnddy: {0.file_data_dvwnddy!s} \n'
             ss+=h1b
             return(ss.format(self))
         else:
@@ -4175,7 +4191,7 @@ class Wind(object):
         self.uwnd=x1.concatenate_cube()
         self.vwnd=x2.concatenate_cube()
         # Find value of south2north
-        self.south2north=f_south2north(cube_in,verbose=True)
+        self.south2north=f_south2north(self.uwnd,verbose=True)
         # Create VectorWind instance
         self.ww=VectorWind(self.uwnd,self.vwnd)
         # Both psi and chi
@@ -4188,8 +4204,11 @@ class Wind(object):
             if self.south2north:
                 self.psi=lat_direction(self.psi,'s2n')
                 self.chi=lat_direction(self.chi,'s2n')
-            fileout1=replace_wildcard_with_time(self,self.file_data_psi)
-            fileout2=replace_wildcard_with_time(self,self.file_data_chi)
+            fileout1=self.file_data_psi
+            fileout2=self.file_data_chi
+            if self.subdir=='std':
+                fileout1=replace_wildcard_with_time(self,fileout1)
+                fileout2=replace_wildcard_with_time(self,fileout2)
             print('fileout1: {0!s}'.format(fileout1))
             print('fileout2: {0!s}'.format(fileout2))
             iris.save(self.psi,fileout1)
@@ -4204,10 +4223,9 @@ class Wind(object):
             self.psi.var_name=self.var_name_psi
             if self.south2north:
                 self.psi=lat_direction(self.psi,'s2n')
+            fileout=self.file_data_psi
             if self.subdir=='std':
-                fileout=replace_wildcard_with_time(self,self.file_data_psi)
-            elif self.subdir=='processed':
-                fileout=self.file_data_psi
+                fileout=replace_wildcard_with_time(self,fileout)
             print('fileout: {0!s}'.format(fileout))
             iris.save(self.psi,fileout)
             if self.archive:
@@ -4219,7 +4237,9 @@ class Wind(object):
             self.chi.var_name=self.var_name_chi
             if self.south2north:
                 self.chi=lat_direction(self.chi,'s2n')
-            fileout=replace_wildcard_with_time(self,self.file_data_chi)
+            fileout=self.file_data_chi
+            if self.subdir=='std':
+                fileout=replace_wildcard_with_time(self,fileout)
             print('fileout: {0!s}'.format(fileout))
             iris.save(self.chi,fileout)
             if self.archive:
@@ -4234,8 +4254,11 @@ class Wind(object):
             if self.south2north:
                 self.vrt=lat_direction(self.vrt,'s2n')
                 self.div=lat_direction(self.div,'s2n')
-            fileout1=replace_wildcard_with_time(self,self.file_data_vrt)
-            fileout2=replace_wildcard_with_time(self,self.file_data_div)
+            fileout1=self.file_data_vrt
+            fileout2=self.file_data_div
+            if self.subdir=='std':
+                fileout1=replace_wildcard_with_time(self,fileout1)
+                fileout2=replace_wildcard_with_time(self,fileout2)
             print('fileout1: {0!s}'.format(fileout1))
             print('fileout2: {0!s}'.format(fileout2))
             iris.save(self.vrt,fileout1)
@@ -4250,7 +4273,9 @@ class Wind(object):
             self.vrt.var_name=self.var_name_vrt
             if self.south2north:
                 self.vrt=lat_direction(self.vrt,'s2n')
-            fileout=replace_wildcard_with_time(self,self.file_data_vrt)
+            fileout=self.file_data_vrt
+            if self.subdir=='std':
+                fileout=replace_wildcard_with_time(self,fileout)
             print('fileout: {0!s}'.format(fileout))
             iris.save(self.vrt,fileout)
             if self.archive:
@@ -4262,7 +4287,9 @@ class Wind(object):
             self.div.var_name=self.var_name_div
             if self.south2north:
                 self.div=lat_direction(self.div,'s2n')
-            fileout=replace_wildcard_with_time(self,self.file_data_div)
+            fileout=self.file_data_div
+            if self.subdir=='std':
+                fileout=replace_wildcard_with_time(self,fileout)
             print('fileout: {0!s}'.format(fileout))
             iris.save(self.div,fileout)
             if self.archive:
@@ -4274,7 +4301,9 @@ class Wind(object):
             self.wndspd.var_name=self.var_name_wndspd
             if self.south2north:
                 self.wndspd=lat_direction(self.wndspd,'s2n')
-            fileout=replace_wildcard_with_time(self,self.file_data_wndspd)
+            fileout=self.file_data_wndspd
+            if self.subdir=='std':
+                fileout=replace_wildcard_with_time(self,fileout)
             print('fileout: {0!s}'.format(fileout))
             iris.save(self.wndspd,fileout)
             if self.archive:
@@ -4289,8 +4318,11 @@ class Wind(object):
             if self.south2north:
                 self.uwndchi=lat_direction(self.uwndchi,'s2n')
                 self.vwndchi=lat_direction(self.vwndchi,'s2n')
-            fileout1=replace_wildcard_with_time(self,self.file_data_uwndchi)
-            fileout2=replace_wildcard_with_time(self,self.file_data_vwndchi)
+            fileout1=self.file_data_uwndchi
+            fileout2=self.file_data_vwndchi
+            if self.subdir=='std':
+                fileout1=replace_wildcard_with_time(self,fileout1)
+                fileout2=replace_wildcard_with_time(self,fileout2)
             print('fileout1: {0!s}'.format(fileout1))
             print('fileout2: {0!s}'.format(fileout2))
             iris.save(self.uwndchi,fileout1)
@@ -4298,6 +4330,46 @@ class Wind(object):
             if self.archive:
                 archive_file(self,fileout1)
                 archive_file(self,fileout2)
+        # duwnddx
+        if self.flag_duwnddx:
+            # Create dummy cube of zeros for vwnd
+            zeros=np.zeros(self.uwnd.data.shape)
+            zeros=create_cube(zeros,self.uwnd,new_var_name='dummy')
+            # Create dummy VectorWind instance
+            ww1=VectorWind(self.uwnd,zeros)
+            # Calculate duwnddx as usual
+            self.duwnddx=ww1.divergence()
+            self.duwnddx.rename(self.name_duwnddx)
+            self.duwnddx.var_name=self.var_name_duwnddx
+            if self.south2north:
+                self.duwnddx=lat_direction(self.duwnddx,'s2n')
+            fileout=self.file_data_duwnddx
+            if self.subdir=='std':
+                fileout=replace_wildcard_with_time(self,fileout)
+            print('fileout: {0!s}'.format(fileout))
+            iris.save(self.duwnddx,fileout)
+            if self.archive:
+                archive_file(self,fileout)
+        # dvwnddy
+        if self.flag_dvwnddy:
+            # Create dummy cube of zeros for uwnd
+            zeros=np.zeros(self.uwnd.data.shape)
+            zeros=create_cube(zeros,self.uwnd,new_var_name='dummy')
+            # Create dummy VectorWind instance
+            ww1=VectorWind(zeros,self.vwnd)
+            # Calculate dvwnddy as usual
+            self.dvwnddy=ww1.divergence()
+            self.dvwnddy.rename(self.name_dvwnddy)
+            self.dvwnddy.var_name=self.var_name_dvwnddy
+            if self.south2north:
+                self.dvwnddy=lat_direction(self.dvwnddy,'s2n')
+            fileout=self.file_data_dvwnddy
+            if self.subdir=='std':
+                fileout=replace_wildcard_with_time(self,fileout)
+            print('fileout: {0!s}'.format(fileout))
+            iris.save(self.dvwnddy,fileout)
+            if self.archive:
+                archive_file(self,fileout)
 
 #==========================================================================
 
