@@ -229,14 +229,14 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
+    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
     if aa.source in ['erainterim_sfc_d','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -915,18 +915,24 @@ def create_counter_from_mask(cube_in,verbose=False):
 #==========================================================================
 
 def find_npd(source):
-    """Find npd (number per day from source string.
+    """Find npd (number per day) from source string.
 
     Output : npd
     """
     xx=source.split('_')
     source_frequency=xx[2]
-    if source_frequency[-1]!='h':
-        raise ToDoError('Need to code up for input data other than hourly.')
-    if source_frequency=='h':
-        npd=24
+    if source_frequency[-1]=='h':
+        if source_frequency=='h':
+            npd=24
+        else:
+            npd=int(24/int(source_frequency[:-1]))
+    elif source_frequency[-1]=='m':
+        if source_frequency=='m':
+            npd=1440
+        else:
+            npd=int(1440/int(source_frequency[:-1]))
     else:
-        npd=int(24/int(source_frequency[:-1]))
+        raise ToDoError('Code up for source frequencies not in minutes or hours.')
     print('source_frequency,npd: {0!s}, {1!s}'.format(source_frequency,npd))
     return npd
 
@@ -2056,7 +2062,7 @@ class DataConverter(object):
             # 2000-2010 files end in .7A.nc
             # Use '.7*.nc' to cover both
             self.filein1=os.path.join(self.basedir,self.source,'raw',str(self.year)+str(self.month).zfill(2),'3B42.'+str(self.year)+str(self.month).zfill(2)+'*.7*.nc')
-        elif self.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m']:
+        elif self.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m']:
             self.filein1=os.path.join(self.basedir,self.source,'raw',str(self.year),str(self.month).zfill(2),'3B-HHR.MS.MRG.3IMERG.'+str(self.year)+str(self.month).zfill(2)+'*.nc')
         elif self.source in ['tropflux_sfc_d']:
             if self.var_name=='lhfd':
@@ -2090,7 +2096,7 @@ class DataConverter(object):
             level_constraint=iris.Constraint(Level=self.level)
         elif self.data_source in ['hadgem2esajhog'] and self.level_type=='plev':
             level_constraint=iris.Constraint(air_pressure=self.level)
-        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h']:
+        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h']:
             level_constraint=False
         else:
             raise ToDoError('Set an instruction for level_constraint.')
@@ -2151,7 +2157,7 @@ class DataConverter(object):
         # Load cube using a constraint on var_name because if there is a
         # long_name attribute in the netcdf file this will take precendence
         # over var_name if just using a standard load_cube call.
-        if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d']:
+        if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d']:
             print('# Constraint does not work with data sources listed')
             if level_constraint:
                 xx=iris.load(self.filein1,constraints=level_constraint,callback=clean_callback)
@@ -3268,10 +3274,11 @@ class ModifySource(object):
         self.cube_in=x1.concatenate_cube()
         time_units=self.cube_in.coord('time').units
         
-        if self.frequency=='d':
-            # Creating daily average data
+        if self.frequency in ['d','3h']:
+            # Creating daily or 3h average data
             if method==1:
                 print('f_time_average: Method 1')
+                raise UserWarning('Do not use this method. Use method 3.')
                 # Method 1 loops over days, creates a time constraint for
                 # each day, extracts data for that day, then averages for that
                 # day, then appends to a cube list, then finally merges the
@@ -3303,6 +3310,7 @@ class ModifySource(object):
                 x11=x10.merge_cube()
             elif method==2:
                 print('f_time_average: Method 2')
+                raise UserWarning('Do not use this method. Use method 3.')
                 # Method 2 slices the input cube numpy array to get a
                 # different numpy array for each time of day, then
                 # adds them together, then divides by number of times
@@ -3345,10 +3353,62 @@ class ModifySource(object):
                 x11.add_cell_method(cm)
                 print('Changing frequency attribute from {0!s} to {1!s}'.format(x11.attributes['frequency'],self.frequency))
                 x11.attributes['frequency']=self.frequency
+            elif method==3:
+                print('f_time_average: Method 3')
+                # Method 3 is identical to method 2 but has been generalised to
+                # allow averaging to time resolution other than daily
+                # This led to renaming of npd to nave, and nday to ntime2
+                # and recoding how the new nave is found
+                # and recoding creation of new time axis
+                # Left method 2 code intact in case of error here.
+                #
+                # Find time resolution of input and output data
+                npd1=find_npd(self.source1)
+                npd2=find_npd(self.source2)
+                nave=int(npd1/npd2)
+                print('npd1,npd2,nave: {0!s}, {1!s}, {2!s}'.format(npd1,npd2,nave))
+                if nave!=npd1/npd2:
+                    raise UserWarning('nave should be an integer.')
+                # Check input data is well formed
+                dim_coord_names=[xx.var_name for xx in self.cube_in.dim_coords]
+                time_index=dim_coord_names.index('time')
+                print('time_index: {0!s}'.format(time_index))
+                if time_index!=0:
+                    raise UserWarning('Time must be first dimension.')
+                ntime=self.cube_in.shape[time_index]
+                ntime2=int(ntime/nave)
+                print('ntime,ntime2: {0!s}, {1!s}'.format(ntime,ntime2))
+                if ntime2!=ntime/nave:
+                    raise UserWarning('Input data is not integer number of source2 time interval.')
+                # Slice numpy array, one slice per time of source2 time interval (day if 'd').
+                # Then calculate source2 time interval means
+                x1=self.cube_in.data
+                x2=[x1[ii:ntime:nave,...] for ii in range(nave)]
+                x3=x2[0]
+                for xx in x2[1:]:
+                    x3+=xx
+                x4=x3/nave
+                # Create new time axis for data on source2 time interval
+                timec=time1
+                time_vals=[]
+                if self.frequency=='d':
+                    timedelta_source2=datetime.timedelta(days=1)
+                elif self.frequency=='3h':
+                    timedelta_source2=datetime.timedelta(hours=3)
+                while timec<time2:
+                    time_vals.append(time_units.date2num(timec))
+                    timec+=timedelta_source2
+                time_coord=iris.coords.DimCoord(time_vals,standard_name='time',units=time_units)
+                # Create new cube of data averaged onto source2 time interval
+                x11=create_cube(x4,self.cube_in,new_axis=time_coord)
+                cm=iris.coords.CellMethod('point','time',comments='daily mean from f_time_mean method 3')
+                x11.add_cell_method(cm)
+                print('Changing frequency attribute from {0!s} to {1!s}'.format(x11.attributes['frequency'],self.frequency))
+                x11.attributes['frequency']=self.frequency
             else:
                 raise UserWarning('Invalid method option.')
         else:
-            raise ToDoError('Need code to average over something other than daily.')
+            raise ToDoError('The code above shoud work with frequencies other than d or 3h, but check.')
         # Convert units for selected data sources
         if self.source1 in ['trmm3b42v7_sfc_3h',] and self.source2 in ['trmm3b42v7_sfc_d',]:
             print("Converting TRMM precipitation from 3-hourly in 'mm hr-1' to daily mean in 'mm day-1'")
