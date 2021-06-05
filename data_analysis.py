@@ -171,6 +171,7 @@ var_name2long_name={
     'shum':'specific_humidity',
     'source_dvrtdt':'total_source_of_tendency_of_atmosphere_relative_vorticity',
     'ss':'integer_zonal_wavenumber',
+    'ssft':'sea_surface_foundation_temperature',
     'sst':'sea_surface_temperature',
     'swp':'sea_water_pressure',
     'swpd':'sea_water_potential_density',
@@ -229,14 +230,14 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
+    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4trp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
     if aa.source in ['erainterim_sfc_d','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h','ostial4trp_sfc_d']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -318,6 +319,13 @@ def clean_callback(cube,field,filename):
             del cube.coord('time').attributes[attribute]
     # Or set the attributes dictionary of the time coordinate to empty:
     #cube.coord('time').attributes = {}
+    # 
+    # Similarly for latitude and longitude coordinaes
+    att_list2=['_ChunkSizes','_CoordinateAxisType','comment','valid_max','valid_min']
+    for coordc in cube.coords():
+        if coordc.name() in ['latitude','longitude']:
+            for attribute in att_list2:
+                del coordc.attributes[attribute]
     
     # Similarly delete  some of the main attributes
     att_list=['actual_range','history','unpacked_valid_range','references',
@@ -328,7 +336,51 @@ def clean_callback(cube,field,filename):
               'NCO','creation_date','invalid_units','metodology',
               'producer_agency','time_range','website','short_name',
               'description','dataset','_NCProperties','valid_max','valid_min',
-              'tracking_id','table_id','date','time','name']
+              'tracking_id','table_id','date','time','name',
+              'FROM_ORIGINAL_FILE__Metadata_Conventions',
+              'FROM_ORIGINAL_FILE__geospatial_lat_resolution',
+              'FROM_ORIGINAL_FILE__geospatial_lat_units',
+              'FROM_ORIGINAL_FILE__geospatial_lon_resolution',
+              'FROM_ORIGINAL_FILE__geospatial_lon_units',
+              'FROM_ORIGINAL_FILE__netcdf_version_id',
+              'FROM_ORIGINAL_FILE__northernmost_latitude',
+              'FROM_ORIGINAL_FILE__platform',
+              'FROM_ORIGINAL_FILE__product_version',
+              'FROM_ORIGINAL_FILE__southernmost_latitude',
+              'FROM_ORIGINAL_FILE__westernmost_longitude',
+              'FROM_ORIGINAL_FILE__easternmost_longitude',
+              '_ChunkSizes',
+              '_CoordSysBuilder',
+              'acknowledgment',
+              'cdm_data_type',
+              'comment',
+              'creator_email',
+              'creator_name',
+              'creator_url',
+              'date_created',
+              'file_quality_level',
+              'gds_version_id',
+              'id',
+              'keywords',
+              'keywords_vocabulary',
+              'license',
+              'metadata_link',
+              'naming_authority',
+              'processing_level',
+              'project',
+              'publisher_email',
+              'publisher_name',
+              'publisher_url',
+              'reference',
+              'sensor',
+              'spatial_resolution',
+              'standard_name_vocabulary',
+              'start_time',
+              'stop_time',
+              'summary',
+              'time_coverage_end',
+              'time_coverage_start',
+              'uuid',]
     for attribute in att_list:
         if attribute in cube.attributes:
             del cube.attributes[attribute]
@@ -2047,6 +2099,8 @@ class DataConverter(object):
             self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'.sig995.'+str(self.year)+'.nc')
         elif self.source in ['olrcdr_toa_d','olrinterp_toa_d']:
             self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'.day.mean.nc')
+        elif self.source in ['ostial4trp_sfc_d']:
+            self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_'+str(self.level)+'_'+str(self.year)+'-'+str(self.month).zfill(2)+'-*.nc')
         elif self.source in ['sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h',]:
             self.filein1=os.path.join(self.basedir,self.source,'raw','oi_zt_2m3h_SG'+self.source[2:5]+'.nc')
         elif self.source in ['sstrey_sfc_7d',]:
@@ -2096,7 +2150,7 @@ class DataConverter(object):
             level_constraint=iris.Constraint(Level=self.level)
         elif self.data_source in ['hadgem2esajhog'] and self.level_type=='plev':
             level_constraint=iris.Constraint(air_pressure=self.level)
-        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h']:
+        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h','ostial4trp_sfc_d']:
             level_constraint=False
         else:
             raise ToDoError('Set an instruction for level_constraint.')
@@ -2135,6 +2189,8 @@ class DataConverter(object):
                 self.raw_name=self.var_name
         elif self.data_source in ['olrinterp',]:
             self.raw_name='olr'
+        elif self.data_source in ['ostial4trp_sfc_d',]:
+            self.raw_name='analysed_sst'
         elif self.data_source in ['sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01',]:
             if self.var_name=='tsc':
                 self.raw_name='cons_temp'
@@ -2157,7 +2213,7 @@ class DataConverter(object):
         # Load cube using a constraint on var_name because if there is a
         # long_name attribute in the netcdf file this will take precendence
         # over var_name if just using a standard load_cube call.
-        if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d']:
+        if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d','ostial4trp_sfc_d']:
             print('# Constraint does not work with data sources listed')
             if level_constraint:
                 xx=iris.load(self.filein1,constraints=level_constraint,callback=clean_callback)
@@ -2195,7 +2251,13 @@ class DataConverter(object):
                 cubec.remove_coord('latitude')
                 cubec.add_dim_coord(latcoord1,1)
         #
-        if self.source not in ['hadgem2esajhog_plev_d','erainterim_plev_6h']:
+        # Convert time coordinate to standard for ostia
+        if self.source in ['ostial4trp_sfc_d']:
+            for cubec in xx:
+                cubec=standardise_time_coord_units(cubec,tunits='days')
+        #
+        # Number of cubes in cubelist should be 1 except if source in list below
+        if self.source not in ['hadgem2esajhog_plev_d','erainterim_plev_6h','ostial4trp_sfc_d']:
             ncubes=len(xx)
             if ncubes!=1:
                 raise UserWarning('Not a single cube. ncubes='+str(ncubes))
@@ -2390,6 +2452,13 @@ class DataConverter(object):
         # Change the time coordinate to a standard base unit.
         if self.source in ['metumgomlu-bd818_sfc_d']:
             self.cube=standardise_time_coord_units(self.cube,verbose=self.verbose)
+        #
+        # OSTIA daily data
+        # Time stamp is at 12 UTC. Change to 00 UTC by subtracting 0.5 (days).
+        if self.source=='ostial4trp_sfc_d':
+            # Time stamp
+            change_time_stamp_from_12_to_00(self,verbose=self.verbose)
+        #
         #
         # Final step. Convert cube data to 'single' precision for saving
         self.cube=create_cube(conv_float32(self.cube.data),self.cube)
