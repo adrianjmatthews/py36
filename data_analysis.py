@@ -230,14 +230,14 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4trp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
+    valid_data_sources=['era5trp','era5plp','era5bar','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
     if aa.source in ['erainterim_sfc_d','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h','ostial4trp_sfc_d']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -325,7 +325,8 @@ def clean_callback(cube,field,filename):
     for coordc in cube.coords():
         if coordc.name() in ['latitude','longitude']:
             for attribute in att_list2:
-                del coordc.attributes[attribute]
+                if attribute in coordc.attributes:
+                    del coordc.attributes[attribute]
     
     # Similarly delete  some of the main attributes
     att_list=['actual_range','history','unpacked_valid_range','references',
@@ -343,12 +344,29 @@ def clean_callback(cube,field,filename):
               'FROM_ORIGINAL_FILE__geospatial_lon_resolution',
               'FROM_ORIGINAL_FILE__geospatial_lon_units',
               'FROM_ORIGINAL_FILE__netcdf_version_id',
-              'FROM_ORIGINAL_FILE__northernmost_latitude',
               'FROM_ORIGINAL_FILE__platform',
               'FROM_ORIGINAL_FILE__product_version',
+              'FROM_ORIGINAL_FILE__northernmost_latitude',
               'FROM_ORIGINAL_FILE__southernmost_latitude',
               'FROM_ORIGINAL_FILE__westernmost_longitude',
               'FROM_ORIGINAL_FILE__easternmost_longitude',
+              'Metadata_Conventions',
+              'geospatial_lat_resolution',
+              'geospatial_lat_units',
+              'geospatial_lon_resolution',
+              'geospatial_lon_units',
+              'geospatial_lat_max',
+              'geospatial_lat_min',
+              'geospatial_lon_max',
+              'geospatial_lon_min',
+              'netcdf_version_id',
+              'platform',
+              'product_version',
+              'northernmost_latitude',
+              'southernmost_latitude',
+              'westernmost_longitude',
+              'easternmost_longitude',
+              'History',
               '_ChunkSizes',
               '_CoordSysBuilder',
               'acknowledgment',
@@ -1317,6 +1335,29 @@ def f_south2north(cube,verbose=False):
 
 #==========================================================================
 
+def add_month(dt,verbose=False):
+    """Add month to datetime and return new datetime.datetime object."""
+    yearc=dt.year
+    monthc=dt.month
+    dayc=dt.day
+    hourc=dt.hour
+    minutec=dt.minute
+    secondc=dt.second
+    monthnew=monthc+1
+    if monthnew==13:
+        monthnew=1
+        yearnew=yearc+1
+    else:
+        yearnew=yearc
+    dtnew=datetime.datetime(yearnew,monthnew,dayc,hourc,minutec,secondc)
+    if verbose:
+        print('# add_month')
+        print(dt)
+        print(dtnew)
+    return dtnew
+
+#==========================================================================
+
 class ToDoError(UserWarning):
 
     """An exception that indicates I need to write some more code.
@@ -2099,7 +2140,7 @@ class DataConverter(object):
             self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'.sig995.'+str(self.year)+'.nc')
         elif self.source in ['olrcdr_toa_d','olrinterp_toa_d']:
             self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'.day.mean.nc')
-        elif self.source in ['ostial4trp_sfc_d']:
+        elif self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_'+str(self.level)+'_'+str(self.year)+'-'+str(self.month).zfill(2)+'-*.nc')
         elif self.source in ['sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h',]:
             self.filein1=os.path.join(self.basedir,self.source,'raw','oi_zt_2m3h_SG'+self.source[2:5]+'.nc')
@@ -2150,7 +2191,7 @@ class DataConverter(object):
             level_constraint=iris.Constraint(Level=self.level)
         elif self.data_source in ['hadgem2esajhog'] and self.level_type=='plev':
             level_constraint=iris.Constraint(air_pressure=self.level)
-        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h','ostial4trp_sfc_d']:
+        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             level_constraint=False
         else:
             raise ToDoError('Set an instruction for level_constraint.')
@@ -2189,7 +2230,7 @@ class DataConverter(object):
                 self.raw_name=self.var_name
         elif self.data_source in ['olrinterp',]:
             self.raw_name='olr'
-        elif self.data_source in ['ostial4trp_sfc_d',]:
+        elif self.data_source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             self.raw_name='analysed_sst'
         elif self.data_source in ['sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01',]:
             if self.var_name=='tsc':
@@ -2213,7 +2254,7 @@ class DataConverter(object):
         # Load cube using a constraint on var_name because if there is a
         # long_name attribute in the netcdf file this will take precendence
         # over var_name if just using a standard load_cube call.
-        if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d','ostial4trp_sfc_d']:
+        if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             print('# Constraint does not work with data sources listed')
             if level_constraint:
                 xx=iris.load(self.filein1,constraints=level_constraint,callback=clean_callback)
@@ -2252,12 +2293,12 @@ class DataConverter(object):
                 cubec.add_dim_coord(latcoord1,1)
         #
         # Convert time coordinate to standard for ostia
-        if self.source in ['ostial4trp_sfc_d']:
+        if self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             for cubec in xx:
                 cubec=standardise_time_coord_units(cubec,tunits='days')
         #
         # Number of cubes in cubelist should be 1 except if source in list below
-        if self.source not in ['hadgem2esajhog_plev_d','erainterim_plev_6h','ostial4trp_sfc_d']:
+        if self.source not in ['hadgem2esajhog_plev_d','erainterim_plev_6h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             ncubes=len(xx)
             if ncubes!=1:
                 raise UserWarning('Not a single cube. ncubes='+str(ncubes))
@@ -2455,7 +2496,7 @@ class DataConverter(object):
         #
         # OSTIA daily data
         # Time stamp is at 12 UTC. Change to 00 UTC by subtracting 0.5 (days).
-        if self.source=='ostial4trp_sfc_d':
+        if self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             # Time stamp
             change_time_stamp_from_12_to_00(self,verbose=self.verbose)
         #
@@ -3464,6 +3505,8 @@ class ModifySource(object):
                     timedelta_source2=datetime.timedelta(days=1)
                 elif self.frequency=='3h':
                     timedelta_source2=datetime.timedelta(hours=3)
+                else:
+                    raise ToDoError('Code for other frequency.')
                 while timec<time2:
                     time_vals.append(time_units.date2num(timec))
                     timec+=timedelta_source2
@@ -3657,201 +3700,6 @@ class ModifySource(object):
         if self.archive:
             archive_file(self,fileoutc)
 
-#==========================================================================
-
-class TimeAverageDefunct(object):
-    
-    """Time average data e.g., convert from 3-hourly to daily mean.
-
-    Defunct. Use ModifySource class now. Remove this class when sure
-    new code is correct.
-
-    Called from time_average.py.
-
-    Used to change (reduce) time resolution of data, for subsequent
-    data analysis.  Because the source attribute of a data set
-    contains information on the time resolution, this effectively
-    creates data with a different source.
-
-    N.B. To calculate time mean statistics over a particular time
-    domain, use the TimeDomStats class instead.
-
-    N.B.  To "increase" time resolution of data, e.g., from weekly to
-    daily, use the TimeInterpolate class instead.
-
-    Selected attributes:
-
-    self.source1 : input source, e.g., trmm3b42v7_sfc_3h 3-hourly data.
-
-    self.source2 : output source, e.g., trmm3b42v7_sfc_d daily data.
-    The data_source and level_type parts of self.source1 and
-    self.source 2 should be identical.
-
-    self.frequency : the frequency part of self.source2, indicating
-    what time resolution the input data is to be converted to, e.g.,
-    'd' for daily.
-
-    self.year and self.month : year (and month, depending on value of
-    self.outfile_frequency) of input data block.
-
-    self.filein1 : path name for input files from self.source1.
-    Probably contains wild card characters.
-
-    self.data_in : iris cube list of all input data
-
-    self.cube_in : input cube of data from self.source1 for the
-    current time block.
-
-    self.cube_out : output cube of data for current time block to be
-    saved under self.source2.
-
-    self.fileout1 : path name for output file under self.source2.
-
-    """
-
-    def __init__(self,**descriptor):
-        """Initialise from descriptor dictionary.
-
-        Compulsory keywords: 'verbose','source1','source2','var_name','level',
-        'basedir'.
-        """
-        self.__dict__.update(descriptor)
-        self.descriptor=descriptor
-        self.name=var_name2long_name[self.var_name]
-        self.source=self.source2
-        source_info(self)
-        self.filein1=os.path.join(self.basedir,self.source1,'std',self.var_name+'_'+str(self.level)+'_'+self.wildcard+'.nc')
-        self.data_in=iris.load(self.filein1,self.name)
-        if self.verbose:
-            print(self)        
-
-    def __repr__(self):
-        return 'TimeAverage({0.descriptor!r},verbose={0.verbose!r})'.format(self)
-
-    def __str__(self):
-        if self.verbose==2:
-            ss=h1a+'TimeAverage instance \n'+\
-                'data_in: {0.data_in!s} \n'+\
-                'source1: {0.source1!s} \n'+\
-                'source2: {0.source2!s} \n'+\
-                'frequency: {0.frequency!s} \n'+\
-                'filein1: {0.filein1!s} \n'+h1b
-            return(ss.format(self))
-        else:
-            return 'Interpolate instance'
-
-    def f_time_average(self,method=1):
-        """Time average data."""
-        # Extract input data for current block of time
-        time1,time2=block_times(self,verbose=self.verbose)
-        time_constraint=set_time_constraint(time1,time2,calendar=self.calendar,verbose=self.verbose)
-        x1=self.data_in.extract(time_constraint)
-        self.cube_in=x1.concatenate_cube()
-        time_units=self.cube_in.coord('time').units
-        
-        if self.frequency=='d':
-            # Creating daily average data
-            if method==1:
-                print('f_time_average: Method 1')
-                # Method 1 loops over days, creates a time constraint for
-                # each day, extracts data for that day, then averages for that
-                # day, then appends to a cube list, then finally merges the
-                # cube list to create a cube of daily averaged data.  It is
-                # very slow.
-                timedelta_day=datetime.timedelta(days=1)
-                timedelta_minute=datetime.timedelta(seconds=60)
-                timec1=time1
-                # Create empty CubeList
-                x10=iris.cube.CubeList([])
-                while timec1<time2:
-                    # Extract data over current day
-                    timec2=timec1+timedelta_day-timedelta_minute
-                    print(timec1,timec2)
-                    time_constraintc=set_time_constraint(timec1,timec2,calendar=self.calendar,verbose=self.verbose)
-                    x1=self.data_in.extract(time_constraintc)
-                    x2=x1.concatenate_cube()
-                    # Calculate daily mean
-                    x3=x2.collapsed('time',iris.analysis.MEAN)
-                    # Reset auxiliary time coordinate for current day at 00 UTC
-                    timec_val=time_units.date2num(timec1)
-                    timec_coord=iris.coords.DimCoord(timec_val,standard_name='time',units=time_units)
-                    x3.remove_coord('time')
-                    x3.add_aux_coord(timec_coord)
-                    # Append current daily mean to cube list
-                    x10.append(x3)
-                    # Increment time
-                    timec1+=timedelta_day
-                x11=x10.merge_cube()
-            elif method==2:
-                print('f_time_average: Method 2')
-                # Method 2 slices the input cube numpy array to get a
-                # different numpy array for each time of day, then
-                # adds them together, then divides by number of times
-                # of day to get daily mean. Order(1000) faster than method 1
-                # Method 2 depends on the time values being equally spaced,
-                # and there being no missing data (in time)
-                #
-                # Find time resolution of input data
-                xx=self.source1.split('_')
-                source1_frequency=xx[2]
-                if source1_frequency[-1]!='h':
-                    raise ToDoError('Need to code up for input data other than hourly.')
-                if source1_frequency=='h':
-                    npd=24
-                else:
-                    npd=int(24/int(source1_frequency[:-1]))
-                print('source1_frequency,npd: {0!s}, {1!s}'.format(source1_frequency,npd))
-                # Check input data is well formed
-                dim_coord_names=[xx.var_name for xx in self.cube_in.dim_coords]
-                time_index=dim_coord_names.index('time')
-                print('time_index: {0!s}'.format(time_index))
-                if time_index!=0:
-                    raise ToDoError('Code below only works if time is first dimension.')
-                ntime=self.cube_in.shape[time_index]
-                nday=int(ntime/npd)
-                print('ntime,nday: {0!s}, {1!s}'.format(ntime,nday))
-                if nday!=ntime/npd:
-                    raise UserWarning('Input data is not integer number of days.')
-                # Slice numpy array, one slice per time of day.
-                # Then calculate daily means
-                x1=self.cube_in.data
-                x2=[x1[ii:ntime:npd,...] for ii in range(npd)]
-                x3=x2[0]
-                pdb.set_trace()
-                for xx in x2[1:]:
-                    x3+=xx
-                x4=x3/npd
-                # Create new time axis for daily mean data (00 UTC each day)
-                timec=time1
-                time_vals=[]
-                timedelta_day=datetime.timedelta(days=1)
-                while timec<time2:
-                    time_vals.append(time_units.date2num(timec))
-                    timec+=timedelta_day
-                time_coord=iris.coords.DimCoord(time_vals,standard_name='time',units=time_units)
-                # Create new cube of daily mean
-                x11=create_cube(x4,self.cube_in,new_axis=time_coord)
-                cm=iris.coords.CellMethod('point','time',comments='daily mean from f_time_mean method 2')
-                x11.add_cell_method(cm)
-            else:
-                raise UserWarning('Invalid method option.')
-        else:
-            raise ToDoError('Need code to average over something other than daily.')
-        # Convert units for selected data sources
-        if self.source1 in ['trmm3b42v7_sfc_3h',] and self.source2 in ['trmm3b42v7_sfc_d',]:
-            print("Converting TRMM precipitation from 3-hourly in 'mm hr-1' to daily mean in 'mm day-1'")
-            x11.convert_units('mm day-1')
-        self.cube_out=x11
-        # Save time averaged cube
-        if self.outfile_frequency=='year':
-            x2=str(self.year)
-        elif self.outfile_frequency=='month':
-            x2=str(self.year)+str(self.month).zfill(2)
-        else:
-            raise UserWarning('outfile_frequency not recognised')
-        self.fileout1=os.path.join(self.basedir,self.source2,'std',self.var_name+'_'+str(self.level)+'_'+x2+'.nc')
-        iris.save(self.cube_out,self.fileout1)
-        
 #==========================================================================
 
 class InterpolateDefunct(object):
