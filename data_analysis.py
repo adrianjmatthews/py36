@@ -3472,6 +3472,14 @@ class ModifySource(object):
                 # and recoding creation of new time axis
                 # Left method 2 code intact in case of error here.
                 #
+                # NB Time stamp convention for source2 is time stamp at
+                # beginning of interval that has been averaged over.
+                # E.g., source1 is 'd' and source2 is '3h'
+                # Will average over all 3-hourly data in a given calendar day
+                # ie 00, 03, 06, 09, 12, 15, 18, 21 UTC
+                # and write this with a time stamp of 00 UTC on that same
+                # calendar day
+                #
                 # Find time resolution of input and output data
                 npd1=find_npd(self.source1)
                 npd2=find_npd(self.source2)
