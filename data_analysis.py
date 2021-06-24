@@ -39,6 +39,7 @@ from __future__ import division, print_function, with_statement # So can run thi
 # All import statements here, before class definitions
 import copy
 import datetime
+import fnmatch
 import os.path
 import pdb
 import pickle
@@ -3361,7 +3362,7 @@ class ModifySource(object):
         else:
             return 'ModifySource instance'
 
-    def f_time_average(self,method=1):
+    def f_time_average(self,method=3):
         """Time average data.
 
         Called from time_average.py.
@@ -3379,6 +3380,13 @@ class ModifySource(object):
         """
         # Extract input data for current block of time
         time1,time2=block_times(self,verbose=self.verbose)
+        if fnmatch.fnmatch(self.source1,'imerg???_sfc_30m') and fnmatch.fnmatch(self.source2,'imerg???_sfc_3h'):
+            # Special case. Time averaging 30 minute IMERG data onto 3 hour TRMM time axis.
+            # See comments below in method 3 for explanation
+            tdc=datetime.timedelta(minutes=60)
+            time1=time1-tdc
+            time2=time2-tdc
+            print('Modified time1,time2 for special case: {0!s}, {1!s}'.format(time1,time2))
         time_constraint=set_time_constraint(time1,time2,calendar=self.calendar,verbose=self.verbose)
         x1=self.data_in.extract(time_constraint)
         self.cube_in=x1.concatenate_cube()
@@ -3394,6 +3402,8 @@ class ModifySource(object):
                 # day, then appends to a cube list, then finally merges the
                 # cube list to create a cube of daily averaged data.  It is
                 # very slow.
+                #
+                # Redundant code left here. Could remove.
                 timedelta_day=datetime.timedelta(days=1)
                 timedelta_minute=datetime.timedelta(seconds=60)
                 timec1=time1
@@ -3427,6 +3437,8 @@ class ModifySource(object):
                 # of day to get daily mean. Order(1000) faster than method 1
                 # Method 2 depends on the time values being equally spaced,
                 # and there being no missing data (in time)
+                #
+                # Redundant code left here. Could remove.
                 #
                 # Find time resolution of input data
                 npd=find_npd(self.source1)
@@ -3473,12 +3485,44 @@ class ModifySource(object):
                 # Left method 2 code intact in case of error here.
                 #
                 # NB Time stamp convention for source2 is time stamp at
-                # beginning of interval that has been averaged over.
+                # BEGINNING of interval that has been averaged over.
                 # E.g., source1 is 'd' and source2 is '3h'
                 # Will average over all 3-hourly data in a given calendar day
                 # ie 00, 03, 06, 09, 12, 15, 18, 21 UTC
                 # and write this with a time stamp of 00 UTC on that same
                 # calendar day
+                #
+                # ---------------------------------------------------------------
+                # However, there is one exception to the time stamp convention.
+                # It is used to time average GPM IMERG 30-minute data onto the
+                # TRMM 3-hour time axis, to effectively extend the TRMM data set
+                # beyond Dec 2019, when the TRMM data ended.
+                #
+                # For this special case source1 must be 'imergXXX_sfc_30m' and 
+                # source2 must be 'imergXXX_sfc_3h'
+                #
+                # NB Time stamp convention for source2 is time stamp at
+                # approximate CENTRE of interval that has been averaged over.
+                #
+                # 30 minute IMERG data (source1) has times 0000, 0030, 0100, 0130,
+                #  0200, 0230, ..., 2200, 2230, 2330 UTC
+                # The target 3 hour time averaged data (source2) has times 0000,
+                #  0300, 0600, 0900, 1200, 1500, 1800, 2100 UTC
+                # E.g., to calculate a 0900 UTC value for source2 do an average
+                #  of the 30 minute source1 values at  0800, 0830, 0900, 0930, 1000, 1030
+                # Note that the actual central time of these input values is 0915 not 0930
+                #  but this error is considered acceptable for typical uses of this data set
+                # This means that special care must be taken for averaged values at the 
+                #  beginning of each day 0000, and end of each day 2100
+                # Average for 0000 is average of
+                #  2300, 2330 of previous day, 0000, 0030, 0100, 0130.
+                #  So at beginning of block need to read in from 2300, 2330 the previous day
+                # Average for 2100 is average of
+                #  2000, 2030, 2100, 2130, 2200, 2230
+                #  So at end of block do not need 2300, 2330 in final day.
+                # This explains offsetting of time1 and time2 in reading of block at beginning
+                # of this function.
+                # ------------------------------------------------------------
                 #
                 # Find time resolution of input and output data
                 npd1=find_npd(self.source1)
@@ -3508,6 +3552,11 @@ class ModifySource(object):
                 x4=x3/nave
                 # Create new time axis for data on source2 time interval
                 timec=time1
+                if fnmatch.fnmatch(self.source1,'imerg???_sfc_30m') and fnmatch.fnmatch(self.source2,'imerg???_sfc_3h'):
+                    # Special case. Averaging IMERG 30 min data to TRMM 3 hour time axis
+                    # Reset starting time so new time axis is at approx CENTRE of input times and corresponds
+                    # to TRMM 3 hour time axis
+                    timec=time1+tdc
                 time_vals=[]
                 if self.frequency=='d':
                     timedelta_source2=datetime.timedelta(days=1)
@@ -3528,7 +3577,7 @@ class ModifySource(object):
             else:
                 raise UserWarning('Invalid method option.')
         else:
-            raise ToDoError('The code above shoud work with frequencies other than d or 3h, but check.')
+            raise ToDoError('The code above should work with frequencies other than d or 3h, but check.')
         # Convert units for selected data sources
         if self.source1 in ['trmm3b42v7_sfc_3h',] and self.source2 in ['trmm3b42v7_sfc_d',]:
             print("Converting TRMM precipitation from 3-hourly in 'mm hr-1' to daily mean in 'mm day-1'")
