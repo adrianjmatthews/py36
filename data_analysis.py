@@ -1198,14 +1198,14 @@ def f_longitude_average(cube_in,nave):
         
 #==========================================================================
 
-def standardise_time_coord_units(cube,timename='time',tunits=False,verbose=True):
+def standardise_time_coord_units(cube,timename='time',tunits=False,basetime=' since 1900-01-01 00:00:0.0',verbose=True):
     """Convert time coordinate of cube to standard time units.
 
     Takes account of calendar of time units.
 
-    Standard time units are '[days,hours,,seconds] since 1900-01-01 00:00:0.0
+    Standard time units are '[days,hours,seconds] since 1900-01-01 00:00:0.0
     (days,hours, or seconds depending on time units of input cube), or can be
-    overwritten with tunits argument.
+    overwritten with tunits argument and/or basetime argument.
     """
     tcoord1=cube.coord(timename)
     tunits1=tcoord1.units
@@ -1216,7 +1216,7 @@ def standardise_time_coord_units(cube,timename='time',tunits=False,verbose=True)
         xx=tunits
     else:
         xx=str(tunits1).split()[0]
-    tunits2str=xx+' since 1900-01-01 00:00:0.0'
+    tunits2str=xx+basetime
     tunits2=cf_units.Unit(tunits2str,calendar=tunits1.calendar)
     #
     timevals2=tunits1.convert(tcoord1.points,tunits2)
