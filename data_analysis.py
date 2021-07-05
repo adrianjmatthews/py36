@@ -8769,7 +8769,7 @@ class WheelerKiladis(object):
         self.data_hovWKfilt=x4
         iris.save(self.data_hovWKfilt,self.file_hovWKfilt)
         if self.archive:
-            archive_file(self,self.file_hovfftWKfilt)
+            archive_file(self,self.file_hovWKfilt)
         if self.verbose==2:
             print('write_cube: {0.file_hovWKfilt!s}'.format(self))
         if self.wave_type=='none':
