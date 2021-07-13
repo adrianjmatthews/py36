@@ -992,7 +992,12 @@ def find_npd(source):
     """
     xx=source.split('_')
     source_frequency=xx[2]
-    if source_frequency[-1]=='h':
+    if source_frequency[-1]=='d':
+        if source_frequency=='d':
+            npd=1
+        else:
+            raise UserWarning('Cannot have frequency less than one per day.')
+    elif source_frequency[-1]=='h':
         if source_frequency=='h':
             npd=24
         else:
@@ -1808,6 +1813,49 @@ class TimeDomain(object):
             self.datetimes=datetimes_list
             self.datetime2ascii()
             self.write_ascii()
+        elif self.idx[0]=='M' and len(self.idx)==5:
+            # 'Mxxxx' time domains
+            # Create a time domain from a pre-existing time series according to the threshold information
+            # Time domain id has form Mxxxx where xxxx is an integer (starting at 0001) and the information
+            # that defines Mxxxx is in info.py
+            dictc=info.Mtdomain[self.idx[1:]]
+            self.source=dictc['source']
+            tseriesfile=dictc['tseriesfile']
+            method=dictc['method']
+            print('source: {0.source!s}'.format(self))
+            print('tseriesfile: {0!s}'.format(tseriesfile))
+            print('method: {0!s}'.format(method))
+            source_info(self)
+            # Read in time series (probably from multiple files)
+            f1=os.path.join(self.tseriesdir,self.source,'processed',tseriesfile+'_'+self.wildcard+'.nc')
+            #f1=os.path.join(self.tseriesdir,self.source,'processed',tseriesfile+'_'+'199804'+'.nc')
+            print('f1: {0!s}'.format(f1))
+            x1=iris.load(f1)
+            x1=x1.concatenate_cube()
+            print('Successfully read time series and concatenated.')
+            # Find threshold value
+            if method=='percentile_above':
+                percentile=dictc['percentile']
+                valc=np.percentile(x1.data,percentile)
+                print('{0!s}th percentile is: {1!s}'.format(percentile,valc))
+                unitsc=str(x1.units)
+                time_coord=x1.coord('time')
+                time_units=time_coord.units
+                t1comp=time_units.num2date(time_coord.points[0])
+                t2comp=time_units.num2date(time_coord.points[-1])
+                header1='# Events exceeding '+str(percentile)+'th percentile ('+str(valc)+' '+str(unitsc)+')\n'
+                header2='# Taken from '+self.source+' '+tseriesfile+': '+str(t1comp)+' to '+str(t2comp)+'\n'
+                self.header=(header1,header2)
+                print(header1)
+                print(header2)
+                x1=np.where(np.greater_equal(x1.data,valc),time_coord.points,0)
+                x2=x1[x1!=0]
+                self.datetimes=[time_units.num2date(xx) for xx in x2]
+                self.datetime2ascii()
+                self.write_ascii()
+            else:
+                raise ToDoError('Code up for other methods.')
+
 
     def f_ndays(self):
         """Calculate number of days covered by time domain.
