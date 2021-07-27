@@ -2310,16 +2310,16 @@ class DataConverter(object):
         if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             print('# Constraint does not work with data sources listed')
             if level_constraint:
-                xx=iris.load(self.filein1,constraints=level_constraint,callback=clean_callback)
+                xx=iris.load(self.filein1,constraints=level_constraint & time_constraint,callback=clean_callback)
             else:
-                xx=iris.load(self.filein1,callback=clean_callback)
+                xx=iris.load(self.filein1,constraints=time_constraint,callback=clean_callback)
         else:
             print('# Load using var_name')
             var_constraint=iris.Constraint(cube_func=(lambda c: c.var_name==self.raw_name))
             if level_constraint:
-                xx=iris.load(self.filein1,constraints=var_constraint & level_constraint,callback=clean_callback)
+                xx=iris.load(self.filein1,constraints=var_constraint & level_constraint & time_constraint,callback=clean_callback)
             else:
-                xx=iris.load(self.filein1,constraints=var_constraint,callback=clean_callback)
+                xx=iris.load(self.filein1,constraints=var_constraint & time_constraint,callback=clean_callback)
         #
         # Convert time coordinate to standard for erainterim
         # and rewrite latitude coordinate
