@@ -32,14 +32,17 @@ FILEPRE='' # e.g., '', '_rac', '_l30_n241'
 DATA_FROM_ANNCYCLE=False
 #DATA_FROM_ANNCYCLE=(1998,2018)
 
-# lags are integer multiples of timedelta attribute, e.g., 6 hours for erainterim_plev_6h
+# If using method 1ater (not advised now)
+# LAGS is list of integer multiples of timedelta attribute, e.g., 6 hours for erainterim_plev_6h
 #LAGS=[-1,0,1]
-LAGS=list(range(-24,24+1))
+#
+# If using method 2, LAGS is a 2-tuple of start timedelta, and end timedelta
+LAGS=( datetime.timedelta(hours=-24), datetime.timedelta(hours=24) )
 
 # Set lazy load to false to force hard load of entire data set.
-# Memory hungry but can lead to significant speed up
+# Memory hungry but can lead to significant speed up. NB should not need to use this now with method 2
 # Need to manually set first and last times to encompass all dates from time domain with lags
-LAZY_LOAD=False
+LAZY_LOAD=True
 if not LAZY_LOAD:
     TIME_FIRST=datetime.datetime(1998,1,1)
     TIME_LAST=datetime.datetime(2020,12,31)
@@ -70,7 +73,7 @@ if 'TIME_LAST' in locals():
 aa=da.TimeDomStats(lazy_load=LAZY_LOAD,**descriptor)
 
 # Calculate event means and time mean
-aa.f_lagged_mean(lags=LAGS)
+aa.f_lagged_mean(method=2,lags=LAGS)
 
 if PLOT:
     print('# Plot')

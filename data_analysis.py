@@ -2647,7 +2647,7 @@ class TimeDomStats(object):
         if not lazy_load:
             # Force a hard load of entire input data set into memory
             # Potentially speeds up processing
-            time_constraint=set_time_constraint(time_first,time_last,calendar=self.calendar,verbose=self.verbose)
+            time_constraint=set_time_constraint(self.time_first,self.time_last,calendar=self.calendar,verbose=self.verbose)
             self.data_in=self.data_in.extract(time_constraint)
         # Input data if calculating statistics from a selection of the annual cycle
         # e.g., to calculate the mean background state over dates in a time domain
@@ -2902,16 +2902,24 @@ class TimeDomStats(object):
         if self.archive:
             archive_file(self,self.fileout_mean_percentiles_null)
 
-    def f_lagged_mean(self,lags=[0,]):
+    def f_lagged_mean(self,method=2,lags=[0,]):
         """Calculate time-lagged means over time domain and save.
 
         Input:
 
-        lags : list of integer lags (default is [0,]). These are
-        combined with self.timedelta to create the lags to calculate
-        the mean over.  E.g., if lags=[-5,0,5] and self.timedelta is 1
-        day, then lagged means will be calculated at lags of -5, 0,
-        and 5 days.
+        method: 1 or 2. Method 1 allows for calculation of a discrete
+        set of lags but can be slow with large data sets. Method 2
+        calculates all lags between a start lag and an end lag, and is
+        order nlag faster. Generally, use method 2.
+
+        lags : if method is 1, lags is a list of integer lags (default
+        is [0,]). These are combined with self.timedelta to create the
+        lags to calculate the mean over.  E.g., if lags=[-5,0,5] and
+        self.timedelta is 1 day, then lagged means will be calculated
+        at lags of -5, 0, and 5 days.
+
+        If method is 2, lags is a 2-tuple of (start
+        datetime.timedelta, end datetime.timedelta).
 
         Create attributes:
 
@@ -2925,33 +2933,92 @@ class TimeDomStats(object):
         of 1000-01-01 00:00:0.0
 
         """
-        # Set lags and nlags attributes
-        self.lags=lags
-        self.nlags=len(lags)
         timelag_units='hours since 1000-01-01 00:00:0.0'
-        self.tdomain.time_domain_type()
-        # Loop over lags
-        cubelist=iris.cube.CubeList([])
-        for lagc in self.lags:
-            timedelta_lagc=lagc*self.timedelta
-            print('lagc,timedelta_lagc : {0!s}, {1!s}'.format(lagc,timedelta_lagc))
-            # Create time domain for this lag
-            idxc=self.tdomainid+'-'+str(lagc)
-            tdomain_lagc=self.tdomain.f_lagged_time_domain(idxc,timedelta_lagc)
-            tdomain_lagc.time_domain_type()
-            tdomain_lagc.f_nevents()
-            # Calculate time mean for this lagged time domain
-            bb=copy.copy(self)
-            bb.tdomain=tdomain_lagc
-            bb.event_means()
-            bb.f_time_mean(save=False)
-            xx1=bb.time_mean
-            hours_lagc=timedelta_lagc.total_seconds()/3600
-            timelag_coord=iris.coords.DimCoord([hours_lagc],standard_name='time',units=timelag_units)
-            xx1.add_aux_coord(timelag_coord)
-            xx1.cell_methods=None
-            cubelist.append(xx1)
-        lagged_mean=cubelist.merge_cube()
+        if method==1:
+            # Set lags and nlags attributes
+            self.lags=lags
+            self.nlags=len(lags)
+            self.tdomain.time_domain_type()
+            # Loop over lags
+            cubelist=iris.cube.CubeList([])
+            for lagc in self.lags:
+                timedelta_lagc=lagc*self.timedelta
+                print('lagc,timedelta_lagc : {0!s}, {1!s}'.format(lagc,timedelta_lagc))
+                # Create time domain for this lag
+                idxc=self.tdomainid+'-'+str(lagc)
+                tdomain_lagc=self.tdomain.f_lagged_time_domain(idxc,timedelta_lagc)
+                tdomain_lagc.time_domain_type()
+                tdomain_lagc.f_nevents()
+                # Calculate time mean for this lagged time domain
+                bb=copy.copy(self)
+                bb.tdomain=tdomain_lagc
+                bb.event_means()
+                bb.f_time_mean(save=False)
+                xx1=bb.time_mean
+                hours_lagc=timedelta_lagc.total_seconds()/3600
+                timelag_coord=iris.coords.DimCoord([hours_lagc],standard_name='time',units=timelag_units)
+                xx1.add_aux_coord(timelag_coord)
+                xx1.cell_methods=None
+                cubelist.append(xx1)
+            lagged_mean=cubelist.merge_cube()
+        elif method==2:
+            if self.tdomain.type!='single':
+                raise UserWarning("Method 2 only works with time domains of type 'single'.")
+            if len(lags)!=2:
+                raise UserWarning('For method 2, lags must be a 2-tuple.')
+            delta_beg=lags[0]
+            delta_end=lags[1]
+            kount=0
+            # Read lagged data block corresponding to first datetime in time domain
+            dtc=self.tdomain.datetimes[0]
+            timec=dtc[0]
+            timebeg=timec+delta_beg
+            timeend=timec+delta_end
+            print('timec,timebeg,timeend: {0!s}, {1!s}, {2!s}'.format(timec,timebeg,timeend))
+            time_constraint=set_time_constraint(timebeg,timeend,calendar=self.calendar,verbose=self.verbose)
+            x1=self.data_in.extract(time_constraint)
+            x2=x1.concatenate_cube()
+            # Create running sum from first block of data
+            x2sum=x2.data
+            kount+=1
+            # Create lag coordinate using first extracted cube
+            tcoord=x2.coord('time')
+            self.nlags=len(tcoord.points)
+            print('nlags: {0.nlags!s}'.format(self))
+            lag_units=cf_units.Unit(timelag_units,calendar=self.calendar)
+            lag_first=datetime.datetime(1000,1,1)+delta_beg
+            lag_vals=[lag_units.date2num(lag_first+xx*self.timedelta).round(8) for xx in range(self.nlags)]
+            lag_coord=iris.coords.DimCoord(lag_vals,standard_name='time',units=timelag_units)
+            print('lag_coord: {0!s}'.format(lag_coord))
+            # Find time coordinate index for recreation of cube later
+            dim_coord_names=[xx.var_name for xx in x2.dim_coords]
+            tcoord_index=dim_coord_names.index('time')
+            print('tcoord_index: {0!s}'.format(tcoord_index))
+            # Loop over remaining times in time domain
+            for dtc in self.tdomain.datetimes[1:]:
+                # Read in lagged data block corresponding to current datetime in time domain
+                timec=dtc[0]
+                timebeg=timec+delta_beg
+                timeend=timec+delta_end
+                print('timec,timebeg,timeend: {0!s}, {1!s}, {2!s}'.format(timec,timebeg,timeend))
+                time_constraint=set_time_constraint(timebeg,timeend,calendar=self.calendar,verbose=self.verbose)
+                x1=self.data_in.extract(time_constraint)
+                x2=x1.concatenate_cube()
+                # Calculate contribution to running sum
+                x2sum=x2sum+x2.data
+                kount+=1
+            # Calculate average by dividing by number of events
+            print('nevents, kount: {0!s}, {1!s}'.format(self.tdomain.nevents,kount))
+            if self.tdomain.nevents!=kount:
+                raise UserWarning('Mismatch between nevents and kount.')
+            x3=x2sum/kount
+            # Create cube of lagged mean
+            lagged_mean=create_cube(x3,x2)
+            # Replace time axis with lag axis
+            lagged_mean.remove_coord('time')
+            lagged_mean.add_dim_coord(lag_coord,tcoord_index)
+        else:
+            raise UserWarning('Invalid method.')
         # Add cell method to describe time mean
         cm=iris.coords.CellMethod('point','time',comments='lagged mean over time domain '+self.tdomain.idx)
         lagged_mean.add_cell_method(cm)
