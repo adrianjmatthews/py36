@@ -2977,7 +2977,7 @@ class TimeDomStats(object):
             print('timec,timebeg,timeend: {0!s}, {1!s}, {2!s}'.format(timec,timebeg,timeend))
             time_constraint=set_time_constraint(timebeg,timeend,calendar=self.calendar,verbose=self.verbose)
             x1=self.data_in.extract(time_constraint)
-            x2=x1.concatenate_cube()
+            x2=concatenate_cube(x1)
             # Create running sum from first block of data
             x2sum=x2.data
             kount+=1
@@ -3003,7 +3003,7 @@ class TimeDomStats(object):
                 print('timec,timebeg,timeend: {0!s}, {1!s}, {2!s}'.format(timec,timebeg,timeend))
                 time_constraint=set_time_constraint(timebeg,timeend,calendar=self.calendar,verbose=self.verbose)
                 x1=self.data_in.extract(time_constraint)
-                x2=x1.concatenate_cube()
+                x2=concatenate_cube(x1)
                 # Calculate contribution to running sum
                 x2sum=x2sum+x2.data
                 kount+=1
