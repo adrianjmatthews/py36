@@ -33,7 +33,7 @@ import shutil
 #FILENAME='time_average.py'
 #FILENAME='filter.py'
 #FILENAME='spatial_subset.py'
-FILENAME='mean.py'
+#FILENAME='mean.py'
 #FILENAME='time_average.py'
 #FILENAME='lagged_mean.py'
 #FILENAME='vwndptap.py'
@@ -52,14 +52,14 @@ FILENAME='mean.py'
 #FILENAME='omega_decomposition.py'
 #FILENAME='mass_flux_decomposition.py'
 #FILENAME='wheelerkiladis.py'
-#FILENAME='combine_latitudes.py'
+FILENAME='combine_latitudes.py'
 #FILENAME='tmp_reorder.py'
 
 # Experiment name for temporary sub directories
 TMPEXP='tmp0_'+FILENAME.split('.')[0] 
 DIR1=os.path.join(os.path.sep,'gpfs','home','e058','tmp','sub_'+TMPEXP)
 
-NICE=10 # Set to default 10 to lower priority so new interactive sessions can be
+NICE=0 # Set to 10 to lower priority so new interactive sessions can be
         # started. If ada becomes full and cannot get batch jobs to run, set to 0.
 
 # Set whether or not to run each script with exclusive flag.
@@ -77,7 +77,14 @@ if FILENAME in ['vrtbudget.py']:
 elif FILENAME in ['omega_decomposition.py']:
     memory='50G'
 else:
-    memory='5G'
+    # RAM per core on compute-16-64 queue is 4 Gb
+    memory='4G'
+
+# Set runtime requirements
+if FILENAME in ['combine_latitudes.py']:
+    runtime='35:59:00'
+else:
+    runtime='23:59:00'
 
 # 'var1': 'YEAR' or 'YEAR_BEG'
 # 'var2': 'MONTH' or 'SOURCE'
@@ -86,15 +93,15 @@ else:
 # 'var5': 'LEVEL'
 VARDICT={'var1':'YEAR',
          'var2':'MONTH',
-         'var3':'BAND1_VAL1',
-         'var4':'BAND2_VAL1',
+         'var3':'LAT1',
+         'var4':'VAR_NAME',
          'var5':'LEVEL'}
 
 ######################################################
 LOOPVAR1= ['X'] # dummy value if not needed
 ######################################################
-#LOOPVAR1=[2019,]
-#LOOPVAR1=range(1999,2018+1)
+#LOOPVAR1=[1998,]
+#LOOPVAR1=range(2000,2018+1)
 
 ######################################################
 LOOPVAR2= ['X'] # dummy value if not needed
@@ -114,20 +121,21 @@ LOOPVAR3= ['X'] # dummy value if not needed
 #LOOPVAR3=['11.45','11.55']
 
 ######################################################
-LOOPVAR4= ['X'] # dummy value if not needed
+#LOOPVAR4= ['X'] # dummy value if not needed
 ######################################################
-#LOOPVAR4=['uwnd','vwnd','vrt','div','omega']
-#LOOPVAR4=['uwnd','vwnd','vrt','div']
+LOOPVAR4=['uwnd','vwnd','vrt','div']
+#LOOPVAR4=['uwnd','vwnd']
 #LOOPVAR4=['dvrtdt','m_uwnd_dvrtdx','m_vwnd_dvrtdy','m_omega_dvrtdp','m_vrt_div','m_ff_div','m_beta_vwnd','m_domegadx_dvwnddp','domegady_duwnddp','source_dvrtdt','res_dvrtdt']
 #LOOPVAR4=['dvrtdt','m_uwnd_dvrtdx','m_vwnd_dvrtdy','m_omega_dvrtdp','m_vrt_div','m_ff_div','m_beta_vwnd','m_domegadx_dvwnddp','domegady_duwnddp','source_dvrtdt','res_dvrtdt','vrt_horiz_adv','vrt_stretch','vrt_tilt']
+#LOOPVAR4=['dvrtdt']
 #LOOPVAR4=['lat','lon','tsc','sa']
-#LOOPVAR4=['121.45','121.55']
+#LOOPVAR4=['120.55','120.65','120.75','120.85']
 
 ######################################################
-#LOOPVAR5= ['X'] # dummy value if not needed
+LOOPVAR5= ['X'] # dummy value if not needed
 ######################################################
 #LOOPVAR5=[1000,975,950,925,900,875,850,825,800,775,750,700,650,600,550,500,450,400,350,300,250,225,200,175,150,125,100]
-LOOPVAR5=[1000,925,850,700,600,500,400,300,250,200,150,100,70,50,30,20,10]
+#LOOPVAR5=[1000,925,850,700,600,500,400,300,250,200,150,100,70,50,30,20,10]
 
 #--------------------------------------------------------------------
 
@@ -165,6 +173,8 @@ os.mkdir(DIR1)
 print("# (Nested) Loop over YEAR, LEVEL, VAR etc.")
 index=0
 scriptfile_original=os.path.join(os.path.sep,'gpfs','home','e058','home','PythonScripts','py36',FILENAME)
+njobs=len(LOOPVAR1)*len(LOOPVAR2)*len(LOOPVAR3)*len(LOOPVAR4)*len(LOOPVAR5)
+print('njobs: {0!s}'.format(njobs))
 for var1 in LOOPVAR1: 
     for var2 in LOOPVAR2: 
         for var3 in LOOPVAR3: 
@@ -233,17 +243,21 @@ for var1 in LOOPVAR1:
                     # Write a local sub file for hpc
                     fout=open(os.path.join(dir2,'subfile'),'w')
                     fout.write('#!/bin/bash\n')
-                    fout.write('#SBATCH -t 23:59:00\n')
-                    fout.write('#SBATCH -p compute\n')
+                    fout.write('#SBATCH -t '+runtime+'\n')
+                    fout.write('#SBATCH -p compute-16-64\n')
                     fout.write('#SBATCH --mem '+memory+'\n')
-                    fout.write('#SBATCH --mail-type=NONE\n')
-                    fout.write('#SBATCH --mail-user=e058@uea.ac.uk\n')
                     fout.write('#SBATCH --job-name='+FILENAME[:3]+'_'+str(index)+'\n')
                     fout.write('#SBATCH --nice='+str(NICE)+'\n')
                     if EXCLUSIVE:
                         fout.write('#SBATCH --exclusive\n')
                     fout.write('#SBATCH -o out_'+str(index)+'.txt\n')
                     fout.write('#SBATCH -e err_'+str(index)+'.txt\n')
+                    if index==njobs-1:
+                        # Send email when last job is completed or fails
+                        fout.write('#SBATCH --mail-type=END,FAIL\n')
+                    else:
+                        fout.write('#SBATCH --mail-type=NONE\n')
+                    fout.write('#SBATCH --mail-user=e058@uea.ac.uk\n')
                     fout.write('\n')
                     fout.write('python ./local_script.py\n')
                     fout.close()

@@ -21,8 +21,9 @@ FILE_MASK=False # Default value
 #VAR_NAME='vwnd'; LEVEL=925; SOURCE='era5plp_plev_h'
 #VAR_NAME='vwnd'; LEVEL=1; SOURCE='era5plp_sfc_h'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='erainterim_sfc_d'
-VAR_NAME='vrt'; LEVEL=175; SOURCE='erainterim_plev_6h'
+VAR_NAME='zg'; LEVEL=850; SOURCE='erainterim_plev_6h'
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergtrm_sfc_30m'
 #VAR_NAME='uwnd'; LEVEL=1000; SOURCE='ncepdoe_plev_d'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='ncepdoe_sfc_d'
 #VAR_NAME='vwnd'; LEVEL=10; SOURCE='ncepdoegg_zlev_d'
@@ -30,16 +31,16 @@ VAR_NAME='vrt'; LEVEL=175; SOURCE='erainterim_plev_6h'
 #VAR_NAME='ta'; LEVEL=200; SOURCE='ncepncar_plev_d'
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrcdr_toa_d'
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrinterp_toa_d'
+#VAR_NAME='ssft'; LEVEL=1; SOURCE='ostial4reptrp_sfc_d'
 #VAR_NAME='tsc'; LEVEL='all'; SOURCE='sg579m031oi01_zlev_h'
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_7d'; FILE_MASK='lsmask.nc'
 #VAR_NAME='tauy'; LEVEL=1; SOURCE='tropflux_sfc_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_3h'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergmt2_sfc_30m'
 
-YEAR_BEG=1998; YEAR_END=2018 # if outfile_frequency is 'year' or less
+YEAR_BEG=1998; YEAR_END=1998 # if outfile_frequency is 'year' or less
 
 MONTH1=MONTH2=-999 # if outfile_frequency is 'year'
-#MONTH1=9; MONTH2=9 # if outfile_frequency is less than 'year'
+#MONTH1=1; MONTH2=12 # if outfile_frequency is less than 'year'
 
 PLOT=False
 

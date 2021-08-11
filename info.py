@@ -1,8 +1,5 @@
 """Information on locations, sections, etc."""
 
-# Constants
-gg=9.81 # acceleration due to gravity (m s-2)
-
 # lon, lat of key locations
 locations={}
 locations['Jakarta']={'lon':106.7, 'lat':-6.1}
@@ -34,6 +31,9 @@ sdomains['mts']={'lon1':290, 'lon2':305, 'lat1':10, 'lat2':25, 'desc':'Caribbean
 sdomains['mt2']={'lon1':296, 'lon2':300, 'lat1':15, 'lat2':19, 'desc':'Montserrat'}
 sdomains['npl']={'lon1':75, 'lon2':90, 'lat1':20, 'lat2':35, 'desc':'Nepal'}
 sdomains['np2']={'lon1':84, 'lon2':88, 'lat1':26, 'lat2':30, 'desc':'Nepal region 2'}
+sdomains['bar']={'lon1':302, 'lon2':304, 'lat1':13, 'lat2':15, 'desc':'Eureca4 glider near Barbados'}
+sdomains['trm']={'lon1':-180, 'lon2':180, 'lat1':-50, 'lat2':50, 'desc':'TRMM spatial domain'}
+sdomains['trp']={'lon1':-180, 'lon2':180, 'lat1':-30, 'lat2':30, 'desc':'Tropics'}
 
 class LevelWidths(object):
     """Calculate level widths from a set of levels. 
@@ -85,3 +85,10 @@ levels={}
 levels['ncepdoe']=LevelWidths([1000,925,850,700,600,500,400,300,250,200,150,100,70,50,30,20,10],'plev','hPa')
 # Level widths for ERA-Interim reanalysis
 levels['erainterim']=LevelWidths([1000,975,950,925,900,875,850,825,800,775,750,700,650,600,550,500,450,400,350,300,250,225,200,175,150,125,100,70,50,30,20,10,7,5,3,2,1],'plev','hPa')
+
+# 'M' type time domains, e.g., 'M0001': parameters
+Mtdomain={}
+Mtdomain['0001']={'source':'trmm3b42v7p1_sfc_d', 'tseriesfile':'ppt_1_ss_lat_3.125_3.125_lon_101.625_101.625', 'method':'percentile_above', 'percentile':95}
+Mtdomain['0002']={'source':'trmm3b42v7p1_sfc_d', 'tseriesfile':'ppt_1_ss_lat_-0.875_-0.875_lon_100.375_100.375', 'method':'percentile_above', 'percentile':95}
+Mtdomain['0003']={'source':'trmm3b42v7p1_sfc_d', 'tseriesfile':'ppt_1_ss_lat_-0.875_-0.875_lon_100.375_100.375', 'method':'percentile_above', 'percentile':99}
+

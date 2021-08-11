@@ -15,14 +15,13 @@ BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-SUBDIR='std' # 'std': input data with time axis
+SUBDIR='processed' # 'std': input data with time axis
                    # 'processed': input data with no time axis
 
 # Optional
-#TDOMAINID='djf7980-1718'
+TDOMAINID='CCEK75E98-18-0.5-6h'
 
-#LEVEL=1000; 
-SOURCE='erainterim_plev_d'
+LEVEL=850; SOURCE='erainterimNEK1T42_plev_6h'
 #LEVEL=200; SOURCE='ncepdoe_plev_d'
 #LEVEL=50; SOURCE='ncepncar_plev_d'
 #LEVEL=10; SOURCE='ncepdoe_zlev_d'
@@ -32,8 +31,10 @@ FLAG_CHI=False
 FLAG_VRT=False
 FLAG_DIV=False
 FLAG_WNDSPD=False
-FLAG_UWNDCHI=True
-FLAG_VWNDCHI=True
+FLAG_UWNDCHI=False
+FLAG_VWNDCHI=False
+FLAG_DUWNDDX=False
+FLAG_DVWNDDY=True
 
 if SUBDIR=='std':
     FILEPRE='' # e.g., '', '_rac', '_rac_b20_200_n241', '_rac_rm5_n5'
@@ -41,11 +42,11 @@ if SUBDIR=='std':
     MONTH1=MONTH2=-999 # Set both MONTH1 and MONTH2 to same (irrelevant) value if outfile_frequency is 'year'
     #MONTH1=1; MONTH2=1 # Set month ranges if outfile_frequency is less than 'year'
 elif SUBDIR=='processed':
-    FILEPRE='_'+TDOMAINID # e.g., TDOMAINID of time mean data.
+    FILEPRE='_'+TDOMAINID+'_lag' # e.g., TDOMAINID of time mean data.
 else:
-    raise ValueError('SUBDIR is invalid.')
+    raise UserWarning('SUBDIR is invalid.')
 
-PLOT=False
+PLOT=True
 
 VERBOSE=2
 
@@ -67,6 +68,9 @@ descriptor['flag_div']=FLAG_DIV
 descriptor['flag_wndspd']=FLAG_WNDSPD
 descriptor['flag_uwndchi']=FLAG_UWNDCHI
 descriptor['flag_vwndchi']=FLAG_VWNDCHI
+descriptor['flag_duwnddx']=FLAG_DUWNDDX
+descriptor['flag_duwnddx']=FLAG_DUWNDDX
+descriptor['flag_dvwnddy']=FLAG_DVWNDDY
 
 # Create instance of Wind object
 aa=da.Wind(**descriptor)
@@ -82,7 +86,7 @@ elif SUBDIR=='processed':
     aa.f_wind()
 
 if PLOT:
-    x1=aa.vwndchi
+    x1=aa.dvwnddy
     time_coord=x1.coord('time')
     timec=time_coord.units.num2date(time_coord.points[0])
     x2=x1.extract(iris.Constraint(time=timec))
