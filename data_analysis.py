@@ -156,6 +156,7 @@ var_name2long_name={
     'omegaf':'angular_frequency',
     'ppt':'lwe_precipitation_rate',
     'pa':'air_pressure',
+    'phi':'geopotential',
     'psfc':'surface_air_pressure',
     'psi':'atmosphere_horizontal_streamfunction',
     'psioc_lambda':'eastward_component_of_vector_atmosphere_overturning_streamfunction',
@@ -2254,7 +2255,7 @@ class DataConverter(object):
         # long_name attribute if it exists. Ignores raw_name 
         self.raw_name=self.name
         if self.data_source in ['erainterim',]:
-            erainterim_raw_names={'div':'D', 'vrt':'VO', 'uwnd':'U', 'vwnd':'V', 'omega':'W' }
+            erainterim_raw_names={'div':'D', 'vrt':'VO', 'uwnd':'U', 'vwnd':'V', 'omega':'W', 'phi':'Z' }
             if self.var_name in erainterim_raw_names.keys():
                 self.raw_name=erainterim_raw_names[self.var_name]
             else:
@@ -2317,7 +2318,11 @@ class DataConverter(object):
             print('# Load using var_name')
             var_constraint=iris.Constraint(cube_func=(lambda c: c.var_name==self.raw_name))
             if level_constraint:
-                xx=iris.load(self.filein1,constraints=var_constraint & level_constraint & time_constraint,callback=clean_callback)
+                if self.source in ['erainterim_plev_6h']:
+                    # time constraint does not work with erainterim, but redundant as file name constrains time
+                    xx=iris.load(self.filein1,constraints=var_constraint & level_constraint,callback=clean_callback)
+                else:
+                    xx=iris.load(self.filein1,constraints=var_constraint & level_constraint & time_constraint,callback=clean_callback)
             else:
                 xx=iris.load(self.filein1,constraints=var_constraint & time_constraint,callback=clean_callback)
         #
