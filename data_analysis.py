@@ -2255,7 +2255,7 @@ class DataConverter(object):
         # long_name attribute if it exists. Ignores raw_name 
         self.raw_name=self.name
         if self.data_source in ['erainterim',]:
-            erainterim_raw_names={'div':'D', 'vrt':'VO', 'uwnd':'U', 'vwnd':'V', 'omega':'W', 'phi':'Z' }
+            erainterim_raw_names={'div':'D', 'vrt':'VO', 'uwnd':'U', 'vwnd':'V', 'omega':'W', 'phi':'Z', 'ta':'T' }
             if self.var_name in erainterim_raw_names.keys():
                 self.raw_name=erainterim_raw_names[self.var_name]
             else:
