@@ -181,6 +181,7 @@ var_name2long_name={
     'ta':'air_temperature',
     'taux':'surface_downward_eastward_stress',
     'tauy':'surface_downward_northward_stress',
+    'theta':'air_potential_temperature',
     'tsc':'sea_water_conservative_temperature',
     'uwnd':'eastward_wind',
     'uwndchi':'irrotational_component_of_eastward_wind',
@@ -6208,6 +6209,56 @@ class CubeDiagnostics(object):
                 'shum min: {5!s}\n'+\
                 'shum max: {6!s}\n'+h1b
             print(ss.format(self,ta_min,ta_max,rhum_min,rhum_max,shum_min,shum_max))
+
+    def f_potential_temperature(self):
+        """Calculate potential temperature from temperature and pressure.
+
+        Assumes ta (air temperature) on pressure level self.level has
+        already been loaded, in self.data_in['ta_LEVEL'].
+
+        Uses standard definition of potential temperature (theta)
+
+        theta = T (p_0 / p)^{R/C_p}, where
+
+        p_0 = 10^5 Pa is standard reference pressure
+        R is specific gas constant
+        c_p is specific heat capacity at constant pressure.
+
+        """
+        # Read in ta for current time block and assign to ta attribute
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['ta_'+str(self.level)].extract(time_constraint)
+        self.ta=x1.concatenate_cube()
+        # air temperature must be in Kelvin
+        self.ta.convert_units('Kelvin')
+        # Set constants
+        planet=Planet()
+        rr=planet.gascon
+        cp=planet.cp
+        kappa=rr/cp
+        p0=1e5 # reference pressure in Pascals
+        pa=self.level*100 # pressure level in Pascals
+        print('R,Cp,kappa: {0!s}, {1!s}, {2!s}'.format(rr,cp,kappa))
+        print('p0,p: {0!s}, {1!s}'.format(p0,pa))
+        factor=math.pow(p0/pa,kappa)
+        print('factor: {0!s}'.format(factor))
+        # Calculate potential temperature in Kelvin
+        theta=self.ta.data*factor
+        # Create iris cube of theta
+        var_name='theta'
+        self.theta=create_cube(conv_float32(theta),self.ta,new_var_name=var_name)
+        self.theta.units='Kelvin'
+        # Add cell method to describe calculation of sea water potential density
+        cm=iris.coords.CellMethod('point','pressure',comments='potential temperature calculated from temperature and pressure')
+        self.theta.add_cell_method(cm)
+        # Save cube
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.theta,fileout)
+        if self.archive:
+            archive_file(self,fileout)
 
     def f_vwndptap(self):
         """Calculate v'T' from anomalous vwnd and ta.
