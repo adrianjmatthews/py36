@@ -237,7 +237,7 @@ def source_info(aa):
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
-    if aa.source in ['erainterim_sfc_d','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
+    if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
     elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
@@ -2166,9 +2166,11 @@ class DataConverter(object):
         #
         # Set input file name(s)
         if self.source in ['erainterim_plev_6h']:
-            #self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+str(self.level)+'_'+str(self.year)+'_6.nc')
             # Input files are in format .../YYYY/MM/DD/ggapYYYYMMDDHH00.nc
             self.filein1=os.path.join(self.basedir,self.source,'raw',str(self.year),'??','??','ggap'+str(self.year)+'??????00.nc')
+        elif self.source in ['erainterim_sfc_6h']:
+            # Input files are in format .../YYYY/MM/DD/ggasYYYYMMDDHH00.nc
+            self.filein1=os.path.join(self.basedir,self.source,'raw',str(self.year),'??','??','ggas'+str(self.year)+'??????00.nc')
         elif self.source in ['erainterim_sfc_d','erainterim_plev_d']:
             #self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+str(self.level)+'_'+str(self.year)+'_d.nc')
             raise UserWarning('Need to recode.')
@@ -2256,7 +2258,7 @@ class DataConverter(object):
         # long_name attribute if it exists. Ignores raw_name 
         self.raw_name=self.name
         if self.data_source in ['erainterim',]:
-            erainterim_raw_names={'div':'D', 'vrt':'VO', 'uwnd':'U', 'vwnd':'V', 'omega':'W', 'phi':'Z', 'ta':'T' }
+            erainterim_raw_names={'div':'D', 'vrt':'VO', 'uwnd':'U', 'vwnd':'V', 'omega':'W', 'phi':'Z', 'ta':'T', 'psfc':'SP' }
             if self.var_name in erainterim_raw_names.keys():
                 self.raw_name=erainterim_raw_names[self.var_name]
             else:
@@ -2319,7 +2321,7 @@ class DataConverter(object):
             print('# Load using var_name')
             var_constraint=iris.Constraint(cube_func=(lambda c: c.var_name==self.raw_name))
             if level_constraint:
-                if self.source in ['erainterim_plev_6h']:
+                if self.source in ['erainterim_plev_6h','erainterim_sfc_6h']:
                     # time constraint does not work with erainterim, but redundant as file name constrains time
                     xx=iris.load(self.filein1,constraints=var_constraint & level_constraint,callback=clean_callback)
                 else:
@@ -2337,12 +2339,17 @@ class DataConverter(object):
         # concatenate_cube for data either side of this critical date. Solution is to
         # take the latitude axis of the very first time (1979-01-01:0000), and replace
         # the latitude coordinate of all data with these values.
-        if self.source in ['erainterim_plev_6h']:
+        if self.source in ['erainterim_plev_6h','erainterim_sfc_6h']:
             for cubec in xx:
                 cubec=standardise_time_coord_units(cubec,timename='t',tunits='days')
             xx=xx.concatenate()
             # Extract latitude axis of 1979-01-01:0000 data and overwrite this for all data
-            filei1lat=os.path.join(self.basedir,self.source,'raw','1979','01','01','ggap197901010000.nc')
+            if self.source=='erainterim_plev_6h':
+                filei1lat=os.path.join(self.basedir,self.source,'raw','1979','01','01','ggap197901010000.nc')
+            elif self.source=='erainterim_sfc_6h':
+                filei1lat=os.path.join(self.basedir,self.source,'raw','1979','01','01','ggas197901010000.nc')
+            else:
+                raise UserWarning('Invalid source.')
             print('filei1lat: {0!s}'.format(filei1lat))
             x88=iris.load_cube(filei1lat,var_constraint & level_constraint,callback=clean_callback)
             latcoord1=x88.coord('latitude')
@@ -2357,7 +2364,7 @@ class DataConverter(object):
                 cubec=standardise_time_coord_units(cubec,tunits='days')
         #
         # Number of cubes in cubelist should be 1 except if source in list below
-        if self.source not in ['hadgem2esajhog_plev_d','erainterim_plev_6h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
+        if self.source not in ['hadgem2esajhog_plev_d','erainterim_plev_6h','erainterim_sfc_6h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             ncubes=len(xx)
             if ncubes!=1:
                 raise UserWarning('Not a single cube. ncubes='+str(ncubes))
