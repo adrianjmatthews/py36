@@ -7948,6 +7948,55 @@ class CubeDiagnostics(object):
         if self.archive:
             archive_file(self,fileout)
 
+    def f_erainterim_calc_levels(self):
+        """Calculate ERA-Interim pressure half and full levels from surface pressure.
+
+        Based on Berrisford et al. (2011)
+
+        """
+        # Read psfc for current time block
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['psfc_'+str(self.level)].extract(time_constraint)
+        self.psfc=x1.concatenate_cube()
+        # Calculate pressure of half and full levels for model levels
+        nlevel=info.nlevel_erainterim_model
+        print('nlevel: {0!s}'.format(nlevel))
+        # Level 1
+        ii=1
+        akmhalf=info.erainterim_abkmalf[ii][0]
+        bkmhalf=info.erainterim_abkmalf[ii][1]
+        print('ii,akmhalf,bkmhalf: {0!s}, {1!s}, {2!s}'.format(ii,akmhalf,bkmhalf))
+        xx=akmhalf+bkmhalf*self.psfc
+        xxmin=xx.data.min()
+        xxmean=xx.data.mean()
+        xxmax=xx.data.max()
+        print('xxmin,xxmean,xxmax: {0!s}, {1!s}, {2!s}'.format(xxmin,xxmean,xxmax))
+        # Level 2
+        xxm1=xx
+        ii=2
+        akmhalf=info.erainterim_abkmalf[ii][0]
+        bkmhalf=info.erainterim_abkmalf[ii][1]
+        print('ii,akmhalf,bkmhalf: {0!s}, {1!s}, {2!s}'.format(ii,akmhalf,bkmhalf))
+        xx=akmhalf+bkmhalf*self.psfc
+        xxmin=xx.data.min()
+        xxmean=xx.data.mean()
+        xxmax=xx.data.max()
+        print('xxmin,xxmean,xxmax: {0!s}, {1!s}, {2!s}'.format(xxmin,xxmean,xxmax))
+        pdb.set_trace()
+        #for ii in range(2,nlevel+1):
+        for ii in range(2,3+1):
+        #for ii in range(51,52+1):
+            akmhalf=info.erainterim_abkmalf[ii][0]
+            bkmhalf=info.erainterim_abkmalf[ii][1]
+            print('ii,akmhalf,bkmhalf: {0!s}, {1!s}, {2!s}'.format(ii,akmhalf,bkmhalf))
+            xx=akmhalf+bkmhalf*self.psfc
+            xxmin=xx.data.min()
+            xxmean=xx.data.mean()
+            xxmax=xx.data.max()
+            print('xxmin,xxmean,xxmax: {0!s}, {1!s}, {2!s}'.format(xxmin,xxmean,xxmax))
+
+
 #==========================================================================
 
 class Planet(object):
