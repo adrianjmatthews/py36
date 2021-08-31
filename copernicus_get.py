@@ -12,12 +12,12 @@ import info
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-SDOMAIN='mcw'
+SDOMAIN='plp'
 
 #VAR_NAME='vwnd'; LEVEL=925; SOURCE='era5'+SDOMAIN+'_plev_h'
-VAR_NAME='vwnd'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
+VAR_NAME='ta'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
 
-YEAR_BEG=1998; YEAR_END=2020 # if outfile_frequency is 'year' or less
+YEAR_BEG=2001; YEAR_END=2020 # if outfile_frequency is 'year' or less
 MONTH1=1; MONTH2=12 # if outfile_frequency is less than 'year'
 
 DOWNLOAD=True
@@ -45,6 +45,9 @@ elif VAR_NAME=='vwnd':
         variable='v_component_of_wind'
     elif SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
         variable='10m_v_component_of_wind'
+elif VAR_NAME=='ta':
+    if SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
+        variable='2m_temperature'
 else:
     raise UserWarning('VAR_NAME not recognised.')
 
@@ -75,7 +78,6 @@ for year in range(YEAR_BEG,YEAR_END+1):
             'product_type': 'reanalysis',
             'format': 'netcdf',
             'variable': variable,
-            'pressure_level': [str(LEVEL)],
             'year': [str(year)],
             'month': str(month).zfill(2),
             'day': daylist,
@@ -91,6 +93,8 @@ for year in range(YEAR_BEG,YEAR_END+1):
             ],
             'area': [lat2, lon1, lat1, lon2],
         }
+        if SOURCE.split('_')[1]=='plev':
+            downloaddir['pressure_level']=[str(LEVEL)]
         print('downloaddir: {0!s}'.format(downloaddir))
         
         # Set download file name
