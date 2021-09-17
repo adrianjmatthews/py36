@@ -1366,6 +1366,84 @@ def add_month(dt,verbose=False):
 
 #==========================================================================
 
+def f_diurnal_cycle_cube(cube_in,source,verbose=True):
+    """Calculate mean diurnal cycle from iris cube.
+
+    Input: cube_in : iris cube
+
+    cube_in must have a 'time' coordinate that is dimension 0, and no
+    missing data or missing times.
+
+    If cube_in does not have an integer number of days, calculation
+    will be carried out on data from whole days only, discarding last
+    partial day of data in cube_in.
+
+    Output: cube_dc : iris cube of mean diurnal cycle calculcated from cube_in.
+
+    Return cube_dc.
+
+    """
+    # Check cube_in has time coordinate at dimension 0.
+    if cube_in.dim_coords[0].name()!='time':
+        raise UserWarning('First dimension of cube needs to be time.')
+    # Extract integer number of days from cube_in
+    npd=find_npd(source)
+    tcoord=cube_in.coord('time')
+    tunits=tcoord.units
+    ntime=len(tcoord.points)
+    print('ntime,npd: {0!s},{1!s}'.format(ntime,npd))
+    nfulldays=divmod(ntime,npd)[0]
+    ntimeextract=nfulldays*npd
+    if divmod(ntime,npd)[1]==0:
+        print('cube_in has an integer number of days.')
+        x1=cube_in
+    else:
+        print('cube_in does not have an integer number of days.')
+        print('nfulldays,ntimeextract: {0!s},{1!s}'.format(nfulldays,ntimeextract))
+        x1=cube_in[:ntimeextract]
+    # Calculate mean for each time of day
+    x2=iris.cube.CubeList([])
+    tunitsdc=cf_units.Unit('minutes since 1000-01-01')
+    for ii in range(npd):
+        print('ii: {0!s}'.format(ii))
+        # Extract data for current time of day
+        x3=x1[ii:ntimeextract:npd]
+        tcoordii=x3.coord('time')
+        print(tcoordii)
+        x4=x3.collapsed('time',iris.analysis.MEAN)
+        # Set time axis for diurnal cycle contribution to 1 Jan 1000
+        time1=tunits.num2date(tcoordii.points[0])
+        timec=datetime.datetime(1000,1,1,time1.hour,time1.minute,time1.second)
+        timecval=tunitsdc.date2num(timec)
+        tcoordc=iris.coords.DimCoord([timecval],standard_name='time',units=tunitsdc)
+        x5=create_cube(x4.data.reshape((1,)+x4.shape),x1,new_axis=tcoordc)
+        x2.append(x5)
+        #hhhhhhh
+    cube_dc=x2.concatenate_cube()
+    # Add cell method to describe calculation of diurnal cycle
+    cm=iris.coords.CellMethod('point','time',comments='mean diurnal cycle')
+    cube_dc.add_cell_method(cm)
+    #
+    return cube_dc
+
+#==========================================================================
+
+def f_subtract_diurnal_cycle_cube(cube_in,cube_dc,source,verbose=True):
+    """Subtract mean diurnal cycle from iris cube.
+
+    Inputs:
+
+    cube_in : iris cube. Same restrictions as input to f_diurnal_cycle_cube.
+
+    cube_dc: iris cube, output from f_diurnal_cycle_cube or similar.
+
+    Output: cube_out : iris cube of cube_in with diurnal cycle of
+    cube_dc subtracted.
+    """
+    pdb.set_trace()
+
+#==========================================================================
+
 class ToDoError(UserWarning):
 
     """An exception that indicates I need to write some more code.
@@ -3046,7 +3124,7 @@ class TimeDomStats(object):
             archive_file(self,self.fileout_lagged_mean)
 
     def f_diurnal_cycle(self,double=True):
-        """Calculate mean diurnal cycle.
+        """Calculate mean diurnal cycle over time domain.
 
         Time axis for mean diurnal cycle runs for one day (1 Jan in
         year 1, ie 01-01-01).
