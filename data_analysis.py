@@ -1418,7 +1418,6 @@ def f_diurnal_cycle_cube(cube_in,source,verbose=True):
         tcoordc=iris.coords.DimCoord([timecval],standard_name='time',units=tunitsdc)
         x5=create_cube(x4.data.reshape((1,)+x4.shape),x1,new_axis=tcoordc)
         x2.append(x5)
-        #hhhhhhh
     cube_dc=x2.concatenate_cube()
     # Add cell method to describe calculation of diurnal cycle
     cm=iris.coords.CellMethod('point','time',comments='mean diurnal cycle')
@@ -1428,7 +1427,7 @@ def f_diurnal_cycle_cube(cube_in,source,verbose=True):
 
 #==========================================================================
 
-def f_subtract_diurnal_cycle_cube(cube_in,cube_dc,source,verbose=True):
+def f_subtract_diurnal_cycle_cube(cube_in,cube_dc,verbose=True):
     """Subtract mean diurnal cycle from iris cube.
 
     Inputs:
@@ -1440,7 +1439,28 @@ def f_subtract_diurnal_cycle_cube(cube_in,cube_dc,source,verbose=True):
     Output: cube_out : iris cube of cube_in with diurnal cycle of
     cube_dc subtracted.
     """
-    pdb.set_trace()
+    tcoord=cube_in.coord('time')
+    tunits=tcoord.units
+    ntime=len(tcoord.points)
+    print('ntime: {0!s}'.format(ntime))
+    # Expand diurnal cycle cube_dc over same time range as cube_in
+    x1=1e20*np.ones(cube_in.data.shape)
+    for ii in range(ntime):
+        timecval=tcoord.points[ii]
+        timec=tunits.num2date(timecval)
+        timec_dc=cftime.DatetimeGregorian(1000,1,1,timec.hour,timec.minute,timec.second)
+        print('ii,timecval,timec,timec_dc: {0!s}, {1!s}, {2!s}, {3!s}'.format(ii,timecval,timec,timec_dc))
+        time_constraint=iris.Constraint(time=timec_dc)
+        xx_dc=cube_dc.extract(time_constraint)
+        x1[ii]=xx_dc.data
+    # Subtract diurnal cycle
+    x2=cube_in.data-x1
+    cube_dc_sub=create_cube(x2,cube_in)
+    # Add cell method to describe subtraction of diurnal cycle
+    cm=iris.coords.CellMethod('point','time',comments='mean diurnal cycle subtracted')
+    cube_dc_sub.add_cell_method(cm)
+    #
+    return cube_dc_sub
 
 #==========================================================================
 
