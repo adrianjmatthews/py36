@@ -1,17 +1,29 @@
 #!/bin/bash
-#SBATCH -t 24:00:00
-#SBATCH -p compute
+#SBATCH -t 23:59:59
+#SBATCH -p compute-16-64
+#SBATCH --mem 4G
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=e058@uea.ac.uk
 #SBATCH --job-name=ajm
-#SBATCH --exclusive
 #SBATCH -o out-%j.out
 #SBATCH -e out-%j.err
 
 # Run this script with 'sbatch job_ada.sub' from ada login node, not interactive node
+#
+# 'squeue -u <userid>' to look at jobs, once submitted.
+#
 # Cancel job with scancel <job_id>
+# 'scancel 0' to kill all jobs (CHECK THIS WORKS).
+#
+# Once job has run
+# sacct (-j <jobid>) --format='JobID,MaxRSS,ReqMem,CPUTime,Timelimit' # to check resources used by job
+# sacct -e # get list of all fields to get values for
 
-# queue names: compute, hmem
+# If note sure how much memory a job will take, set memory to a large
+# value, run one job, check memory usage using sacct (the MaxRSS field is memory used), then set memory
+# appropriately for future jobs. Running a job with not enough memory
+# requested will cause swap space to be used, which has a highly
+# detrimental effect on performance and time taken.
 
 module load python/anaconda/2019.10/3.7
 source activate py36
@@ -25,6 +37,13 @@ echo $DIR1
 
 #python ${DIR1}/test.py
 #python ${DIR1}/combine_latitudes.py
-python ${DIR1}/lagged_mean.py
+#python ${DIR1}/lagged_mean.py
 #python ${DIR1}/imerg_wget.py
+#python ${DIR1}/imerg_hdf5tonetcdf.py
 #python ${DIR1}/filter.py
+#python ${DIR1}/ostia_get.py
+#python ${DIR1}/preprocess.py
+#python ${DIR1}/spatial_subset.py
+#python ${DIR1}/time_domain_create.py
+#python ${DIR1}/time_average.py
+python ${DIR1}/copernicus_get.py

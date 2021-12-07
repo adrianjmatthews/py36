@@ -1,3 +1,9 @@
+"""Get (ERA5) data from Copernicus. 
+
+Run this script from ada.  Can run interactively, but best to run as batch job.
+
+"""
+
 import datetime
 import os
 
@@ -12,13 +18,14 @@ import info
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-SDOMAIN='plp'
+SDOMAIN='mcw'
 
-#VAR_NAME='vwnd'; LEVEL=925; SOURCE='era5'+SDOMAIN+'_plev_h'
-VAR_NAME='ta'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
+VAR_NAME='uwnd'; LEVEL=850; SOURCE='era5'+SDOMAIN+'_plev_h'
+#VAR_NAME='ta'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
 
-YEAR_BEG=2001; YEAR_END=2020 # if outfile_frequency is 'year' or less
-MONTH1=1; MONTH2=12 # if outfile_frequency is less than 'year'
+YEAR_BEG=2020; YEAR_END=2020 # if outfile_frequency is 'year' or less
+MONTH1=1; MONTH2=1 # if outfile_frequency is less than 'year'
 
 DOWNLOAD=True
 
@@ -27,7 +34,7 @@ PLOT=False
 #==========================================================================
 
 # Set Copernicus dataset name
-if SOURCE in ['era5trp_plev_h','era5plp_plev_h']:
+if SOURCE in ['era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h']:
     dataset='reanalysis-era5-pressure-levels'
 elif SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
     dataset='reanalysis-era5-single-levels'
@@ -35,19 +42,28 @@ else:
     raise UserWarning('SOURCE not recognised.')
 
 # Set Copernicus variable name
+# To find the Copernicus variable name go to
+# cds.climate.copernicus.eu and click on the download tab.
+# Select the variable you want then click Show API request.
+# This generates code to use below including the Copernicus variable name
 if VAR_NAME=='uwnd':
-    if SOURCE in ['era5trp_plev_h','era5plp_plev_h']:
+    if SOURCE in ['era5trp_plev_h','era5plp_plev_h','era5ewa_plev_h']:
         variable='u_component_of_wind'
     elif SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
         variable='10m_u_component_of_wind'
 elif VAR_NAME=='vwnd':
-    if SOURCE in ['era5trp_plev_h','era5plp_plev_h']:
+    if SOURCE in ['era5trp_plev_h','era5plp_plev_h','era5ewa_plev_h']:
         variable='v_component_of_wind'
     elif SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
         variable='10m_v_component_of_wind'
+elif VAR_NAME=='div':
+    variable='divergence'
 elif VAR_NAME=='ta':
     if SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
         variable='2m_temperature'
+elif VAR_NAME=='ppt':
+    if SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
+        variable='mean_total_precipitation_rate'
 else:
     raise UserWarning('VAR_NAME not recognised.')
 

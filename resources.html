@@ -26,7 +26,7 @@ computing for my group at UEA.
 <li><a href="#data">Data conventions</a>
 <li><a href="#scripts">Python scripts</a>
 <HR>
-<li><a href="./public_html_2018-10-30_partial_copy/climatologies.html">Climatologies</a>
+<li><a href="./public_html/climatologies.html">Climatologies</a>
 <li><a href="resources_old.html">Old CDAT information</a>
 </ul>
 
@@ -42,8 +42,11 @@ computing for my group at UEA.
   <li>Raise a ticket at <a href="https://itsupport.uea.ac.uk">
   itsupport.uea.ac.uk</a> 
 
-  <li><a href="http://rscs.uea.ac.uk/">UEA Research and Specialist
-  Computer Support</a>
+  <li>UEA Research and Specialist Computer Support: <a href=
+  "https://www.uea.ac.uk/groups-and-centres/research-and-specialist-computing"
+  >Public pages</a>, <a href=
+  "https://my.uea.ac.uk/divisions/it-and-computing-services/service-catalogue/it-services-for-researchers"
+  >Internal pages</a>
 
   <li>hpc.admin@uea.ac.uk  HPC support staff
 
@@ -80,6 +83,9 @@ computing for my group at UEA.
       <li><I>interactive</i> for an interactive session (N.B., can run
       X windows from this session, no need to have an Xinteractive
       session).
+
+      <li><a href="https://rscs.uea.ac.uk/ada/using-ada/jobs/pending">
+      Info on queues if job stays pending</a>
 	
     </ul>
     
@@ -155,6 +161,22 @@ computing for my group at UEA.
 
 <h2><a name="disk_space">Storage on UEA HPC</h2>
 
+<h3>Current information</h3>
+
+<ul>
+
+  <li>scratch. /gpfs/scratch/e058/
+
+  <li>afm. /gpfs/afm/matthews/
+
+  <li>If jobs are very high I/O, afm is not suitable so use
+  scratch. Have set up mirror directory structures at
+  /gpfs/scratch/e058/data/ and /gpfs/afm/matthews/data/
+
+</ul>
+
+<h3>Notes</h3>
+
 <ul>
 
   <li>Each user is allocated disk space under their HPC home
@@ -184,15 +206,15 @@ computing for my group at UEA.
     
   <li>20 Oct 2016.  /gpfs/afm/matthews/ Moved everything from old
   matthews and matthews-scratch disks to here, and deleted all old
-  data.  Only 457 GB of data left.  Signed up for 2 TB of data (at 100
-  GBP per year per TB) for 5 years = 1000 GBP.  Filled out form and
+  data.  Only 457 GB of data left.  Signed up for 2 TB of data (at <B>100
+  GBP per year per TB</B>) for 5 years = 1000 GBP.  Filled out form and
   sent hard copy.
 
   <li>Can also access afm storage via uearclogin02.  For major data
   transfers from outside UEA, this is the preferred access method.
   Path is /data/matthews/.
 
-  <li>Use 'du --block-size=1G -c --max-depth=1' to see size of each
+  <li>Use '<B>du --block-size=1G -c --max-depth=1</B>' to see size of each
   subdirectory, and a total at the end (-c option).  Run from
   uearclogin02, as from hpc will only see the part of the fileset that
   is in the HPC cache.
@@ -233,12 +255,23 @@ computing for my group at UEA.
   <li>Sep 2020. Had GBP1000 left on ELO. Used this to add another 2 TB
   for 5 years. James Alborough arranged this. Now have total of 12 TB
   that will expire on 31 Jul 2025.
+
+  <li>18 Jan 2021. Total use of afm/matthews is 6T: 2.1T azaneu, 1.9T
+  webber (which is all NEMO data that Marina is using), 2.0T data.
+
+  <li>12 Oct 2021. Total use of afm/matthews is 11.1T: 1.9T webber, 0.8
+  TB skinner, 2.0 TB karlowska, 2.4 TB azaneu, 3.9 TB data
+    
+  <li>15 Oct 2021. Total use of afm/matthews is 8.3T: 1.1T webber, 0.8
+  TB skinner, 2.1 TB karlowska, 3.1 TB azaneu, 1.3 TB data
     
 </ul>
 
 <hr><!-------------------------------------------------------------->
 
 <h2><a name="jasmin"> JASMIN</h2>
+
+<h3>Current information</h3>
 
 <ul>
 
@@ -252,123 +285,104 @@ computing for my group at UEA.
 
   <li>BADC data can be processed and analysed on JASMIN.  
 
-  <li>This is particularly useful for, e.g., ERA-Interim data, where
-  the file structure is such that the entire raw data set (16 TB)
-  would have to be otherwise downloaded to grace.  So run the data
-  conversion (at least) on LOTUS at JASMIN to subset (and put in
-  standard format) the data, then can copy over to UEA HPC for further
-  analysis.
-
-  <li>Got an account at JASMIN by following the instructions
-  at <a href="http://www.ceda.ac.uk/help/users-guide/jasmin-cems-access/">
-  http://www.ceda.ac.uk/help/users-guide/jasmin-cems-access/</a>
-
-  <li>I now have access to three JASMIN machines:
+  <li>There are several JASMIN machines
 
   <ul>
 
-    <li>jasmin-login1.ceda.ac.uk for logging into the system
+    <li>login1.jasmin.ac.uk for logging into the system
 
-    <li>xfer[12].jasmin.ac.uk for transferring data
+    <li>xfer[1,2].jasmin.ac.uk for transferring data
 
-    <li>jasmin-sci1.ceda.ac.uk (or the newer sci1.jasmin.ac.uk and
-    sci2.jasmin.ac.uk) for <a href="
+    <li>sci[1-8].jasmin.ac.uk for <a href="
     https://help.jasmin.ac.uk/article/121-sci-servers"> general
-    scientific processing</a>.
+    scientific processing</a>, including submission to the SLURM batch
+    submission system.
 
   </ul>
 
   <li>To login to JASMIN, you should first ssh to
-  jasmin-login1.ceda.ac.uk with agent forwarding enabled e.g. ssh -A
-  matthews@jasmin-login1.ceda.ac.uk, and then ssh from there to
-  jasmin-sci1.ceda.ac.uk for access to BADC and NEODC archives (/badc
+  login1.jasmin.ac.uk with agent forwarding enabled e.g. ssh -A
+  matthews@login1.jasmin.ac.uk, and then ssh from there to
+  sci[1-8].jasmin.ac.uk for access to BADC and NEODC archives (/badc
   and /neodc) and for any general processing.  To log onto
-  jasmin-login1 from grace, do
+  login1.jasmin from ada, do
 <PRE>
 $ jexe # eval $(ssh-agent -s) # (used to be 'exec ssh-agent $SHELL')
 $ jadd # ssh-add ~/.ssh/id_rsa_jasmin
 $ passphrase (extended waxwing)
-$ jssh # ssh -A matthews@jasmin-login1.ceda.ac.uk
+$ jssh # ssh -A matthews@login1.jasmin.ac.uk
 </PRE>
 
-  <li>jasmin-sci1.ceda.ac.uk is the general purpose scientific
-  analysis machine and has a standard set of software installed (see
-  <a href="http://proj.badc.rl.ac.uk/cedaservices/wiki/JASMIN/ScientificAnalysisVM/Packages">
-  http://proj.badc.rl.ac.uk/cedaservices/wiki/JASMIN/ScientificAnalysisVM/Packages</a>
-  for details).
+  <li>Running jobs.
 
-  <li>Lotus
+    <ul>
 
-  <ul>
+      <li>py36 is alias to run my own python3.6 environment installed through anaconda.
 
-    <li>jasmin-sci1 can be very slow.  Much faster to run on
-    LOTUS, the batch processing facility.  This has the same bsub
-    submission process as hpc.  Speed up for individual jobs is
-    approximately a factor of 10 (faster access to disks?), and many
-    jobs can be submitted and run simultaneously (have had 15 running
-    simultaneously).  So speedup is at least factor of
-    150.  <a href="http://www.ceda.ac.uk/help/users-guide/lotus/">LOTUS
-    documentation</a>.  
+      <li>pull/push py36 repo from github
 
-    <li>Logon onto jasmin-login1.  <PRE>$ lssh # ssh -A lotus.jc.rl.ac.uk</PRE>
+      <li>To run interactively, use ipython on sci[1-8].jasmin.ac.uk.
 
-    <li>Edit one of preprocess_ceda_[001,002,etc].sh This contains a
-    copy of preprocess_ceda.py with a wrap around for batch
-    submission.
+      <li>To submit a batch job, 'sbatch job_jasmin.sub' from
+      sci[1-8].jasmin.ac.uk.
 
-    <li>Submit to one of
-    the <a href="http://help.ceda.ac.uk/article/274-lotus-queues">LSF
-    queues</a>. <B>NB From 30 Jun 2020, the LSF (bsub) submission
-    system will be switched off, and replaced by SLURM. This is the
-    same as ada. See email of 21 May 2020 from CEDA in computing.</B>
+    </ul>
 
-    <li>bsub -q short-serial -W 23:59 -o tmp001.out < preprocess_ceda_001.sh #
-    to submit to lotus
+  <li>Workspaces. Symbolic links to all these from home directory.
 
-    <li>bjobs # to monitor jobs
+    <ul>
 
-  </ul>
+      <li>scratch. /work/scratch-pw/matthews/ Not accesible from
+      xfer[1,2] so not that useful.
 
+      <li>bobble. /gws/nopw/j04/bobble/matthews/
+
+      <li>realproj. /group_workspaces/jasmin2/realproj/users/matthews/
+
+    </ul>
+    
+
+  <li>Transferring data
+
+    <ul>
+
+      <li>Must use xfer[1,2].jasmin.ac.uk to transfer.
+
+      <li>Best to pull from UEA HPC. Set up the agent forwarding to
+      JASMIN as normal but do not ssh to it. Then on UEA HPC (interactive
+	session), e.g.,
+
+	<ul>
+
+	  <li>cd /gpfs/scratchenv/e058/data/erainterim_plev_6h/std/
+
+	  <li>scp
+      'matthews@xfer1.jasmin.ac.uk:/gws/nopw/j04/bobble/matthews/data/erainterim_plev_6h/std/uwnd_850_*.nc'
+      .
+
+	</ul>
+
+    </ul>
+    
+</ul>
+
+<h3>Notes</h3>
+
+<ul>
+  
   <li>Access to archive data reflects those access rights which you
   have already been granted access as a CEDA user and we ask you to
   abide by the same terms and conditions. Please check your current
   access rights
   at <a href="http://badc.nerc.ac.uk/mybadc">http://badc.nerc.ac.uk/mybadc</a>.
 
-  <li>To transfer files into/out of the JASMIN system you should
-  instead connect directly to xfer[12].jasmin.ac.uk
-
   <li>Available transfer tools are rsync-over-ssh, scp or Bbcp - see
   more details at
   <a href="http://proj.badc.rl.ac.uk/cedaservices/wiki/JASMIN/Bbcp">
   http://proj.badc.rl.ac.uk/cedaservices/wiki/JASMIN/Bbcp</a> 
 
-  <li>All machines have user home areas mounted, though these are
-  limited to 10 GB.
-
-  <li>Temporary space is also available in /work/scratch on
-  jasmin-sci1 and xfer[12].  Note that this should be regarded as
-  volatile working space, not for storing data for any length of time,
-  and shared between all users. Please do not use /tmp as temporary
-  space.
-
   <li>My home space on jasmin was initially only 10 GB, but has now
   been increased to 1 TB.
-
-  <li>Transfer to grace.  scp from xfer1 to afm on uearclogin02,
-  e.g., scp uwnd850*.nc
-  e058@uearclogin02.uea.ac.uk:/data/matthews/data/erainterim_plev_6h/raw/
-
-  <li>11 Oct 2019, Mike from hpc.admin asked for incoming port 22
-  (ssh) be opened to uearclogin02 from JASMIN 130.246.142.0/24 as the
-  UEA firewall had been changed.
-
-  <li>11 Oct 2019. Pull data from xfer1. Login to hpc. Set up the
-  agent forwarding to JASMIN as normal but do not ssh to it. Then on
-  hpc (interactive session) cd to e.g.,
-  /gpfs/afm/matthews/data/erainterim_plev_d/raw/.  Then e.g., "scp
-  'matthews@xfer1.jasmin.ac.uk:/group_workspaces/jasmin2/realproj/users/matthews/transfer/*.nc'
-  ."
 
   <li>24 Oct 2019. Installed conda environment with local python and
     iris installation on JASMIN.
@@ -387,9 +401,6 @@ $ jssh # ssh -A matthews@jasmin-login1.ceda.ac.uk
       
     </ul>
 
-  <li>Use /group_workspaces/jasmin2/realproj/users/matthews/ if needed
-  (was reaching quota on home directory).
-
   <li>Jul 2020. Major changes to JASMIN system.
 
     <ul>
@@ -403,6 +414,14 @@ $ jssh # ssh -A matthews@jasmin-login1.ceda.ac.uk
       the new sci[1,2,3,4] machines (considered old code).
 	
     </ul>
+
+  <li>Several emails from JASMIN about new transfer machine
+  hpxfer[1,2].jasmin.ac.uk, but could not connect to
+  this. xfer1.jasmin.ac.uk still seems to work as usual.
+
+  <li>JASMIN has a <a href=
+  "https://help.jasmin.ac.uk/article/4851-jasmin-notebook-service"
+  >Jupyter notebook service</a>.
     
 </ul>
 
@@ -803,7 +822,7 @@ packages</h2>
 
 	    <ul>
 
-	      <li>'module load python/anaconda/4.2/3.5' (the most
+	      <li>'module load python/anaconda/2019.10/3.7' (the most
 	  recent version) to load conda.
 	    
 	      <li>Created a new conda environment py36 (from hpc) with
@@ -825,14 +844,20 @@ packages</h2>
 	      <li>'conda install -c conda-forge ipython' # as ipython was
 	  not in the python installation. This worked, but ipython
 	  cannot import iris.
+
+	      <li>'conda install -c conda-forge cmocean' # cmocean colour maps
+		
+	      <li>'conda install -c conda-forge brewer2mpl' #
+	      explicitly install Brewer colour maps, so can use with
+	      general matplotlib contourf, not just iplt.contourf
 		
 	    </ul>
 	
-	  <li>To run python on hpc: Xinteractive;
+	  <li>To run python on ada: interactive;
 
 	    <ul>
 
-	      <li>module load python/anaconda/4.2/3.5 ; source activate py36
+	      <li>module load python/anaconda/2019.10/3.7 ; source activate py36
 
 	    </ul>
 
@@ -879,6 +904,14 @@ packages</h2>
 		
     </ul>
 
+  <li>12 Nov 2020. On ada in py36 environment, 'pip install cdsapi' to
+  install API for downloading ERA-5 data from Copernicus Climate Data
+  Store.
+
+  <li>4 Jun 2021. On ada in py36 environment, 'conda install -c
+  conda-forge motuclient' to install package for downloading OSTIA SST
+  from Copernicus CEMS.
+    
 </ul>
 
 <hr><!-------------------------------------------------------------->
@@ -1001,7 +1034,7 @@ packages</h2>
 
   </ul>
 
-  <li>On JASMIN (jasmin-login1)
+  <li>On JASMIN (login1.jasmin)
 
   <ul>
 
@@ -1097,12 +1130,96 @@ packages</h2>
 
 	  <li>For later pushes, once you have done 'git push -u origin
 	  master' once, then you can just do 'git push' from them on
-	  for later pushes.
+	    for later pushes.
+
+	  <li>git pull # to pull latest version from github.
+
+	  <li>Will be working with py36 repo on both UEA HPC and
+	  JASMIN. Just work on one machine at a time. At beginning of
+	  session, use 'git pull' to get latest version. Work on
+	  code. At end of session, use git add and commit, and 'git
+	  push' to push updated version to github.
 
 	</ul>
 	    
     </ul>
-  
+
+  <li>py36 is a private repository on github. To invite collaborators:
+
+    <ul>
+
+      <li>Ask for the github username of the person you are inviting
+	as a collaborator.
+
+      <li>On the github website, navigate to the main page of the
+      repository, and click on Settings.
+
+      <li>In the left sidebar, click Manage access, then "Invite a
+      collaborator".
+
+    </ul>
+
+  <li>1 Dec 2020. Cloned py36 repo from github to JASMIN, with 'cd
+  $HOME/PythonScripts; mkdir py36; git clone
+  https://github.com/adrianjmatthews/py36'
+
+  <li>17 Dec 2020. Cloned py36 repo from github to HP Elitebook, using
+  git bash, with 'cd ... PythonScripts; mkdir py36; git clone
+  https://github.com/adrianjmatthews/py36'. However, this created a
+  new subdirectory py36 under py36 (i.e., repeated) so manually mv'd
+  the new directory to PythonScripts/py36/ after. Have not yet tried
+  pull or push from this so remember this step.
+
+  <li>Jan 2021. Changing github access from username/password via an
+  http URL to ssh keys using an ssh URL.
+
+    <ul>
+    
+      <li>Username and password access to github will be discontinued
+	in about 6 months.
+
+      <li>Set up an ssh key pair with git, following
+	<a href=
+	"https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh"
+	> info from github</a>. Created public/private keys id_ed25519
+	and id_ed25519.pub in ~/.ssh on ada using ssh-keygen -t
+	ed25519 -C 'UEA email address'. then started the ssh-agent in
+	the background with "eval 'ssh-agent -s'". Then added my ssh
+	private key to the ssh-agent with 'ssh-add
+	~/.ssh/id_ed25519'. Then copied my public key id_ed25519.pub
+	to my github account in a browser through the Settings tab
+	(then SSH and GPG keys) on github.
+
+      <li>To change from username/password access to using ssh key to
+      access, need to change the github repo URL from an http: address
+      (using username/password to access) to an ssh address (so can
+      use ssh keys).  Use 'git remote show origin' to see what type of
+      access you have set up (it shows
+      https://github.com/adrianjmatthews/py36'. Then use one-off
+      command 'git remote set-url origin
+      git+ssh://git@github.com/adrianjmatthews/py36.git' to change
+      this to the ssh URL to enable ssh access. Did this on ada.
+
+      <li>Have done same process on JASMIN. Note I created a new,
+      separate ssh key pair from the one used for UEA HPC. NB You can
+      only access github on JASMIN from sci[1,2,4,5,7].jasmin.ac.uk,
+      not sci[3,6,8], as the former are virtual machines and the
+      latter are real, physical machines. Which is important,
+      apparently.
+	
+      <li>Also done this on laptop.
+
+    </ul>
+
+  <li>When it goes wrong. Often due to making changes to a file on two
+  machines without committing them in turn and pushing and
+  pulling. Can use 'git reset HEAD' and 'git checkout filename' to try
+  and get out of this. If you pull and get a merge error in a
+  particular file, then open that file in an editor and search for the
+  string 'HEAD' (emacs talks to git and actually takes you directly
+  there). Can then hopefully see what the clash is. Edit the file
+  accordingly, save it, commit it, then push it.
+    
 </ul>
 
 <hr><!-------------------------------------------------------------->
@@ -1125,10 +1242,26 @@ packages</h2>
 
 <ul>
 
-  <li>Data directory on grace/hpc is <TT>/gpfs/afm/matthews/data/</TT>
+  <li>Data directory on ada is one of two (mirrored) directories:
+
+    <ul>
+
+      <li>A directory in my scratch
+      space <TT>/gpfs/scratch/e058/data/</TT>. This is where data
+      should be initially downloaded to and processed. Once this has
+      been done, it can be copied (archived) to ...
+    
+      <li>the mirror directory on the AFM storage
+      facility <TT>/gpfs/afm/matthews/data/</TT>. This is used for
+      long-term storage. If you need to reprocess data that is already
+      stored in this AFM directory, then copy it back to scratch and
+      do the processing there.
+
+    </ul>
 
   <li>Directory structure: Data grouped by source.  A source
-  (directory), e.g., <TT>ncepdoe_plev_d</TT> has three parts:
+  (directory), e.g., <TT>ncepdoe_plev_d</TT> has three parts,
+  separated by underscores:
 
   <ul>
 
@@ -1138,9 +1271,9 @@ packages</h2>
 
     <li>level_type : e.g., <TT>plev</TT>
 
-    <li>time resolution : e.g., <TT>m</TT> for monthly, <TT>w</TT> for
+    <li>time resolution : e.g., <TT>w</TT> for
     weekly, <TT>d</TT> for daily, <TT>3h</TT> for 3-hourly, <TT>h</TT>
-    for hourly.
+    for hourly, <TT>30m</TT> for 30 minute, etc.
 
   </ul>
 
@@ -1230,7 +1363,7 @@ packages</h2>
 
 </ul>
 
-<H4>erainterim_plev_6h</H4>
+<H4>erainterim_plev_6h / erainterim_sfc_6h / erainterim_mlev_6h</H4>
 
 <ul>
 
@@ -1240,6 +1373,9 @@ packages</h2>
 
   <li>CEDA/BADC. 
 
+  <li>Acknowledgement. The ERA-Interim data were provided by the
+  Centre for Environmental Data Analysis.
+    
   <li>1979 to near present (typically one year ago). Will finish on 31
   Aug 2019.
 
@@ -1259,18 +1395,9 @@ packages</h2>
   450 GB per year. x 36 = 16 TB for whole data set.  Use JASMIN/LOTUS
   to preprocess.
 
-  <li>Already have a cdat script on JASMIN to preprocess.  Due to
-  complex file structure and existence of xml files, which cdat can
-  handle, keep using this cdat script for a pre-preprocessing to
-  produce one file for a single level, single variable for each year.
-  Copy these over to UEA, then run iris preprocess.py to do a final
-  preprocess!
-
-  <li>1 Dec 2016.  Data (at least, uwnd and vwnd 850 hPa) only
-  available up to 28 Feb 2013, because the xml file that accesses them
-  has not been updated since May 2013.  Asked CEDA help desk to update
-  it. 6 Jan 2017, this is now done.
-
+  <li>Use py36/preprocess.py running on JASMIN, then scp processed
+  yearly files of single level data back to UEA HPC if needed.
+    
   <li>Alternative source's
     
     <ul>
@@ -1289,24 +1416,42 @@ packages</h2>
       wheelerkiladis.py, then combined into erainterimEK2_plev_6h by
       combine_latitudes.py
 
+      <li>erainterimNEK1_plev_6h # The N is for (logical) not, i.e.,
+      not EK1 filtered. Use subtract.py to subtract EK filtered data
+      in erainterimEK1_plev_6h from total data in erainterim_plev_6h,
+      to produce the not-EK filtered data in erainterimNEK1_plev_6h
+      data.
+	
+      <li>erainterimEK3_plev_6h # Bit of a strange one. Have
+      previously decomposed data into erainterimNEK1_plev_6h
+      (effectively basic state, bar quantities), and
+      erainterimEK1_plev_6h (perturbation, prime
+      quantities). Calculate vorticity budget on these to produce
+      terms like m_vrtbar_divprime. These are stored in
+      erainterimEK1_plev_6h. Now need to EK filter these terms, for
+      plotting and analysis. Output goes into erainterimEK3_plev_6h.
+	
     </ul>
     
 </ul>
 
-<H4>era5_plev_h</H4>
+<H4>era5_plev_h and era5XXX_plev_h</H4>
 
 <ul>
 
   <li>ERA-5 reanalysis.  
 
-  <li>Hersbach and Dee (2016).
+  <li>Hersbach et al. (2020).
 
-  <li>CEDA/BADC does not have pressure level data. Have to get from
-  Copernicus (CDS). 
+  <li>ERA-5 data were accessed from Copernicus at
+  https://cds.climate.copernicus.eu (doi: 10.24381/cds/bd0915c6).
+    
+  <li>Get data from <a href= "https://cds.climate.copernicus.eu"
+  >Copernicus</a>, using copernicus_get.py
 
   <li>1979 to near real time. Will be extended back to 1950.
 
-  <li>0.25 degrees
+  <li>0.25 degrees.
 
   <li>137 levels to 0.01 hPa.
 
@@ -1315,6 +1460,22 @@ packages</h2>
   <li>One month of single level data is 3.0 GB.
 
 </ul>
+
+  <TABLE BORDER=1>
+
+  <TR><TH>XXX <TH>Details
+
+  <TR><TD>bar <TD>Eureca4 glider near Barbados. 302-304E. 13-15N. 10
+  MB per month.
+
+  <TR><TD>mcw <TD>Western Maritime Continent. 90-130E. 15S-20N. 65 MB
+  per month.
+
+  <TR><TD>plp <TD>Philippines. 115-130E. 5-20N. 10 MB per month.
+
+  <TR><TD>trp <TD>Tropics. 0-360E. 30S-30N. 1.00 GB per month.
+
+  </TABLE>
 
 <H4>hadgem2esajhog_plev_d</H4>
 
@@ -1344,6 +1505,10 @@ packages</h2>
 
   <ul>
 
+    <li>17 May 2021. Data to 31 Jan 2021.
+    
+    <li>12 Jan 2021. Data to 30 Sep 2020.
+    
     <li>4 Jun 2020. Data to 29 Feb 2020.
       
     <li>1 May 2020. Updated: last data is 31 Dec 2019.
@@ -1409,7 +1574,7 @@ packages</h2>
     
   </ul>
 
-  <li>imerg_hd5tonetcdf.py # read and convert to netcdf. Note there is
+  <li>imerg_hdf5tonetcdf.py # read and convert to netcdf. Note there is
   too much data to analyse the full global data set
   efficiently. Create and keep a separate data set and source
   variable) for different regions. Code these with three letters, the
@@ -1432,10 +1597,29 @@ packages</h2>
   <TR><TD>mcw <TD>Western Maritime Continent. 90-130E. 15S-20N. ~0.9
   GB per month.
 
+  <TR><TD>trm <TD>TRMM latitudes. 50S-50N. 23 GB per month. Use as
+  interim data set before regridding to TRMM 0.25 deg and 3 h grid.
+
   </TABLE>
 
   <li>Then use preprocess.py as usual.
 
+  <li>Alternate data sets.
+
+    <ul>
+
+      <li>imergtrm_sfc_3h. Use time_average.py to create 3h means.
+      
+      <li>imergtrmp1_sfc_3h. Use regrid.py to regrid to TRMM 0.25
+      degree. Do this to effectively extend TRMM data set beyond its
+      31 Dec 2019 end point.
+
+      <li>trmm3b42v7_sfc_3h !! For Jan 2020 onwards only. Use
+      imerg2trmm.py to spoof the IMERG data from imergtrmp1_sfc_3h as
+      "real" TRMM data.
+	
+    </ul>
+    
 </ul>
 
 <H4>metumgomlu-bd818_sfc_d</H4>
@@ -1573,13 +1757,80 @@ packages</h2>
 
   <li>cdc.noaa.gov.  The raw data file olr.day.mean.nc is no longer on
   the main ESRL web/ftp site.  However, it can still be accessed on
-  the ftp site at ftp.cdc.noaa.gov/Public/csmith/OLR/. If it is not
-  updated, email cathy.smith@noaa.gov.
+  the ftp site at ftp.cdc.noaa.gov/Public/csmith/OLR/ (anonymous,
+  password email address)). If it is not updated, email
+  cathy.smith@noaa.gov.
 
   <li>The olr.2x file is the 2x daily OLR data set, from George
   Kiladis, at ftp.cdc.no aa.gov/Public/gkiladis/  Have not used this.
 
 </ul>
+
+<H4>ostial4YYY_sfc_d and ostial4YYYXXX_sfc_d</H4>
+
+<ul>
+
+  <li>Last downloads
+
+    <ul>
+
+      <li>14 Jun 2021. nrt ?. rep 2016 to Jun 2020 (last available
+      month).
+
+    </ul>
+  
+  <li>OSTIA SST and sea ice analysis.  
+
+  <li>Good et al. (2020).
+
+  <li>OSTIA data were accessed from Copernicus Marine Environment
+  Monitoring Services CMEMS at https://marine.copernicus.eu
+    
+  <li>Get data from <a href= "https://marine.copernicus.eu"
+  >Copernicus</a>, using ostia_get.py
+
+  <li>1 Jan 2007 to near real time.
+
+  <li>0.05 degrees.
+
+  <li>Daily time resolution.
+
+  <li>ostia_get.py to download, then preprocess.py as usual.
+    
+  <li>There are several versions of the OSTIA data set, the YYY in the
+  source name, including:
+
+    <ul>
+
+      <li>YYY=nrt. SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001 is the same
+      as the OSTIA data used for the SST/sea-ice in our operational
+      forecast models? Bear in mind that, because this is the
+      operational Near Real Time data that we produce daily, there
+      naturally will be small jumps in the statistics whenever we
+      upgrade the OSTIA system. This is just for info here, as might
+      want to use this in future if comparing a Met Office coupled
+      forecast with the persistence SST.
+
+      <li>YYY=rep. SST_GLO_SST_L4_REP_OBSERVATIONS_010_011 Is the
+      reprocessed climate dataset, the processing was done using one
+      version of OSTIA (therefore the dataset is consistent). This
+      dataset generally has far more observations than used by the NRT
+      dataset (not just on the dates where it overlaps with the NRT
+      dataset). This is the main one to use.
+
+    </ul>
+    
+  <li>One month of single level data is 3.0 GB.
+
+</ul>
+
+  <TABLE BORDER=1>
+
+  <TR><TH>XXX <TH>Details
+
+  <TR><TD>trp <TD>Tropics. -180 to 180E. 30S-30N. 1 GB per month.
+
+  </TABLE>
 
 <H4>sgXXXmYYYoiZZ_zlev_h</H4>
 
@@ -1644,9 +1895,19 @@ packages</h2>
 
   <ul>
 
-    <li>Note that the TRMM website says that 31 Dec 2019 will be the
-    end of the 3B42 data set anyway. Move to GPM IMERG.
+    <li>Final dataset runs from 1 Jan 1998 to 31 Dec 2019 (22
+    years). The TRMM data set ends on 31 Dec 2019 and will not be
+    continuted. However, have spoofed IMERG data to extend the TRMM
+    data set (i.e., on the TRMM spatial grid and at 3 hour time
+    resolution) beyond end of 2019 for use with e.g., CCKW trajectory
+    database. See information under imerg data set in this section.
     
+    <li>14 Apr 2021. Last file from Julian day 273 in 2019 (ie 00 UTC
+    on 1 Oct 2019), then up to Julian day 365 (31 Dec 2019). This is
+    the last possible download, as the TRMM website says that 31 Dec
+    2019 will be the end of the 3B42 data set. And indeed there is no
+    data for 2020.
+      
     <li>15 Jan 2020. Last file from Julian day 120 in 2019 (ie 00 UTC
     on 1 May 2019), then up to Julian day 273 (30 Sep 2019). Note that
     day 273 will have to be downloaded at next iteration as it does
@@ -1671,6 +1932,11 @@ packages</h2>
 
   <li>NASA DISC.
 
+  <li>Acknowledgement. The 3B42 data were provided by the NASA/Goddard
+  Space Flight Center and PPS, which develop and compute the 3B42
+  dataset as a contribution to the TRMM project, and archived at the
+  NASA GES DISC.
+    
   <li>Example URL directory for HDF data is
   http://disc2.gesdisc.eosdis.nasa.gov/data/TRMM_L3/TRMM_3B42.7/2016/134/3B42.20160513.03.7.HDF
 
@@ -1700,7 +1966,7 @@ packages</h2>
 
   </ul>
 
-  <li>trmm_hd5tonetcdf.py # to convert from HDF5 to netcdf, as iris
+  <li>trmm_hdf5tonetcdf.py # to convert from HDF5 to netcdf, as iris
   cannot read HDF files.  This uses the h5py package instead to read
   them.
 
@@ -1965,10 +2231,9 @@ packages</h2>
 <ul>
 
   <li>Most scripts use
-  the <A HREF="./data_analysis.html">data_analysis</A> module ('pydoc
-  -w data_analysis' to update. NB it must pydoc -w data_analysis, not
-  data_analysis.py. Also need to comment out all import commands for
-  non built in modules before running pydoc).
+  the <A HREF="../PythonScripts/py36/data_analysis.html">data_analysis</A>
+  module ('pydoc -w data_analysis' on UEA HPC to update. NB it must be
+  pydoc -w data_analysis, not data_analysis.py).
 
   <li>info.py.  Information on locations, sections, etc.
 
@@ -1978,15 +2243,14 @@ packages</h2>
 
     <li>To submit a single script to a batch job, <TT>sbatch
     job_ada.sub</TT> from the <I>login</I> node, as cannot submit a
-    job via the unix command line from an interactive node on ada
-    (was <TT>bsub < job_hpc.bsub</TT> on hpc).
+    job via the unix command line from an interactive node on ada.
 
     <li>To loop over years, months, levels etc, and submit multiple
     jobs to the batch system, <TT>run_scripts_sub.py</TT>, from
     an <I>interactive</I> node, as interactive node needed to run
     py36, and bizarrely you can submit a batch job from within a
     python script on an interactive
-    node. (was <TT>run_scripts_bsub.py</TT> on hpc).
+    node.
 
     <li>To run several scripts in series from an interactive session
     (e.g., plotting scripts), use <TT>run_scripts.py</TT>
