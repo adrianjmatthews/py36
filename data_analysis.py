@@ -8928,7 +8928,7 @@ class WheelerKiladis(object):
         Inputs:
 
         self.<wave_type> : string describing wave type, from 'none,
-        'EK', etc.
+        'EK', 'ER', etc.
 
         self.<wave_params> : dictionary of various parameters needed to
         selected each wave type, based on wavenumber and
@@ -9036,7 +9036,54 @@ class WheelerKiladis(object):
                 print('x1.sum: {0!s}'.format(x1.sum()))
             elif self.wave_type=='ER':
                 print('Filter for equatorial Rossby waves.')
-                raise ToDoError('Code up for ER waves')
+                planet=Planet()
+                beta=planet.beta0
+                nn=self.wave_params['nn']
+                print('beta, nn: {0!s}, {1!s}'.format(beta,nn))
+                # Calculate (omega,k) grid of c_n from (approximate) dispersion relation 
+                # for equatorial Rossby waves
+                #
+                #              - beta
+                # c_n = ---------------------
+                #       k^2 + (2n+1) beta/c_e
+                #
+                # cnlower2d uses cphasex_max as value for c_e
+                cnlower2d_vals=-beta/(np.square(self.kk2d.data)+(2*nn+1)*beta/self.wave_params['cphasex_max'] )
+                self.cnlower2d=create_cube(cnlower2d_vals,self.data_hovfftWK)
+                var_name='cphasex'
+                self.cnlower2d.rename(var_name2long_name[var_name])
+                self.cnlower2d.var_name=var_name
+                self.cnlower2d.units=self.cphasex2d.units
+                # cnupper2d uses cphasex_min as value for c_e
+                cnupper2d_vals=-beta/(np.square(self.kk2d.data)+(2*nn+1)*beta/self.wave_params['cphasex_min'] )
+                self.cnupper2d=create_cube(cnupper2d_vals,self.data_hovfftWK)
+                var_name='cphasex'
+                self.cnupper2d.rename(var_name2long_name[var_name])
+                self.cnupper2d.var_name=var_name
+                self.cnupper2d.units=self.cphasex2d.units
+                #
+                print('x1.sum: {0!s}'.format(x1.sum()))
+                # Mask out below ss_min
+                x1=np.where(np.less(self.ss2d.data,self.wave_params['ss_min']),0,x1)
+                print('x1.sum: {0!s}'.format(x1.sum()))
+                # Mask out above ss_max
+                x1=np.where(np.greater(self.ss2d.data,self.wave_params['ss_max']),0,x1)
+                print('x1.sum: {0!s}'.format(x1.sum()))
+                # Mask out below freq_min
+                if str(self.freq2d.units)!=self.wave_params['freq_units']:
+                    raise UserWarning('freq2d and freq parameters must have same units.')
+                x1=np.where(np.less(self.freq2d.data,self.wave_params['freq_min']),0,x1)
+                print('x1.sum: {0!s}'.format(x1.sum()))
+                # Mask out above freq_max
+                x1=np.where(np.greater(self.freq2d.data,self.wave_params['freq_max']),0,x1)
+                print('x1.sum: {0!s}'.format(x1.sum()))
+                # Mask out below cnlower2d
+                x1=np.where(np.less(self.cphasex2d.data,self.cnlower2d.data),0,x1)
+                print('x1.sum: {0!s}'.format(x1.sum()))
+                # Mask out above cnupper2d
+                x1=np.where(np.greater(self.cphasex2d.data,self.cnupper2d.data),0,x1)
+                print('x1.sum: {0!s}'.format(x1.sum()))
+                pdb.set_trace()
             # Create iris cube of filter mask
             self.data_hovfftWKmask=create_cube(x1,self.data_hovfftWK)
         else:
