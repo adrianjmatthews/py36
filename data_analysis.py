@@ -9038,8 +9038,19 @@ class WheelerKiladis(object):
                 print('Filter for equatorial Rossby waves.')
                 planet=Planet()
                 beta=planet.beta0
+                gg=planet.gg
                 nn=self.wave_params['nn']
-                print('beta, nn: {0!s}, {1!s}'.format(beta,nn))
+                print('beta, gg, nn: {0!s}, {1!s}, {2!s}'.format(beta,gg,nn))
+                # Convert min/max equivalent depths H to equivalent phase speeds c_e by c_e^2 = gH
+                H_min=self.wave_params['H_min']
+                H_max=self.wave_params['H_max']
+                if self.wave_params['H_units']=='m':
+                    ce_min=np.sqrt(gg*H_min)
+                    ce_max=np.sqrt(gg*H_max)
+                else:
+                    raise UserWarning('Incorrect units for equivalent depth.')
+                print('H_min, H_max: {0!s}, {1!s}'.format(H_min,H_max))
+                print('ce_min, ce_max: {0!s}, {1!s}'.format(ce_min,ce_max))
                 # Calculate (omega,k) grid of c_n from (approximate) dispersion relation 
                 # for equatorial Rossby waves
                 #
@@ -9047,15 +9058,15 @@ class WheelerKiladis(object):
                 # c_n = ---------------------
                 #       k^2 + (2n+1) beta/c_e
                 #
-                # cnlower2d uses cphasex_max as value for c_e
-                cnlower2d_vals=-beta/(np.square(self.kk2d.data)+(2*nn+1)*beta/self.wave_params['cphasex_max'] )
+                # cnlower2d uses ce_max as value for c_e
+                cnlower2d_vals=-beta/(np.square(self.kk2d.data)+(2*nn+1)*beta/ce_max )
                 self.cnlower2d=create_cube(cnlower2d_vals,self.data_hovfftWK)
                 var_name='cphasex'
                 self.cnlower2d.rename(var_name2long_name[var_name])
                 self.cnlower2d.var_name=var_name
                 self.cnlower2d.units=self.cphasex2d.units
-                # cnupper2d uses cphasex_min as value for c_e
-                cnupper2d_vals=-beta/(np.square(self.kk2d.data)+(2*nn+1)*beta/self.wave_params['cphasex_min'] )
+                # cnupper2d uses ce_min as value for c_e
+                cnupper2d_vals=-beta/(np.square(self.kk2d.data)+(2*nn+1)*beta/ce_min )
                 self.cnupper2d=create_cube(cnupper2d_vals,self.data_hovfftWK)
                 var_name='cphasex'
                 self.cnupper2d.rename(var_name2long_name[var_name])
@@ -9083,7 +9094,6 @@ class WheelerKiladis(object):
                 # Mask out above cnupper2d
                 x1=np.where(np.greater(self.cphasex2d.data,self.cnupper2d.data),0,x1)
                 print('x1.sum: {0!s}'.format(x1.sum()))
-                pdb.set_trace()
             # Create iris cube of filter mask
             self.data_hovfftWKmask=create_cube(x1,self.data_hovfftWK)
         else:
@@ -9408,113 +9418,141 @@ class CCEWLagrangian(object):
         # is just there to stop an endless loop in case detection of 
         # reaching last time in data fails.
         nevent_max=10000
-        if self.propagation_direction=='eastwards':
-            # Search through copy of data_hovmax to find trajectories.
-            # Start at 'bottom left', i.e., first time and furthest westward
-            # point, then work eastwards in longitude, then forward in time.
-            # Once the beginning of a trajectory has been found, transcribe
-            # its propagation path to the Lagrangian data base, and overwrite
-            # it in the (copy of the) Eulerian data base with zeros. Then 
-            # repeat until all the trajectories have been found.
-            reached_last_time=False
-            time_index_start=0
-            while kevent<nevent_max and not reached_last_time:
-                print('### CCEW kevent,time_index_start: {0!s},{1!s}'.format(kevent,time_index_start))
-                for time_index in range(time_index_start,self.ntime):
-                    for lon_index in range(self.nlon):
-                        x2=hovmax1.data[time_index,lon_index]
-                        #print('time_index,lon_index,x2: {0!s},{1!s},{2!s}'.format(time_index,lon_index,x2))
-                        if x2==1:
-                            # Found a 1
-                            break
+        # Search through copy of data_hovmax to find trajectories.
+        #
+        # If propagation_direction is 'eastwards',
+        #  start at 'bottom left', i.e., first time and furthest westward
+        # spoint, then work eastwards in longitude, then forward in time.
+        # If propagation_direction is 'westwards',
+        #  start at 'bottom right', i.e., first time and furthest eastward
+        # spoint, then work westwards in longitude, then forward in time.
+        #
+        # Once the beginning of a trajectory has been found, transcribe
+        # its propagation path to the Lagrangian data base, and overwrite
+        # it in the (copy of the) Eulerian data base with zeros. Then 
+        # repeat until all the trajectories have been found.
+        reached_last_time=False
+        time_index_start=0
+        while kevent<nevent_max and not reached_last_time:
+            print('### CCEW kevent,time_index_start: {0!s},{1!s}'.format(kevent,time_index_start))
+            for time_index in range(time_index_start,self.ntime):
+                if self.propagation_direction=='eastwards':
+                    xbeg=0
+                    xend=self.nlon
+                    xstep=1
+                elif self.propagation_direction=='westwards':
+                    xbeg=self.nlon-1
+                    xend=0-1
+                    xstep=-1
+                else:
+                    raise UserWarning('Invalid propagation_direction.')
+                for lon_index in range(xbeg,xend,xstep):
+                    x2=hovmax1.data[time_index,lon_index]
+                    #print('time_index,lon_index,x2: {0!s},{1!s},{2!s}'.format(time_index,lon_index,x2))
                     if x2==1:
+                        # Found a 1
                         break
-                print('Start of new trajectory time_index,lon_index {0!s},{1!s}'.format(time_index,lon_index))
-                # Build up entry for this trajectory
-                time_indices=[time_index,]
-                lon_indices=[lon_index,]
-                finding_current_traj_points=True
-                while finding_current_traj_points:
-                    # Check that following time point at current longitude is 0
-                    time_indexp1=time_index+1
-                    if time_indexp1>=self.ntime:
-                        print('Reached final time. Stopping.')
-                        reached_last_time=True
-                        break
-                    if hovmax1.data[time_indexp1,lon_index]!=0:
-                        raise UserWarning('Two consecutive in time 1s found at same longitude.')
-                    # Find the following 1 in the grid point to the east of
-                    # the current grid point.
-                    # It must be found in the following 6 hours
+                if x2==1:
+                    break
+            print('Start of new trajectory time_index,lon_index {0!s},{1!s}'.format(time_index,lon_index))
+            # Build up entry for this trajectory
+            time_indices=[time_index,]
+            lon_indices=[lon_index,]
+            finding_current_traj_points=True
+            while finding_current_traj_points:
+                # Check that following time point at current longitude is 0
+                time_indexp1=time_index+1
+                if time_indexp1>=self.ntime:
+                    print('Reached final time. Stopping.')
+                    reached_last_time=True
+                    break
+                if hovmax1.data[time_indexp1,lon_index]!=0:
+                    raise UserWarning("Two consecutive in time 1's found at same longitude.")
+                # Find the following 1 in the grid point to the east/west of
+                # the current grid point.
+                # It must be found in the following 6 hours for an EK wave or 18 hours for an ER wave
+                # (Factor of 3 is because speed of ER wave is 3 x less than for EK wave
+                # Note these hardwired numbers are dependent on the Hovmoller being on a 1 degree grid
+                # BAD CODING.
+                if self.propagation_direction=='eastwards':
                     lon_index+=1
                     if lon_index==self.nlon:
                         lon_index=0 # longitude is periodic
-                    if self.frequency=='3h':
-                        n_time_check=3 # 3 timesteps covers 6 hours (t=0,3,6 hr)
+                elif self.propagation_direction=='westwards':
+                    lon_index-=1
+                    if lon_index==-1:
+                        lon_index=self.nlon-1 # longitude is periodic
+                else:
+                    raise UserWarning('Invalid propagation_direction.')
+                if self.frequency=='3h':
+                    if self.wave_type=='EK':
+                        n_time_check=1+2 # 3 timesteps covers 6 hours (t=0,3,6 hr)
+                    elif self.wave_type=='ER':
+                        n_time_check=1+2*3 # 7 timesteps covers 18 hours (t=0,3,6,9,12,15,18 hr)
                     else:
-                        raise ToDoError('Code up for other time resolutions.')
-                    found_a_1=False
-                    #print('Start of loop at time_index,lon_index: {0!s},{1!s}'.format(time_index,lon_index))
-                    for i_time_check in range(n_time_check):
-                        time_index_check=time_index+i_time_check
-                        if time_index_check>=self.ntime:
-                            print('Reached final time. Stopping.')
-                            reached_last_time=True
-                            break
-                        x2=hovmax1.data[time_index_check,lon_index]
-                        #print('i_time_check,time_index_check,lon_index,x2: {0!s},{1!s},{2!s},{3!s}'.format(i_time_check,time_index_check,lon_index,x2))
-                        if x2==1:
-                            found_a_1=True
-                            time_indices.append(time_index_check)
-                            lon_indices.append(lon_index)
-                            time_index=time_index_check
-                            #print('Trajectory point at i_time_check,time_index,lon_index: {0!s},{1!s},{2!s}.'.format(i_time_check,time_index,lon_index))
-                            break
-                    if not found_a_1:
-                        # Reached end of i_time_check loop and not found a 1.
-                        # Trajectory ends
-                        finding_current_traj_points=False
-                #print('Final trajectory: time_indices,lon_indices: {0!s},{1!s}'.format(time_indices,lon_indices))
-                # If trajectory lifetime is greater than minimum allowed
-                # add to data base
-                trajc_time_length_indices=time_indices[-1]-time_indices[0]+1
-                if not reached_last_time:
-                    if trajc_time_length_indices>=self.traj_min_time_length_indices:
-                        print('Accepting trajectory ktraj_include: {0!s}.'.format(ktraj_include))
-                        trajc={}
-                        trajc['time_indices']=time_indices
-                        trajc['lon_indices']=lon_indices
-                        self.trajectories[ktraj_include]=trajc
-                        ktraj_include+=1
-                    else:
-                        print('######## Rejecting current trajectory, too short.')
-                # Overwrite the 1s from the current trajectory with 0s in
-                # hovmax1, ready to search hovmax1 for the next trajectory
-                # NB hovmax1.data.sum() is the number of 1s (left) in hovmax
-                # This will decrease as each trajectory is removed and
-                # should be zero at the end
-                nind=len(time_indices)
-                for ii in range(nind):
-                    hovmax1.data[time_indices[ii],lon_indices[ii]]=0
-                xx=hovmax1.data.sum()
-                print('nind,hovmax1.data.sum: {0!s},{1!s}'.format(nind,xx))
-                kevent+=1
-                # Reset time_index_start so do not have to go through
-                # entire hovmax for each trajectory
-                time_index_start=time_indices[0] 
-            if kevent>=nevent_max:
-                raise UserWarning('Need to increase nevent_max.')
-            if xx!=0:
-                ss="""####################################################
-
-                There should be no 1s left in hovmax at the end.
-
-                ######################################################"""
-                print(ss)
-            if xx>300: # Arbitrary cutoff
-                raise UserWarning('Sorry, that is too many 1s left.')
-        elif self.propagation_direction=='westwards':
-            raise ToDoError('Code up starting from "right hand" end and working leftwards! Best to extend code above to do this rather than repeat.')
+                        raise UserWarning('Invalid wave_type.')
+                else:
+                    raise ToDoError('Code up for other time resolutions.')
+                found_a_1=False
+                #print('Start of loop at time_index,lon_index: {0!s},{1!s}'.format(time_index,lon_index))
+                for i_time_check in range(n_time_check):
+                    time_index_check=time_index+i_time_check
+                    if time_index_check>=self.ntime:
+                        print('Reached final time. Stopping.')
+                        reached_last_time=True
+                        break
+                    x2=hovmax1.data[time_index_check,lon_index]
+                    #print('i_time_check,time_index_check,lon_index,x2: {0!s},{1!s},{2!s},{3!s}'.format(i_time_check,time_index_check,lon_index,x2))
+                    if x2==1:
+                        found_a_1=True
+                        time_indices.append(time_index_check)
+                        lon_indices.append(lon_index)
+                        time_index=time_index_check
+                        #print('Trajectory point at i_time_check,time_index,lon_index: {0!s},{1!s},{2!s}.'.format(i_time_check,time_index,lon_index))
+                        break
+                if not found_a_1:
+                    # Reached end of i_time_check loop and not found a 1.
+                    # Trajectory ends
+                    finding_current_traj_points=False
+            #print('Final trajectory: time_indices,lon_indices: {0!s},{1!s}'.format(time_indices,lon_indices))
+            # If trajectory lifetime is greater than minimum allowed
+            # add to data base
+            trajc_time_length_indices=time_indices[-1]-time_indices[0]+1
+            if not reached_last_time:
+                if trajc_time_length_indices>=self.traj_min_time_length_indices:
+                    print('Accepting trajectory ktraj_include: {0!s}.'.format(ktraj_include))
+                    trajc={}
+                    trajc['time_indices']=time_indices
+                    trajc['lon_indices']=lon_indices
+                    self.trajectories[ktraj_include]=trajc
+                    ktraj_include+=1
+                else:
+                    print('######## Rejecting current trajectory, too short.')
+            # Overwrite the 1's from the current trajectory with 0's in
+            # hovmax1, ready to search hovmax1 for the next trajectory
+            # NB hovmax1.data.sum() is the number of 1's (left) in hovmax
+            # This will decrease as each trajectory is removed and
+            # should be zero at the end
+            nind=len(time_indices)
+            for ii in range(nind):
+                hovmax1.data[time_indices[ii],lon_indices[ii]]=0
+            xx=hovmax1.data.sum()
+            print('nind,hovmax1.data.sum: {0!s},{1!s}'.format(nind,xx))
+            kevent+=1
+            # Reset time_index_start so do not have to go through
+            # entire hovmax for each trajectory
+            time_index_start=time_indices[0] 
+        if kevent>=nevent_max:
+            raise UserWarning('Need to increase nevent_max.')
+        if xx!=0:
+            ss="""####################################################
+            
+            There should be no 1's left in hovmax at the end.
+            
+            ######################################################"""
+            print(ss)
+        if xx>300: # Arbitrary cutoff
+            raise UserWarning("Sorry, that is too many 1's left.")
         # Prune western and eastern ends of trajectories using unfiltered
         # data to avoid over extension of trajectories because of wavenumber-
         # frequency filtering
@@ -9642,6 +9680,8 @@ class CCEWLagrangian(object):
         filec=open(self.file_traj_pickle,'wb')
         pickle.dump(self.trajectories,filec)
         filec.close()
+        if self.archive:
+            archive_file(self,self.file_traj_pickle)
         # Create another hovmoller of 0s and 1s to represent the final
         # trajectories. This will be a modification of self.data_hovmax
         # to take acount of points lost through pruning and rejection of
@@ -9760,10 +9800,10 @@ class CCEWLagrangian(object):
             time2=times[-1]
             npts=self.trajectories[keyc]['npts']
             data_vals=self.trajectories[keyc]['data_vals']
-            if lon1<=self.lonc<=lon2:
+            if (self.propagation_direction=='eastwards' and lon1<=self.lonc<=lon2) or (self.propagation_direction=='westwards' and lon2<=self.lonc<=lon1):
                 timec=time1
                 for ii in range(npts):
-                    if lons[ii]>=self.lonc:
+                    if (self.propagation_direction=='eastwards' and lons[ii]>=self.lonc) or (self.propagation_direction=='westwards' and lons[ii]<=self.lonc):
                         break
                     # ii is now the index of the crossing point
                     timec=times[ii]
