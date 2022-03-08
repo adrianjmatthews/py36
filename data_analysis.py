@@ -2018,6 +2018,21 @@ class TimeDomain(object):
         print('nmjjaso,fracmjjaso: {0!s}, {1!s}'.format(nmjjaso,fracmjjaso))
         self.histogram_months=hist
 
+    def f_histogram_hours(self):
+        """Create histogram of occurence of times of day (hours) in (timebeg) of time domain.
+
+        Create histogram_hours attribute.
+        """
+        hist=np.zeros((24,))
+        for xx in self.datetimes:
+            hourc=xx[0].hour
+            indexc=hourc
+            hist[indexc]=hist[indexc]+1
+        print('hist: {0!s}'.format(hist))
+        ntot=hist.sum()
+        print('ntot: {0!s}'.format(ntot))
+        self.histogram_hours=hist
+
     def info(self):
         """Calculate and print information on time domain."""
         self.read_ascii()
@@ -9422,10 +9437,10 @@ class CCEWLagrangian(object):
         #
         # If propagation_direction is 'eastwards',
         #  start at 'bottom left', i.e., first time and furthest westward
-        # spoint, then work eastwards in longitude, then forward in time.
+        #  point, then work eastwards in longitude, then forward in time.
         # If propagation_direction is 'westwards',
         #  start at 'bottom right', i.e., first time and furthest eastward
-        # spoint, then work westwards in longitude, then forward in time.
+        #  point, then work westwards in longitude, then forward in time.
         #
         # Once the beginning of a trajectory has been found, transcribe
         # its propagation path to the Lagrangian data base, and overwrite
