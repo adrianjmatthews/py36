@@ -131,7 +131,7 @@ var_name2long_name={
     'm_beta_vwnd':'minus_meridional_derivative_of_coriolis_parameter_times_northward_wind',
     'm_domegadx_dvwnddp':'minus_zonal_derivative_of_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_northward_wind',
     'm_duwnddy':'minus_meridional_derivative_of_eastward_wind',
-    'm_ff_div':'minus_coriolis_parameter_times_atmosphere_relative_vorticity',
+    'm_ff_div':'minus_coriolis_parameter_times_divergence_of_wind',
     'm_omega_dvrtdp':'minus_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_atmosphere_relative_vorticity',
     'm_uwnd_dvrtdx':'minus_eastward_wind_times_zonal_derivative_of_atmosphere_relative_vorticity',
     'm_uwndbar_dvrtdxbar':'minus_time_mean_eastward_wind_times_time_mean_zonal_derivative_of_atmosphere_relative_vorticity',
