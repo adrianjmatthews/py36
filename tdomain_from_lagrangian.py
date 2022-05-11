@@ -16,14 +16,18 @@ VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p2_sfc_3h'
 FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
 
 TIME1=datetime.datetime(1998,1,1)
-TIME2=TIME1+datetime.timedelta(21*365+278-1)-datetime.timedelta(seconds=1)
+TIME2=TIME1+datetime.timedelta(23*365+6-1)-datetime.timedelta(seconds=1)
 
-LAT1=-2.625; LAT2=-LAT1
+LAT1=-2.625; LAT2=-LAT1 # EK
+LAT1=-15; LAT2=-LAT1 # ER
 
-WAVE_TYPE='EK'; 
+WAVE_TYPE='ER' # 'EK' or 'ER'
 
-#TDOMAIN_PARAMS={'lonc':102, 'threshold':False, 'threshold_units':False, 'min_lon_extent':False, 'round_to_nearest_day':True}
-TDOMAIN_PARAMS={'lonc':75, 'threshold':0.5, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'6h'}
+#TDOMAIN_PARAMS={'lonc':75, 'threshold':0.5, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'6h'}
+#TDOMAIN_PARAMS={'lonc':102, 'threshold':False, 'threshold_units':False, 'min_lon_extent':False, 'round_to_nearest_time':'d'}
+#TDOMAIN_PARAMS={'lonc':106, 'threshold':False, 'threshold_units':False, 'min_lon_extent':False, 'round_to_nearest_time':False}
+#TDOMAIN_PARAMS={'lonc':106, 'threshold':0.4, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'d'}
+TDOMAIN_PARAMS={'lonc':75, 'threshold':0.05, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'d'} # ER
 
 VERBOSE=2
 

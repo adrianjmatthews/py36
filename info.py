@@ -13,6 +13,7 @@ locations['Darwin_NW2']={'lon':127.0, 'lat':-11.5}
 locations['Darwin_W1']={'lon':127.5, 'lat':-12.4}
 locations['ELOX1']={'lon':105.9000, 'lat':-10.1667}
 locations['ELOX2']={'lon':106.5333, 'lat':-9.2500}
+locations['Padang']={'lon':100.4172, 'lat':-0.9471}
 
 def getlonlat(xx):
     return locations[xx]['lon'],locations[xx]['lat']
