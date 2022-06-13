@@ -9735,7 +9735,7 @@ class CCEWLagrangian(object):
         filec.close()
         if self.verbose==2:
             for keyc in self.trajectories:
-                print('keyc,start_time,start_lon: {0!s},{1!s},{2!s}'.format(keyc,self.trajectories[keyc]['times'][0],self.trajectories[keyc]['lons'][0]))
+                print('keyc,start_time,start_lon,end_lon: {0!s}, {1!s}, {2!s}, {3!s}'.format(keyc,self.trajectories[keyc]['times'][0],self.trajectories[keyc]['lons'][0],self.trajectories[keyc]['lons'][-1]))
 
     def f_create_time_domain(self,tdomain_params):
         """Create time domain from Lagrangian data base of CCEWs.
@@ -9864,5 +9864,7 @@ class CCEWLagrangian(object):
         tdomain.header=(header1,header2)
         tdomain.datetimes=crossing_times # single values
         #tdomain.datetimes=crossing_times2 # paired values
+        tdomain.f_nevents()
+        print('nevents: {0!s}'.format(tdomain.nevents))
         tdomain.datetime2ascii()
         tdomain.write_ascii()
