@@ -1,7 +1,9 @@
 """Submits python scripts in parallel on ada using SLURM.
 
 Takes the python script in FILENAME and runs it many times, in
-parallel, by nested loops over LOOPVAR1, LOOPVAR2, LOOPVAR3, LOOPVAR4, LOOPVAR5, which represent e.g., YEAR, MONTH, TDOMAINID, VAR_NAME, LEVEL
+parallel, by nested loops over LOOPVAR1, LOOPVAR2, LOOPVAR3, LOOPVAR4,
+LOOPVAR5, which represent e.g., YEAR, MONTH, TDOMAINID, VAR_NAME,
+LEVEL
 
 If one of the LOOPVAR variables is not needed it is set to a dummy
 list of [-999]
@@ -21,6 +23,15 @@ the sub file is submitted as a batch job.
 
 'scancel 0' to kill all jobs (CHECK THIS WORKS).
 
+sacct (-j <jobid>) --format='JobID,MaxRSS,ReqMem,CPUTime,Timelimit' # to check resources used by job
+sacct -e # get list of all fields to get values for
+
+If note sure how much memory a job will take, set memory to a large
+value, run one job, check memory usage using sacct, then set memory
+variable below for future jobs. Running a job with not enough memory
+requested will cause swap space to be used, which has a highly
+detrimental effect on performance and time taken.
+
 """
 
 import os
@@ -31,11 +42,11 @@ import shutil
 #FILENAME='zero_missing_values.py'
 #FILENAME='anncycle.py'
 #FILENAME='time_average.py'
+#FILENAME='regrid.py'
 #FILENAME='filter.py'
 #FILENAME='spatial_subset.py'
 #FILENAME='mean.py'
-#FILENAME='time_average.py'
-#FILENAME='lagged_mean.py'
+FILENAME='lagged_mean.py'
 #FILENAME='vwndptap.py'
 #FILENAME='vrtbudget.py'
 #FILENAME='vrtbudget_combine.py'
@@ -52,8 +63,10 @@ import shutil
 #FILENAME='omega_decomposition.py'
 #FILENAME='mass_flux_decomposition.py'
 #FILENAME='wheelerkiladis.py'
-FILENAME='combine_latitudes.py'
+#FILENAME='combine_latitudes.py'
 #FILENAME='tmp_reorder.py'
+#FILENAME='ostia_get.py'
+#FILENAME='wndspd.py'
 
 # Experiment name for temporary sub directories
 TMPEXP='tmp0_'+FILENAME.split('.')[0] 
@@ -64,26 +77,46 @@ NICE=0 # Set to 10 to lower priority so new interactive sessions can be
 
 # Set whether or not to run each script with exclusive flag.
 # Only use if having issues running out of memory
-# If true, will use all memory on node, but there is a max of only 5(?) exclusive 
+# If true, will use all memory on node, but there is a max of ~8(?) exclusive 
 #   jobs allowed per user, so do not set for large loops unless absolutely necessary
+# Think this is equivalent to requesting 64G memory (on compute-16-64 queue)
+EXCLUSIVE=False
 if FILENAME in ['combine_latitudes.py']:
-    EXCLUSIVE=True # Use all memory on node
-else:
-    EXCLUSIVE=False
+    #EXCLUSIVE=True # Use all memory on node
+    pass
 
-# Set memory requirements
-if FILENAME in ['vrtbudget.py']:
-    memory='23G'
-elif FILENAME in ['omega_decomposition.py']:
-    memory='50G'
-else:
-    # RAM per core on compute-16-64 queue is 4 Gb
+# Set queue, memory, runtime requirements
+# Default: RAM per core on compute-16-64 queue is 4 Gb. The 16 in compute-16-64
+# is number of nodes available. Hence 16x4=64 GB max memory. 
+# In reality, memory request should be set to slightly below this, e.g., 60G.
+# queues are compute-16-64, compute-24-96, compute-24-128
+# Set default values then override below if required
+queue='compute-16-64'
+memory='12G'
+runtime='23:59:00'
+if FILENAME in ['mean.py','spatial_subset.py','wheelerkiladis.py','lagged_mean.py','wndspd.py','nc2txt_time_series.py']:
+    # mean.py, lagged_mean.py (with lazy_load True) ~1G
+    # spatial_subset.py, wheelerkiladis.py ~0.1G
     memory='4G'
-
-# Set runtime requirements
-if FILENAME in ['combine_latitudes.py']:
-    runtime='35:59:00'
-else:
+elif FILENAME in ['filter.py','regrid.py']:
+    # filter.py ~9G erainterim_plev_d with splitblock true
+    # regrid.py 6G 
+    memory='12G' 
+elif FILENAME in ['vrtbudget.py']:
+    memory='24G'
+elif FILENAME in ['combine_latitudes.py']:
+    # combine_latitudes.py 30G. Use 24-96 queue as easier to get a slot with higher memory
+    queue='compute-24-96'
+    memory='42G'
+    runtime='23:59:00'
+elif FILENAME in ['omega_decomposition.py']:
+    queue='compute-24-96'
+    memory='52G'
+elif FILENAME in ['preprocess.py','time_average.py']:
+    # preprocess.py 41G for imergtrm_sfc_30m. Use 24-96 queue as easier to get a slot with higher memory
+    # time_average.py 27G for imergtrm_sfc_30m.
+    queue='compute-24-96'
+    memory='75G'
     runtime='23:59:00'
 
 # 'var1': 'YEAR' or 'YEAR_BEG'
@@ -93,18 +126,17 @@ else:
 # 'var5': 'LEVEL'
 VARDICT={'var1':'YEAR',
          'var2':'MONTH',
-         'var3':'LAT1',
-         'var4':'VAR_NAME',
+         'var3':'TDOMAINID',
+         'var4':'BAND2_VAL1',
          'var5':'LEVEL'}
 
-######################################################
-LOOPVAR1= ['X'] # dummy value if not needed
-######################################################
-#LOOPVAR1=[1998,]
-#LOOPVAR1=range(2000,2018+1)
+# Initial dummy values, to be overwritten if needed
+LOOPVAR1=LOOPVAR2=LOOPVAR3=LOOPVAR4=LOOPVAR5=['X']
 
 ######################################################
-LOOPVAR2= ['X'] # dummy value if not needed
+#LOOPVAR1=[2009,]
+#LOOPVAR1=range(1998,2020+1)
+
 ######################################################
 #LOOPVAR2=range(1,12+1) # Set MONTH ranges if outfile_frequency is less than 'year'
 #LOOPVAR2=[3,]
@@ -112,27 +144,25 @@ LOOPVAR2= ['X'] # dummy value if not needed
 #LOOPVAR2=range(100) # NODE_NUMBER: Number of processors to farm out mean.py for Monte Carlo simulation of null distribution
 
 ######################################################
-LOOPVAR3= ['X'] # dummy value if not needed
-######################################################
-#LOOPVAR3=['jan9815','feb9815','mar9815','apr9815','may9815','jun9815','jul9815','aug9815','sep9815','oct9815','nov9815','dec9815']
+#LOOPVAR3=['jan01-19','feb01-19','mar01-19','apr01-19','may01-19','jun01-19','jul01-19','aug01-19','sep01-19','oct01-19','nov01-19','dec01-19']
 #LOOPVAR3=['ann'+str(xx).zfill(4) for xx in range(1979,2017+1)]
-#LOOPVAR3=['ann9818','n2a9899-1718','m2o9818']
+#LOOPVAR3=['rmm006all'+str(xx).zfill(1) for xx in range(1,8+1) ]
+#LOOPVAR3=['djf0102-1920','jja01-19']
+#LOOPVAR3=['CCEK102E98-18-00UTC-and-M0002b','M0002b-and-not-CCEK102E98-18-00UTC']
+LOOPVAR3=['CCEK-30E98-20-0.3-00UTC','CCEK-15E98-20-0.3-00UTC','CCEK0E98-20-0.3-00UTC','CCEK30E98-20-0.3-00UTC']
 #LOOPVAR3=['-89.4629', '-88.7669', '-88.0669', '-87.3660', '-86.6648', '-85.9633', '-85.2618', '-84.5602', '-83.8586', '-83.1569', '-82.4553', '-81.7536', '-81.0519', '-80.3502', '-79.6485', '-78.9468', '-78.2450', '-77.5433', '-76.8416', '-76.1399', '-75.4381', '-74.7364', '-74.0346', '-73.3329', '-72.6312', '-71.9294', '-71.2277', '-70.5260', '-69.8242', '-69.1225', '-68.4207', '-67.7190', '-67.0172', '-66.3155', '-65.6137', '-64.9120', '-64.2102', '-63.5085', '-62.8067', '-62.1050', '-61.4033', '-60.7015', '-59.9998', '-59.2980', '-58.5963', '-57.8945', '-57.1928', '-56.4910', '-55.7893', '-55.0875', '-54.3858', '-53.6840', '-52.9823', '-52.2805', '-51.5788', '-50.8770', '-50.1753', '-49.4735', '-48.7718', '-48.0700', '-47.3683', '-46.6665', '-45.9647', '-45.2630', '-44.5612', '-43.8595', '-43.1577', '-42.4560', '-41.7542', '-41.0525', '-40.3507', '-39.6490', '-38.9472', '-38.2455', '-37.5437', '-36.8420', '-36.1402', '-35.4385', '-34.7367', '-34.0350', '-33.3332', '-32.6315', '-31.9297', '-31.2280', '-30.5262', '-29.8244', '-29.1227', '-28.4209', '-27.7192', '-27.0174', '-26.3157', '-25.6139', '-24.9122', '-24.2104', '-23.5087', '-22.8069', '-22.1052', '-21.4034', '-20.7017', '-19.9999', '-19.2982', '-18.5964', '-17.8947', '-17.1929', '-16.4911', '-15.7894', '-15.0876', '-14.3859', '-13.6841', '-12.9824', '-12.2806', '-11.5789', '-10.8771', '-10.1754', '-09.4736', '-08.7719', '-08.0701', '-07.3684', '-06.6666', '-05.9649', '-05.2631', '-04.5613', '-03.8596', '-03.1578', '-02.4561', '-01.7543', '-01.0526', '-00.3508', '00.3508', '01.0526', '01.7543', '02.4561', '03.1578', '03.8596', '04.5613', '05.2631', '05.9649', '06.6666', '07.3684', '08.0701', '08.7719', '09.4736', '10.1754', '10.8771', '11.5789', '12.2806', '12.9824', '13.6841', '14.3859', '15.0876', '15.7894', '16.4911', '17.1929', '17.8947', '18.5964', '19.2982', '19.9999', '20.7017', '21.4034', '22.1052', '22.8069', '23.5087', '24.2104', '24.9122', '25.6139', '26.3157', '27.0174', '27.7192', '28.4209', '29.1227', '29.8244', '30.5262', '31.2280', '31.9297', '32.6315', '33.3332', '34.0350', '34.7367', '35.4385', '36.1402', '36.8420', '37.5437', '38.2455', '38.9472', '39.6490', '40.3507', '41.0525', '41.7542', '42.4560', '43.1577', '43.8595', '44.5612', '45.2630', '45.9647', '46.6665', '47.3683', '48.0700', '48.7718', '49.4735', '50.1753', '50.8770', '51.5788', '52.2805', '52.9823', '53.6840', '54.3858', '55.0875', '55.7893', '56.4910', '57.1928', '57.8945', '58.5963', '59.2980', '59.9998', '60.7015', '61.4033', '62.1050', '62.8067', '63.5085', '64.2102', '64.9120', '65.6137', '66.3155', '67.0172', '67.7190', '68.4207', '69.1225', '69.8242', '70.5260', '71.2277', '71.9294', '72.6312', '73.3329', '74.0346', '74.7364', '75.4381', '76.1399', '76.8416', '77.5433', '78.2450', '78.9468', '79.6485', '80.3502', '81.0519', '81.7536', '82.4553', '83.1569', '83.8586', '84.5602', '85.2618', '85.9633', '86.6648', '87.3660', '88.0669', '88.7669', '89.4629']
-#LOOPVAR3=['11.45','11.55']
+#LOOPVAR3=['03.1578']
+#LOOPVAR3=['16.95','17.05','17.15','17.25','17.35','17.45','17.55']
 
 ######################################################
-#LOOPVAR4= ['X'] # dummy value if not needed
-######################################################
-LOOPVAR4=['uwnd','vwnd','vrt','div']
 #LOOPVAR4=['uwnd','vwnd']
-#LOOPVAR4=['dvrtdt','m_uwnd_dvrtdx','m_vwnd_dvrtdy','m_omega_dvrtdp','m_vrt_div','m_ff_div','m_beta_vwnd','m_domegadx_dvwnddp','domegady_duwnddp','source_dvrtdt','res_dvrtdt']
+#LOOPVAR4=['uwnd','vwnd','vrt','div','omega']
 #LOOPVAR4=['dvrtdt','m_uwnd_dvrtdx','m_vwnd_dvrtdy','m_omega_dvrtdp','m_vrt_div','m_ff_div','m_beta_vwnd','m_domegadx_dvwnddp','domegady_duwnddp','source_dvrtdt','res_dvrtdt','vrt_horiz_adv','vrt_stretch','vrt_tilt']
-#LOOPVAR4=['dvrtdt']
+#LOOPVAR4=['m_vrtbar_divbar','m_vrtbar_divprime','m_vrtprime_divbar','m_vrtprime_divprime']
+#LOOPVAR4=['m_uwndbar_dvrtdxbar','m_uwndbar_dvrtdxprime','m_uwndprime_dvrtdxbar','m_uwndprime_dvrtdxprime','m_vwndbar_dvrtdybar','m_vwndbar_dvrtdyprime','m_vwndprime_dvrtdybar','m_vwndprime_dvrtdyprime']
 #LOOPVAR4=['lat','lon','tsc','sa']
-#LOOPVAR4=['120.55','120.65','120.75','120.85']
+#LOOPVAR4=['121.75','121.85','121.95','122.05','122.15','122.25','122.35']
 
-######################################################
-LOOPVAR5= ['X'] # dummy value if not needed
 ######################################################
 #LOOPVAR5=[1000,975,950,925,900,875,850,825,800,775,750,700,650,600,550,500,450,400,350,300,250,225,200,175,150,125,100]
 #LOOPVAR5=[1000,925,850,700,600,500,400,300,250,200,150,100,70,50,30,20,10]
@@ -244,7 +274,7 @@ for var1 in LOOPVAR1:
                     fout=open(os.path.join(dir2,'subfile'),'w')
                     fout.write('#!/bin/bash\n')
                     fout.write('#SBATCH -t '+runtime+'\n')
-                    fout.write('#SBATCH -p compute-16-64\n')
+                    fout.write('#SBATCH -p '+queue+'\n')
                     fout.write('#SBATCH --mem '+memory+'\n')
                     fout.write('#SBATCH --job-name='+FILENAME[:3]+'_'+str(index)+'\n')
                     fout.write('#SBATCH --nice='+str(NICE)+'\n')
