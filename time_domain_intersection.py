@@ -9,16 +9,23 @@ TDOMAINID3: common date time from the two input time domains
 
 """
 
+import copy
 import os
 
 import datetime
 
 import data_analysis as da
 
+# This is real hack code now. Check output very carefully.
+
 TDOMAINID1='CCEK102E98-20-3h' # time domain for CCKW crossing times at location
 TDOMAINID2='M0002' # time domain for dates of extreme precip at location
 
-METHOD='and' # 'and', '1not2', '2not1'
+METHOD='2not1' # 'and', '1not2', '2not1'
+LAG=True # Set True to introduce lag offsets
+if LAG:
+    LAG1=-5
+    LAG2=-3
 
 VERBOSE=True
 
@@ -36,17 +43,47 @@ td2.ascii2datetime()
 
 # Create list of intersecting datetimes
 if METHOD=='and':
-    # exact match of datetimes
-    #dt3=[xx for xx in td1.datetimes if xx in td2.datetimes]
-    # datetimes just need to be on same day
-    dt3=[xx for xx in td1.datetimes if [datetime.datetime(xx[0].year,xx[0].month,xx[0].day)] in td2.datetimes]
-    tdomainid3=TDOMAINID1+'-and-'+TDOMAINID2
+    # Ad hoc code below. Uncomment the code you need
+    #
+    if not LAG:
+        # exact match of datetimes
+        #dt3=[xx for xx in td1.datetimes if xx in td2.datetimes]
+        # datetimes just need to be on same day
+        dt3=[xx for xx in td1.datetimes if [datetime.datetime(xx[0].year,xx[0].month,xx[0].day)] in td2.datetimes]
+        tdomainid3=TDOMAINID1+'-and-'+TDOMAINID2
+    else:
+        dt3=[]
+        for xx in td1.datetimes:
+            #xx1=xx
+            xx1=datetime.datetime(xx[0].year,xx[0].month,xx[0].day)
+            for lagc in range(LAG1,LAG2+1):
+                xx2=xx1+datetime.timedelta(days=lagc)
+                for yy in td2.datetimes:
+                    if yy[0]==xx2 and yy not in dt3:
+                        dt3.append(yy)
+        tdomainid3=TDOMAINID1+'-and-'+TDOMAINID2+'-lag'+str(LAG1)+'-'+str(LAG2)
 elif METHOD=='1not2':
     dt3=[xx for xx in td1.datetimes if xx not in td2.datetimes]
     tdomainid3=TDOMAINID2+'-and-not-'+TDOMAINID1
+    if LAG:
+        raise UserWarning('Not coded this up yet.')
 elif METHOD=='2not1':
-    dt3=[xx for xx in td2.datetimes if xx not in td1.datetimes]
-    tdomainid3=TDOMAINID2+'-and-not-'+TDOMAINID1
+    if not LAG:
+        dt3=[xx for xx in td2.datetimes if xx not in td1.datetimes]
+        tdomainid3=TDOMAINID2+'-and-not-'+TDOMAINID1
+    else:
+        # Set dt3 initially to be a copy of td2.datetimes, then loop over datetimes
+        # in dt1 (with lags) and remove datetime from dt3 if there is overlap.
+        dt3=copy.copy(td2.datetimes)
+        for xx in td1.datetimes:
+            #xx1=xx
+            xx1=datetime.datetime(xx[0].year,xx[0].month,xx[0].day)
+            for lagc in range(LAG1,LAG2+1):
+                xx2=xx1+datetime.timedelta(days=lagc)
+                for yy in dt3:
+                    if yy[0]==xx2:
+                        dt3.remove(yy)
+        tdomainid3=TDOMAINID2+'-and-not-'+TDOMAINID1+'-lag'+str(LAG1)+'-'+str(LAG2)
 else:
     raise UserWarning('Invalid METHOD.')
 
@@ -55,10 +92,14 @@ td3=da.TimeDomain(tdomainid3,verbose=VERBOSE)
 td3.datetimes=dt3
 td3.datetime2ascii()
 header0=td1.header[0][:-1]+' : '+td2.header[0][1:-1]+' : '+METHOD+'\n'
-header1=td1.header[1][:-1]+' : '+td2.header[1][1:]
+if not LAG:
+    header1=td1.header[1][:-1]+' : '+td2.header[1][1:]
+else:
+    header1=td1.header[1][:-1]+' : '+td2.header[1][1:-1]+' : lag '+str(LAG1)+' to '+str(LAG2)
 td3.header=[header0,header1]
 td3.write_ascii()
 
+# Check. Count number of events in time domains
 td1.f_nevents()
 td2.f_nevents()
 td3.f_nevents()
