@@ -2446,7 +2446,7 @@ class DataConverter(object):
             print('# Load using var_name')
             var_constraint=iris.Constraint(cube_func=(lambda c: c.var_name==self.raw_name))
             if level_constraint:
-                if self.source in ['erainterim_plev_6h','erainterim_sfc_6h']:
+                if self.source in ['erainterim_plev_6h','erainterim_sfc_6h','ncepdoe_plev_d']:
                     # time constraint does not work with erainterim, but redundant as file name constrains time
                     xx=iris.load(self.filein1,constraints=var_constraint & level_constraint,callback=clean_callback)
                 else:
@@ -4056,7 +4056,17 @@ class SpatialSubset(object):
 
     self.[band1_name,band1_val1,band1_val2] : Input cube is subset
     over dimension band1_name, and averaged between band1_val1 and
-    band1_val2
+    band1_val2.
+
+    self.band1_sym : If False, then averaging is just simple mean
+    between band1_val1 and band1_val2. If 'even' then averaging is of
+    symmetric component. Note this is set up with latitude in mind,
+    and band1_val1 and band2_val2 must be symmetric about the
+    equator. If y is latitude (with y=0 at equator), then first
+    calculate symmetric component f_symmetric(y) = [f(y)+f(-y)]/2,
+    then average (simple latitudinal mean) of f_symmetric(y).  If
+    'odd' then average antisymmetric component f_antisymmetric(y) =
+    [f(y)-f(-y)]/2.
 
     self.band2 : logical switch to enable subsetting and averaging
     over a second spatial dimension.
@@ -4068,6 +4078,7 @@ class SpatialSubset(object):
     
     History. 5 Jan 2018. This is a rename and generalisation of
     discontinued class Hovmoller.
+
     """
 
     def __init__(self,**descriptor):
@@ -4091,6 +4102,8 @@ class SpatialSubset(object):
         else:
             raise UserWarning('subdir is invalid.')
         self.strsubset='_ss_'+self.band1_name[:3]+'_'+str(self.band1_val1)+'_'+str(self.band1_val2)
+        if self.band1_sym:
+            self.strsubset=self.strsubset+'_'+self.band1_sym
         if self.band2:
             self.strsubset+='_'+self.band2_name[:3]+'_'+str(self.band2_val1)+'_'+str(self.band2_val2)
         if self.subdir=='std':
@@ -4158,13 +4171,34 @@ class SpatialSubset(object):
         if ncubes!=1:
             raise UserWarning('Not a single cube. ncubes='+str(ncubes))
         xx1=xx1.concatenate_cube()
-        self.cube=xx1
-        print('self.cube.shape: {0!s}'.format(self.cube.shape))
+        print('xx1.shape: {0!s}'.format(xx1.shape))
+        # Compute symmetric or antisymmetric component (wrt latitude) before averaging, if required
+        if self.band1_sym:
+            if self.band1_name!='latitude':
+                raise UserWarning('Symmetric/antisymmetric component only set up for latitude.')
+            if self.band1_val1!=-self.band1_val2:
+                raise UserWarning('For symmetric/antisymmetric component, must select a latitude range centred on equator.')
+            dim_coord_names=[xx.var_name for xx in xx1.dim_coords]
+            lat_index=dim_coord_names.index('latitude')
+            cube_lat_reversed=iris.util.reverse(xx1,lat_index)
+            if self.band1_sym=='sym':
+                print('Calculating symmetric component of band1.')
+                xx2=(xx1.data+cube_lat_reversed.data)/2
+            elif self.band1_sym=='antisym':
+                print('Calculating antisymmetric component of band1.')
+                xx2=(xx1.data-cube_lat_reversed.data)/2
+            else:
+                raise UserWarning('Invalid band1_sym.')
+            xx1=create_cube(xx2,xx1)
         # Average over required spatial dimensions if necessary
         if self.band1_val1!=self.band1_val2:
             xx1=xx1.collapsed(self.band1_name,iris.analysis.MEAN)
             print('xx1.shape after averaging over band1: {0!s}'.format(xx1.shape))
-            str1='Mean over {0.band1_name!s} {0.band1_val1!s} to {0.band1_val2!s}'.format(self)
+            if self.band1_sym:
+                str10=self.band1_sym+' '
+            else:
+                str10=''
+            str1=str10+'Mean over {0.band1_name!s} {0.band1_val1!s} to {0.band1_val2!s}'.format(self)
             if self.band2 and self.band2_val1!=self.band2_val2:
                 xx1=xx1.collapsed(self.band2_name,iris.analysis.MEAN)
                 print('xx1.shape after averaging over band2: {0!s}'.format(xx1.shape))
