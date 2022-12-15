@@ -18,13 +18,13 @@ BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 FILE_MASK=False # Default value
 
-VAR_NAME='uwnd'; LEVEL=850; SOURCE='era5mcw_plev_h'
+#VAR_NAME='vwnd'; LEVEL=975; SOURCE='era5ewa_plev_h'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='era5mcw_sfc_h'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='erainterim_sfc_d'
 #VAR_NAME='zg'; LEVEL=850; SOURCE='erainterim_plev_6h'
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='imergtrm_sfc_30m'
-#VAR_NAME='uwnd'; LEVEL=1000; SOURCE='ncepdoe_plev_d'
+#VAR_NAME='zg'; LEVEL=200; SOURCE='ncepdoe_plev_d'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='ncepdoe_sfc_d'
 #VAR_NAME='vwnd'; LEVEL=10; SOURCE='ncepdoegg_zlev_d'
 #VAR_NAME='vwnd'; LEVEL=1; SOURCE='ncepncar_sfc_d'
@@ -36,13 +36,14 @@ VAR_NAME='uwnd'; LEVEL=850; SOURCE='era5mcw_plev_h'
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_7d'; FILE_MASK='lsmask.nc'
 #VAR_NAME='tauy'; LEVEL=1; SOURCE='tropflux_sfc_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_3h'
+VAR_NAME='ucur'; LEVEL=0.494025; SOURCE='glorys12v1_zlev_d'
 
-YEAR_BEG=2020; YEAR_END=2020 # if outfile_frequency is 'year' or less
+YEAR_BEG=2018; YEAR_END=2018 # if outfile_frequency is 'year' or less
 
 #MONTH1=MONTH2=-999 # if outfile_frequency is 'year'
-MONTH1=1; MONTH2=1 # if outfile_frequency is less than 'year'
+MONTH1=12; MONTH2=12 # if outfile_frequency is less than 'year'
 
-PLOT=True
+PLOT=False
 
 VERBOSE=2
 

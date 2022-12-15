@@ -113,6 +113,7 @@ var_name2long_name={
     'ew':'water_vapor_partial_pressure_in_air',
     'freq':'frequency',
     'ff':'coriolis_parameter',
+    'ffeqbeta':'coriolis_parameter_on_equatorial_beta_plane',
     'harm':'integer_harmonic_in_time',
     'ke':'specific_kinetic_energy_of_air',
     'kk':'wavenumber_in_eastward_direction',
@@ -162,6 +163,7 @@ var_name2long_name={
     'psioc_lambda':'eastward_component_of_vector_atmosphere_overturning_streamfunction',
     'psioc_phi':'northward_component_of_vector_atmosphere_overturning_streamfunction',
     'pv':'ertel_potential_vorticity',
+    'qsw':'shallow_water_heating_rate',
     'res_dvrtdt':'residual_tendency_of_atmosphere_relative_vorticity',
     'rhum':'relative_humidity',
     'rmm1':'RMM_1_index',
@@ -183,6 +185,7 @@ var_name2long_name={
     'tauy':'surface_downward_northward_stress',
     'theta':'air_potential_temperature',
     'tsc':'sea_water_conservative_temperature',
+    'ucur':'eastward_sea_water_velocity',
     'uwnd':'eastward_wind',
     'uwndchi':'irrotational_component_of_eastward_wind',
     'uwndpsi':'nondivergent_component_of_eastward_wind',
@@ -190,6 +193,7 @@ var_name2long_name={
     'vrt_horiz_adv':'minus_eastward_wind_times_zonal_derivative_of_atmosphere_relative_vorticity_minus_northward_wind_times_meridional_derivative_of_atmosphere_relative_vorticity',
     'vrt_stretch':'minus_divergence_of_wind_times_atmospheric_total_vorticity',
     'vrt_tilt':'minus_zonal_derivative_of_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_northward_wind_plus_meridional_derivative_of_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_zonal_wind',
+    'vcur':'northward_sea_water_velocity',
     'vwnd':'northward_wind',
     'vwndchi':'irrotational_component_of_northward_wind',
     'vwndpsi':'nondivergent_component_of_northward_wind',
@@ -233,14 +237,14 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','era5mcw','era5ewa','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog']
+    valid_data_sources=['era5trp','era5plp','era5bar','era5mcw','era5ewa','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','glorys12v1']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
     if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -353,6 +357,24 @@ def clean_callback(cube,field,filename):
               'FROM_ORIGINAL_FILE__southernmost_latitude',
               'FROM_ORIGINAL_FILE__westernmost_longitude',
               'FROM_ORIGINAL_FILE__easternmost_longitude',
+              'FROM_ORIGINAL_FILE__field_type',
+              'FROM_ORIGINAL_FILE__latitude_max',
+              'FROM_ORIGINAL_FILE__latitude_min',
+              'FROM_ORIGINAL_FILE__longitude_max',
+              'FROM_ORIGINAL_FILE__longitude_min',
+              'bulletin_date',
+              'bulletin_type',
+              'domain_name',
+              'easting',
+              'field_date',
+              'field_julian_date',
+              'forecast_range',
+              'forecast_type',
+              'julian_day_unit',
+              'northing',
+              'unit_long',
+              'z_max',
+              'z_min',
               'Metadata_Conventions',
               'geospatial_lat_resolution',
               'geospatial_lat_units',
@@ -529,6 +551,56 @@ def create_cube(array,oldcube,new_axis=False,new_var_name=False):
     else:
         newcube.rename(oldcube.name())
         newcube.var_name=oldcube.var_name
+
+    return newcube
+
+#==========================================================================
+
+def cube_add_singleton_coord(oldcube,new_coord,new_coord_index=0):
+    """Add a new singleton coordinate to an iris cube.
+
+    Inputs:
+
+    <oldcube> must be an iris cube.
+
+    <new_coord>  must be an iris dim coord.
+
+    <new_coord_index> is the index of the new coordinate for the new cube.
+
+    Output:
+
+    <newcube> is an iris cube with the new coordinate added
+
+    Usage:
+
+    <oldcube> may be a (level,lat,lon) cube, to which a (singleton)
+    time coordinate needs to be added. <newcube> would then be a
+    (time,level,lat,lon) cube.
+
+    """
+    # Reshape data array for <oldcube> to allow for extra singleton coordinate.
+    shape_old=oldcube.data.shape
+    shape_new=shape_old[:new_coord_index]+(1,)+shape_old[new_coord_index:]
+    print('shape_old, shape_new: {0!s}, {1!s}'.format(shape_old,shape_new))
+    array=oldcube.data.reshape(shape_new)
+    # Create a list of two-lists, each of form [coord,index] for
+    # dim_coord's and aux_coord's
+    # Note that aux_coord's do not have to be assigned to a dimension
+    #   in which case they have an empty tuple for index
+    dim_coord_names=[xx.name() for xx in oldcube.dim_coords]
+    aux_coord_names=[xx.name() for xx in oldcube.aux_coords]
+    print('dim_coord_names: {0!s}'.format(dim_coord_names))
+    print('aux_coord_names: {0!s}'.format(aux_coord_names))
+    dim_coords_and_dims=[ [oldcube.coord(xx),oldcube.coord_dims(xx)] for xx in dim_coord_names ]
+    dim_coords_and_dims=dim_coords_and_dims[:new_coord_index]+[ [new_coord,(new_coord_index)] ]
+    for xx in dim_coord_names[new_coord_index:]:
+        dim_coords_and_dims.append( [ oldcube.coord(xx), (oldcube.coord_dims(xx)[0]+1,)  ] )
+    aux_coords_and_dims=[ [oldcube.coord(xx),oldcube.coord_dims(xx)] for xx in aux_coord_names ]
+    # Create cube
+    newcube=iris.cube.Cube(array,units=oldcube.units,attributes=oldcube.attributes,cell_methods=oldcube.cell_methods,dim_coords_and_dims=dim_coords_and_dims,aux_coords_and_dims=aux_coords_and_dims)
+    # Name cube
+    newcube.rename(oldcube.name())
+    newcube.var_name=oldcube.var_name
 
     return newcube
 
@@ -2351,6 +2423,8 @@ class DataConverter(object):
         elif self.source in ['hadgem2esajhog_plev_d']:
             if self.var_name=='zg':
                 self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_day_HadGEM2-ES_piControl_r1i1p1_*.nc')
+        elif self.source in ['glorys12v1_zlev_d']:
+            self.filein1=os.path.join(self.basedir,self.source,'raw','NEMO_GR_PHY_001_030_'+str(self.year)+str(self.month).zfill(2)+'*.nc')
         else:
             raise UserWarning('Data source not recognised.')
         #
@@ -2365,6 +2439,9 @@ class DataConverter(object):
             level_constraint=iris.Constraint(Level=self.level)
         elif self.data_source in ['hadgem2esajhog'] and self.level_type=='plev':
             level_constraint=iris.Constraint(air_pressure=self.level)
+        elif self.data_source in ['glorys12v1'] and self.level_type=='zlev':
+            leveltol=0.01
+            level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
         elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             level_constraint=False
         else:
@@ -2432,21 +2509,24 @@ class DataConverter(object):
                 self.raw_name='lwr'
             elif self.var_name in ['taux','tauy']:
                 self.raw_name=self.var_name
+        elif self.data_source in ['glorys12v1',]:
+            if self.var_name=='ucur':
+                self.raw_name='uo'
         #
         # Load cube using a constraint on var_name because if there is a
         # long_name attribute in the netcdf file this will take precendence
         # over var_name if just using a standard load_cube call.
         if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
-            print('# Constraint does not work with data sources listed')
+            print('# var_name constraint does not work with this data source.')
             if level_constraint:
                 xx=iris.load(self.filein1,constraints=level_constraint & time_constraint,callback=clean_callback)
             else:
                 xx=iris.load(self.filein1,constraints=time_constraint,callback=clean_callback)
         else:
-            print('# Load using var_name')
+            print('# Load using var_name.')
             var_constraint=iris.Constraint(cube_func=(lambda c: c.var_name==self.raw_name))
             if level_constraint:
-                if self.source in ['erainterim_plev_6h','erainterim_sfc_6h','ncepdoe_plev_d']:
+                if self.source in ['erainterim_plev_6h','erainterim_sfc_6h','ncepdoe_plev_d','glorys12v1_zlev_d']:
                     # time constraint does not work with erainterim, but redundant as file name constrains time
                     xx=iris.load(self.filein1,constraints=var_constraint & level_constraint,callback=clean_callback)
                 else:
@@ -2483,13 +2563,13 @@ class DataConverter(object):
                 cubec.remove_coord('latitude')
                 cubec.add_dim_coord(latcoord1,1)
         #
-        # Convert time coordinate to standard for ostia
-        if self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
+        # Convert time coordinate to standard for ostia and glorys12v1
+        if self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d']:
             for cubec in xx:
                 cubec=standardise_time_coord_units(cubec,tunits='days')
         #
         # Number of cubes in cubelist should be 1 except if source in list below
-        if self.source not in ['hadgem2esajhog_plev_d','erainterim_plev_6h','erainterim_sfc_6h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
+        if self.source not in ['hadgem2esajhog_plev_d','erainterim_plev_6h','erainterim_sfc_6h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d']:
             ncubes=len(xx)
             if ncubes!=1:
                 raise UserWarning('Not a single cube. ncubes='+str(ncubes))
@@ -8322,15 +8402,39 @@ class XYGrid(object):
         else:
             return self.__repr__()
 
-    def x_gradient(self):
+    def create_x_gradient(self):
         """Calculate x-gradient of self.grid.
 
-        Creates attribute self.x_gradient."""
+        Use centred difference.
 
-    def y_gradient(self):
+        Creates attribute self.x_gradient."""
+        ff=self.grid # ff(i)
+        ff2=np.roll(ff,-2,axis=1) # ff(i+2)
+        self.x_gradient=(ff2-ff)/(2.*self.deltax)
+        if self.verbose==2:
+            ffmin=ff.min()
+            ffmean=ff.mean()
+            ffmax=ff.max()
+            xgmin=self.x_gradient.min()
+            xgmean=self.x_gradient.mean()
+            xgmax=self.x_gradient.max()
+            print('deltax: {0.deltax!s}'.format(self))
+            print('ffmin,ffmean,ffmax: {0!s}, {1!s}, {2!s}'.format(ffmin,ffmean,ffmax))
+            print('xgmin,xgmean,xgmax: {0!s}, {1!s}, {2!s}'.format(xgmin,xgmean,xgmax))
+
+    def create_y_gradient(self):
         """Calculate y-gradient of self.grid.
 
+        Use centered difference in interior.
+        Forward difference at lower y boundary.
+        Backward difference at upper y boundary
+
         Creates attribute self.y_gradient."""
+        ff=self.grid # ff(j)
+        ff2=np.roll(ff,-2,axis=0) # ff(j+2)
+        self.y_gradient=(ff2-ff)/(2.*self.deltay)
+        self.y_gradient[0,:]=(ff[1,:]-ff[0,:])/self.deltay
+        self.y_gradient[self.ny-1,:]=(ff[self.ny-1,:]-ff[self.ny-2,:])/self.deltay
 
     def create_xy_cube(self):
         """Create iris cube from x-y grid.
@@ -9285,7 +9389,11 @@ class CCEWLagrangian(object):
         else:
             raise UserWarning('Invalid wave_type.')
         # Input files
-        ss='_lat_'+str(self.lat1)+'_'+str(self.lat2)+'_'+str(self.time1)[:10]+'_'+str(self.time2)[:10]
+        if self.band1_sym:
+            str1='_'+self.band1_sym
+        else:
+            str1=''
+        ss='_lat_'+str(self.lat1)+'_'+str(self.lat2)+str1+'_'+str(self.time1)[:10]+'_'+str(self.time2)[:10]
         self.file_hov=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_hov'+ss+'.nc')
         self.file_hovWKfilt=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_hovWKfilt'+self.wave_type+ss+'.nc')
         # Output files
@@ -9820,7 +9928,11 @@ class CCEWLagrangian(object):
         self.round_to_nearest_time=self.tdomain_params['round_to_nearest_time']
         # Create time domain idx (name) and headers
         # Permission to be ad hoc here!
-        idx='CC'+self.wave_type+str(self.lonc)+'E'+'lat'+str(self.lat1)+'-'+str(self.lat2)+'-'+str(self.time1.year)[-2:]+'-'+str(self.time2.year)[-2:]
+        if self.band1_sym:
+            str1='-'+self.band1_sym
+        else:
+            str1=''
+        idx='CC'+self.wave_type+str(self.lonc)+'E'+'lat'+str(self.lat1)+'-'+str(self.lat2)+str1+'-'+str(self.time1.year)[-2:]+'-'+str(self.time2.year)[-2:]
         if self.threshold:
             idx=idx+'-'+str(self.threshold)
         if self.round_to_nearest_time=='d':
