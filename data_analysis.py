@@ -2726,6 +2726,10 @@ class DataConverter(object):
             x5.rename(x1.name())
             x5.var_name=x1.var_name
             self.cube=x5
+        # glorys daily data.
+        # Time stamp is at 12 UTC. Change to 00 UTC by subtracting 0.5 (days).
+        if self.source=='glorys12v1_zlev_d':
+            change_time_stamp_from_12_to_00(self,verbose=self.verbose)
         #
         # trmm3b42v7_sfc_3h first data is at 1998-01-01: 03 UTC, not 00 UTC
         # Make a copy of 03 UTC data and set to 00 UTC.
