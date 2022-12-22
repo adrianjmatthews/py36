@@ -9,37 +9,39 @@ import matplotlib.pyplot as plt
 
 import data_analysis as da
 
-#BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
+#BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 # YEAR1-YEAR2 are complete years over which to calculate annual cycle
-VAR_NAME='vrt'; LEVEL=500; SOURCE='erainterim_plev_6h'; YEAR1=1998; YEAR2=2018
+#VAR_NAME='div'; LEVEL=975; SOURCE='erainterim_plev_6h'; YEAR1=1998; YEAR2=2018
 #VAR_NAME='vwnd'; LEVEL=850; SOURCE='erainterim_plev_d'; YEAR1=1998; YEAR2=2018
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'; YEAR1=1985; YEAR2=1993
-#VAR_NAME='vrt'; LEVEL=850; SOURCE='ncepdoe_plev_d'; YEAR1=1980; YEAR2=2015
+#VAR_NAME='zg'; LEVEL=200; SOURCE='ncepdoe_plev_d'; YEAR1=1979; YEAR2=1997
 #VAR_NAME='wndspd'; LEVEL=1; SOURCE='ncepncar_sfc_d'; YEAR1=1979; YEAR2=2015
-#VAR_NAME='zg'; LEVEL=250; SOURCE='ncepncar_plev_d'; YEAR1=1979; YEAR2=2017
+#VAR_NAME='uwnd'; LEVEL=850; SOURCE='ncepdoe_plev_d'; YEAR1=1998; YEAR2=2018
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrinterp_toa_d'; YEAR1=2010; YEAR2=2011
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'; YEAR1=1982; YEAR2=2015
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_3h'; YEAR1=1998; YEAR2=1999
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_d'; YEAR1=1998; YEAR2=2020
+VAR_NAME='ucur'; LEVEL=0.494025; SOURCE='glorys12v1_zlev_d'; YEAR1=2005; YEAR2=2010
 
 # If TIME1 and TIME2 are False, anomalies from annual cycle are calculated
 # over whole input data set,
 # If TIME1 is datetime object and TIME2 is False, calculated from TIME1 to end
 # If TIME1 is False and TIME2 is datetime, calculated from start to TIME2
 # If TIME1 and TIME2 are datetime, calculated from TIME1 to TIME2
-TIME1=TIME2=False
-#TIME1=datetime.datetime(2017,1,1); TIME2=False
+#TIME1=TIME2=False
+TIME1=datetime.datetime(2005,1,1); TIME2=False
 #TIME1=False;  TIME2=datetime.datetime(1980,12,31)
 #TIME1=datetime.datetime(1998,1,1);  TIME2=datetime.datetime(1998,12,31)
 
 # ANNCYCLE_SOURCE is e.g., 'erainterim_plev_d' if subtracting annual cycle of daily 
 # data from higher frequency (e.g., 6h) data.
 # Set to False to switch off
-ANNCYCLE_SOURCE='erainterim_plev_d'
+ANNCYCLE_SOURCE=False
+#ANNCYCLE_SOURCE='erainterim_plev_d'
 
 NHARM=3
 if VAR_NAME=='ppt':
@@ -96,7 +98,7 @@ if aa.anncycle_source:
 
 # Either create and save anomaly data (smooothed annual cycle subtracted),
 # or read in previously calculated anomaly data
-#aa.f_subtract_anncycle()
+aa.f_subtract_anncycle()
 #aa.f_read_subtract_anncycle()
 
 if PLOT:

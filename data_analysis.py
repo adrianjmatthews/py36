@@ -5361,7 +5361,10 @@ class AnnualCycle(object):
             print('npts_missing,npts',npts_missing,npts)
             print('frac_missing,frac_crit',frac_missing,self.frac_crit)
             if (frac_missing>self.frac_crit):
-                raise UserWarning('Warning: Too many missing points. Rethink algorithm.')
+                if self.source in ['glorys12v1_zlev_d']:
+                    print('Letting this go as likely due to land points.')
+                else:
+                    raise UserWarning('Warning: Too many missing points. Rethink algorithm.')
         else:
             print('All grid points have > kmin values. No mask needed for counter.')
             lmask=False
