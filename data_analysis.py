@@ -1,7 +1,5 @@
 """Data analysis module using iris.
 
-Hello world.
-
 2018-04-25. New version for iris 2.
 
 Classes that provide iris data i/o wrappers to data analysis methods,
@@ -11,10 +9,6 @@ oceanographic gridded data.
 Author: Adrian Matthews
 
 Create documentation with pydoc -w data_analysis
-
-Programming style:
-
-Object oriented!
 
 Class methods typically set an attribute(s) of the class instance.
 They typically do not return an argument.
@@ -30,6 +24,12 @@ particular class attribute has been created)
 
 verbose=2 prints extended output (typically the value of that class
 attribute).
+
+A note on time handling and setting iris time constraints. In the
+process of phasing out use of datetime.datetime objects and replacing
+them with cftime.DatetimeGregorian objects, for data sets with a
+'gregorian' calendar. This is due to issues in iris with cftime and
+datetime datetime-like objects not being comparable.
 
 """
 
@@ -642,7 +642,7 @@ def block_times(aa,verbose=False):
     month: integer for current month, in range 1 to 12.
     calendar
 
-    Returns time,time2 which are datetime.datetime objects (if
+    Returns time,time2 which are cftime.DatetimeGregorian objects (if
     aa.calendar is 'gregorian') or cftime.Datetime360Day objects (if
     aa.calendar is '360_day') for the start and end times for the
     current block.  These are then typically used to create an iris
@@ -658,24 +658,22 @@ def block_times(aa,verbose=False):
 
     """
     timedelta_second=datetime.timedelta(seconds=1)
-    #timedelta_day=datetime.timedelta(days=1)
     if aa.calendar not in ['gregorian','360_day']:
         raise UserWarning('calendar not valid.')
     if aa.outfile_frequency=='year':
         if aa.calendar=='gregorian':
-            time1=datetime.datetime(aa.year,1,1) # 00:00:00 on 1 Jan
-            #time2=datetime.datetime(aa.year+1,1,1)-timedelta_second # 23:59:59 on 31 Dec
-            time2=datetime.datetime(aa.year,12,31,23,59,59) # 23:59:59 on 31 Dec
+            time1=cftime.DatetimeGregorian(aa.year,1,1) # 00:00:00 on 1 Jan
+            time2=cftime.DatetimeGregorian(aa.year,12,31,23,59,59) # 23:59:59 on 31 Dec
         elif aa.calendar=='360_day':
             time1=cftime.Datetime360Day(aa.year,1,1) # 00:00:00 on 1 Jan
             time2=cftime.Datetime360Day(aa.year,12,30,23,59,59) # 23:59:59 on 30 Dec
     elif aa.outfile_frequency=='month':
         if aa.calendar=='gregorian':
-            time1=datetime.datetime(aa.year,aa.month,1) # 00:00:00 on 1st of month
+            time1=cftime.DatetimeGregorian(aa.year,aa.month,1) # 00:00:00 on 1st of month
             if aa.month!=12:
-                time2=datetime.datetime(aa.year,aa.month+1,1)-timedelta_second # 23:59:59 on last of month
+                time2=cftime.DatetimeGregorian(aa.year,aa.month+1,1)-timedelta_second # 23:59:59 on last of month
             else:
-                time2=datetime.datetime(aa.year+1,1,1)-timedelta_second  # 23:59:59 on last of month
+                time2=cftime.DatetimeGregorian(aa.year+1,1,1)-timedelta_second  # 23:59:59 on last of month
         elif aa.calendar=='360_day':
             time1=cftime.Datetime360Day(aa.year,aa.month,1) # 00:00:00 on 1st of month
             time2=cftime.Datetime360Day(aa.year,aa.month,30,23,59,59) # 23:59:59 on 30th of month
@@ -1089,11 +1087,11 @@ def find_npd(source):
 #==========================================================================
 
 def set_time_constraint(time1,time2,calendar='gregorian',verbose=False):
-    """Set iris time constraint from datetime.datetime like object(s) according to calendar. 
+    """Set iris time constraint from datetime like object(s) according to calendar. 
     
     Inputs:
-    <time1> a datetime.datetime or cftime.Datetime360Day object
-    <time2> a datetime.datetime or cftime.Datetime360Day object or False
+    <time1> a cftime.DatetimeGregorian or cftime.Datetime360Day object
+    <time2> a cftime.DatetimeGregorian or cftime.Datetime360Day object or False
     <calendar> string to specify calendar
 
     Always call this function to set an iris time constraint, rather
@@ -1104,46 +1102,28 @@ def set_time_constraint(time1,time2,calendar='gregorian',verbose=False):
 
     This function is used as a single call to allow an iris time
     constraint to be set for data on either a gregorian or 360_day
-    calendar. Data with a gregorian calendar needs datetime.datetime
-    objects to set the time constraint. Date with a 360_day calendar
-    needs cftime.Datetime360Day objects to set the time
-    constraint. This function can take datetime.datetime objects and
-    then internally converts them to cftime.Datetime360day objects if
-    the calendar is 360_day before creating the iris time
-    constraint. Alternatively, if the calendar is 360_day then can
-    just pass cftime.Datetime360day objects to this function and it
-    will create a
+    calendar. Data with a gregorian calendar needs
+    cftime.DatetimeGregorian objects to set the time constraint. Date
+    with a 360_day calendar needs cftime.Datetime360Day objects to set
+    the time constraint.
 
     """
     if calendar=='gregorian':
-        # Check inputs are datetime.datetime objects
-        # Or cftime._cftime.real_datetime object, which seem to have crept in somewhere
-        # and appear to be equivalent to datetime.datetime objects?
-        dummydatetime=datetime.datetime(1900,1,1)
-        dummyrealdatetime=cftime._cftime.real_datetime(1900,1,1)
-        if type(time1) not in [type(dummydatetime),type(dummyrealdatetime)] or (time2 and type(time2)!=type(dummydatetime)):
-            raise UserWarning('calendar is gregorian. Inputs must be datetime.datetime or cftime._cftime.real_datetime objects.')
+        time1a=create_DatetimeGregorian(time1)
+        time2a=create_DatetimeGregorian(time2)
     elif calendar=='360_day':
-        # Create cftime.Datetime360Day objects to set time constraint
-        # NB inputs can be datetime.datetime or already cftime.Datetime360Day objects
         time1a=create_Datetime360Day(time1)
         time2a=create_Datetime360Day(time2)
     else:
         raise UserWarning('calendar not recognised.')
     if time2:
         # Set time constraint to be between time1 and time2, inclusive
-        if calendar=='gregorian':
-            time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
-        elif calendar=='360_day':
-            time_constraint=iris.Constraint(time=lambda cell: time1a<=cell.point<=time2a)
+        time_constraint=iris.Constraint(time=lambda cell: time1a<=cell.point<=time2a)
     else:
         # Set time constraint to be equal to time1 +/- small increment to
         # allow for rounding errors in time coordinates
         timedelta1=datetime.timedelta(seconds=1)
-        if calendar=='gregorian':
-            time_constraint=iris.Constraint(time=lambda cell: time1-timedelta1<=cell<=time1+timedelta1)
-        if calendar=='360_day':
-            time_constraint=iris.Constraint(time=lambda cell: time1a-timedelta1<=cell<=time1a+timedelta1)
+        time_constraint=iris.Constraint(time=lambda cell: time1a-timedelta1<=cell.point<=time1a+timedelta1)
     if verbose:
         ss=h2a+'set_time_constraint \n'+\
             ' calendar: {0!s}\n time1: {1!s}\n time2: {2!s}\n'+h2b
@@ -1160,6 +1140,19 @@ def create_Datetime360Day(time1):
     """
     if time1:
         return cftime.Datetime360Day(time1.year,time1.month,time1.day,time1.hour,time1.minute,time1.second)
+    else:
+        return time1
+
+#==========================================================================
+
+def create_DatetimeGregorian(time1):
+    """Return a cftime.DatetimeGregorian object from a datetime like object.
+    
+    Input: <time1> a datetime like object, e.g., a datetime.datetime
+    or cftime.Datetime360Day object, or False.
+    """
+    if time1:
+        return cftime.DatetimeGregorian(time1.year,time1.month,time1.day,time1.hour,time1.minute,time1.second)
     else:
         return time1
 
@@ -2736,14 +2729,14 @@ class DataConverter(object):
         if self.source=='trmm3b42v7_sfc_3h':
             tcoord=self.cube.coord('time')
             time_units=tcoord.units
-            t1=time_units.num2date(tcoord.points[0])
-            if t1==datetime.datetime(1998,1,1,3):
+            t1=create_DatetimeGregorian(time_units.num2date(tcoord.points[0]))
+            if t1==cftime.DatetimeGregorian(1998,1,1,3):
                 print('trmm3b42v7_sfc_3h. Copying 1998-01-01: 03 data to 1998-01-01: 00.')
-                time_constraint=iris.Constraint(time=t1)
+                time_constraint=set_time_constraint(t1)
                 x1=self.cube.extract(time_constraint)
                 x2=iris.util.new_axis(x1,'time') # promote time to dim coord
                 x2.remove_coord('time')
-                t_new=time_units.date2num(datetime.datetime(1998,1,1,0))
+                t_new=time_units.date2num(cftime.DatetimeGregorian(1998,1,1,0))
                 tcoord_new=iris.coords.DimCoord([t_new,],standard_name='time',var_name='time',units=time_units)
                 x2.add_dim_coord(tcoord_new,0)
                 x3=iris.cube.CubeList([x2,self.cube])
@@ -4981,11 +4974,11 @@ class AnnualCycle(object):
     self.outfile_frequency is 'year').
 
     self.time1: If False, calculate anomalies from annual cycle from
-    beginning of data set.  If datetime.datetime object, calculate
+    beginning of data set.  If datetime-like object, calculate
     anomalies from annual cycle from this time.
     
     self.time2: If False, calculate anomalies from annual cycle up to
-    end of data set.  If datetime.datetime object, calculate anomalies
+    end of data set.  If datetime-like object, calculate anomalies
     from annual cycle up to this time.
 
     """
@@ -5226,19 +5219,19 @@ class AnnualCycle(object):
             # First year
             yearc=self.year1
             # Extract 1 Jan to 28 Feb of current year
-            time1=datetime.datetime(yearc,1,1)
-            time2=datetime.datetime(yearc,2,28)
+            time1=cftime.DatetimeGregorian(yearc,1,1)
+            time2=cftime.DatetimeGregorian(yearc,2,28)
             print(time1,time2)
-            time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+            time_constraint=set_time_constraint(time1,time2,calendar=self.calendar)
             xx1=self.data_in.extract(time_constraint)
             janfeb=xx1.concatenate_cube()
             janfeb_counter,janfeb=create_counter_from_mask(janfeb,verbose=self.verbose)
             janfeb.remove_coord('time')
             # Extract 1 Mar to 31 Dec of current year
-            time1=datetime.datetime(yearc,3,1)
-            time2=datetime.datetime(yearc,12,31)
+            time1=cftime.DatetimeGregorian(yearc,3,1)
+            time2=cftime.DatetimeGregorian(yearc,12,31)
             print(time1,time2)
-            time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+            time_constraint=set_time_constraint(time1,time2,calendar=self.calendar)
             xx1=self.data_in.extract(time_constraint)
             mardec=xx1.concatenate_cube()
             mardec_counter,mardec=create_counter_from_mask(mardec,verbose=self.verbose)
@@ -5252,19 +5245,19 @@ class AnnualCycle(object):
                 if self.data_source=='olrinterp' and yearc==1978:
                     raise UserWarning('Cannot use 1978 for olrinterp because of missing data.')
                 # Extract 1 Jan to 28 Feb of current year
-                time1=datetime.datetime(yearc,1,1)
-                time2=datetime.datetime(yearc,2,28)
+                time1=cftime.DatetimeGregorian(yearc,1,1)
+                time2=cftime.DatetimeGregorian(yearc,2,28)
                 print(time1,time2)
-                time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+                time_constraint=set_time_constraint(time1,time2,calendar=self.calendar)
                 xx1=self.data_in.extract(time_constraint)
                 janfebc=xx1.concatenate_cube()
                 janfeb_counterc,janfebc=create_counter_from_mask(janfebc,verbose=self.verbose)
                 janfebc.remove_coord('time')
                 # Extract 1 Mar to 31 Dec of current year
-                time1=datetime.datetime(yearc,3,1)
-                time2=datetime.datetime(yearc,12,31)
+                time1=cftime.DatetimeGregorian(yearc,3,1)
+                time2=cftime.DatetimeGregorian(yearc,12,31)
                 print(time1,time2)
-                time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+                time_constraint=set_time_constraint(time1,time2,calendar=self.calendar)
                 xx1=self.data_in.extract(time_constraint)
                 mardecc=xx1.concatenate_cube()
                 mardec_counterc,mardecc=create_counter_from_mask(mardecc,verbose=self.verbose)
@@ -5277,7 +5270,7 @@ class AnnualCycle(object):
             # Save units and copy them back later
             units=janfeb.units
             # Create and add a time coordinate for year yearac, and attributes
-            time_first=datetime.datetime(year=self.yearac,month=1,day=1)
+            time_first=cftime.DatetimeGregorian(year=self.yearac,month=1,day=1)
             time_units='days since '+str(time_first)
             # janfeb
             time_val=np.arange(59)
@@ -5304,7 +5297,7 @@ class AnnualCycle(object):
             time1=cftime.Datetime360Day(yearc,1,1)
             time2=cftime.Datetime360Day(yearc,12,30)
             print(time1,time2)
-            time_constraint=iris.Constraint(time=lambda cell: time1<=cell.point<=time2)
+            time_constraint=set_time_constraint(time1,time2,calendar=self.calendar)
             xx1=self.data_in.extract(time_constraint)
             allyear=xx1.concatenate_cube()
             allyear_counter,allyear=create_counter_from_mask(allyear,verbose=self.verbose)
@@ -5315,7 +5308,7 @@ class AnnualCycle(object):
                 time1=cftime.Datetime360Day(yearc,1,1)
                 time2=cftime.Datetime360Day(yearc,12,30)
                 print(time1,time2)
-                time_constraint=iris.Constraint(time=lambda cell: time1<=cell.point<=time2)
+                time_constraint=set_time_constraint(time1,time2,calendar=self.calendar)
                 xx1=self.data_in.extract(time_constraint)
                 allyearc=xx1.concatenate_cube()
                 allyear_counterc,allyearc=create_counter_from_mask(allyearc,verbose=self.verbose)
@@ -5507,17 +5500,17 @@ class AnnualCycle(object):
             # Use year self.yearacleap for this, as this is a leap year.
             time_units_leap='days since '+str(self.yearacleap).zfill(4)+'-01-01 00:00:0.0'
             # 1 Jan to 28 Feb of smoothed annual cycle
-            time1=datetime.datetime(self.yearac,1,1)
-            time2=datetime.datetime(self.yearac,2,28)
-            time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+            time1=cftime.DatetimeGregorian(self.yearac,1,1)
+            time2=cftime.DatetimeGregorian(self.yearac,2,28)
+            time_constraint=set_time_constraint(time1,time2,calendar=self.calendar)
             janfeb=xx4.extract(time_constraint)
             time_val=janfeb.coord('time').points
             tcoord2=iris.coords.DimCoord(time_val,standard_name='time',var_name='time',units=time_units_leap)
             janfeb.remove_coord('time')
             janfeb.add_dim_coord(tcoord2,0)
             # 29 Feb only of smoothed annual cycle. Copy of 28 Feb data.
-            time1=datetime.datetime(self.yearac,2,28)
-            time_constraint=iris.Constraint(time=time1)
+            time1=cftime.DatetimeGregorian(self.yearac,2,28)
+            time_constraint=set_time_constraint(time1,False,calendar=self.calendar)
             feb29=xx4.extract(time_constraint)
             feb29=iris.util.new_axis(feb29,'time') # Promote singleton aux coord to dim coord
             time_val=np.array([59,]) # Julian day number for 29 Feb
@@ -5525,9 +5518,9 @@ class AnnualCycle(object):
             feb29.remove_coord('time')
             feb29.add_dim_coord(tcoord2,0)
             # 1 Mar to 31 Dec of smoothed annual cycle
-            time1=datetime.datetime(self.yearac,3,1)
-            time2=datetime.datetime(self.yearac,12,31)
-            time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+            time1=cftime.DatetimeGregorian(self.yearac,3,1)
+            time2=cftime.DatetimeGregorian(self.yearac,12,31)
+            time_constraint=set_time_constraint(time1,time2,calendar=self.calendar)
             mardec=xx4.extract(time_constraint)
             time_val=mardec.coord('time').points+1
             tcoord2=iris.coords.DimCoord(time_val,standard_name='time',var_name='time',units=time_units_leap)
@@ -5659,14 +5652,14 @@ class AnnualCycle(object):
             print('yearc,leap: {0!s}, {1!s}'.format(yearc,leap))
             # Set start and end times for input and anncycle data
             if self.calendar=='gregorian':
-                time_beg_in=datetime.datetime(yearc,1,1,0,0)
+                time_beg_in=cftime.DatetimeGregorian(yearc,1,1,0,0)
                 if time_beg_in<self.time1:
                     time_beg_in=self.time1
-                time_end_in=datetime.datetime(yearc,12,31,23,59)
+                time_end_in=cftime.DatetimeGregorian(yearc,12,31,23,59)
                 if time_end_in>self.time2:
                     time_end_in=self.time2
-                time_beg_anncycle=datetime.datetime(smooth_year_number,time_beg_in.month,time_beg_in.day,0,0)
-                time_end_anncycle=datetime.datetime(smooth_year_number,time_end_in.month,time_end_in.day,23,59)
+                time_beg_anncycle=cftime.DatetimeGregorian(smooth_year_number,time_beg_in.month,time_beg_in.day,0,0)
+                time_end_anncycle=cftime.DatetimeGregorian(smooth_year_number,time_end_in.month,time_end_in.day,23,59)
             elif self.calendar=='360_day':
                 time_beg_in=cftime.Datetime360Day(yearc,1,1,0,0)
                 if time_beg_in<self.time1:
@@ -5734,11 +5727,11 @@ class AnnualCycle(object):
                     fileout=replace_wildcard_with_time(self,self.file_anncycle_rm)
                     print('fileout: {0!s}'.format(fileout))
                     if self.calendar=='gregorian':
-                        time1=datetime.datetime(yearc,monthc,1)
+                        time1=cftime.DatetimeGregorian(yearc,monthc,1)
                         if monthc!=12:
-                            time2=datetime.datetime(yearc,monthc+1,1)
+                            time2=cftime.DatetimeGregorian(yearc,monthc+1,1)
                         else:
-                            time2=datetime.datetime(yearc+1,1,1)
+                            time2=cftime.DatetimeGregorian(yearc+1,1,1)
                         time2-=datetime.timedelta(days=1)
                     elif self.calendar=='360_day':
                         time1=cftime.Datetime360Day(yearc,monthc,1)
