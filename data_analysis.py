@@ -25,11 +25,11 @@ particular class attribute has been created)
 verbose=2 prints extended output (typically the value of that class
 attribute).
 
-A note on time handling and setting iris time constraints. In the
-process of phasing out use of datetime.datetime objects and replacing
-them with cftime.DatetimeGregorian objects, for data sets with a
-'gregorian' calendar. This is due to issues in iris with cftime and
-datetime datetime-like objects not being comparable.
+A note on time handling and setting iris time constraints. Have phased
+out all use of datetime.datetime objects and replaced them with
+cftime.DatetimeGregorian objects, for data sets with a 'gregorian'
+calendar. This is due to issues in iris with cftime and datetime
+datetime-like objects not being comparable.
 
 """
 
@@ -921,8 +921,8 @@ def concatenate_cube(cubelist):
 
     Example:
     x1=iris.load('uwnd_200_????.nc') # Load data stored in single file per year
-    time1=datetime.datetime(1994,12,31)
-    time2=datetime.datetime(1995,1,6)
+    time1=cftime.DatetimeGregorian(1994,12,31)
+    time2=cftime.DatetimeGregorian(1995,1,6)
     time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
     x3=x2.concatenate_cube()
 
@@ -1133,10 +1133,9 @@ def set_time_constraint(time1,time2,calendar='gregorian',verbose=False):
 #==========================================================================
 
 def create_Datetime360Day(time1):
-    """Return a cftime.Datetime360Day object from a datetime like object.
+    """Return a cftime.Datetime360Day object from a datetime-like object.
     
-    Input: <time1> a datetime like object, e.g., a datetime.datetime
-    or cftime.Datetime360Day object, or False.
+    Input: <time1> a datetime-like object, or False.
     """
     if time1:
         return cftime.Datetime360Day(time1.year,time1.month,time1.day,time1.hour,time1.minute,time1.second)
@@ -1146,26 +1145,12 @@ def create_Datetime360Day(time1):
 #==========================================================================
 
 def create_DatetimeGregorian(time1):
-    """Return a cftime.DatetimeGregorian object from a datetime like object.
+    """Return a cftime.DatetimeGregorian object from a datetime-like object.
     
-    Input: <time1> a datetime like object, e.g., a datetime.datetime
-    or cftime.Datetime360Day object, or False.
+    Input: <time1> a datetime-like object, e.g., or False.
     """
     if time1:
         return cftime.DatetimeGregorian(time1.year,time1.month,time1.day,time1.hour,time1.minute,time1.second)
-    else:
-        return time1
-
-#==========================================================================
-
-def create_datetime(time1):
-    """Return a datetime.datetime object from a datetime like object.
-    
-    Input: <time1> a datetime like object, e.g., a datetime.datetime
-    or cftime.Datetime360Day object, or False.
-    """
-    if time1:
-        return datetime.datetime(time1.year,time1.month,time1.day,time1.hour,time1.minute,time1.second)
     else:
         return time1
 
@@ -1411,29 +1396,6 @@ def f_south2north(cube,verbose=False):
 
 #==========================================================================
 
-def add_month(dt,verbose=False):
-    """Add month to datetime and return new datetime.datetime object."""
-    yearc=dt.year
-    monthc=dt.month
-    dayc=dt.day
-    hourc=dt.hour
-    minutec=dt.minute
-    secondc=dt.second
-    monthnew=monthc+1
-    if monthnew==13:
-        monthnew=1
-        yearnew=yearc+1
-    else:
-        yearnew=yearc
-    dtnew=datetime.datetime(yearnew,monthnew,dayc,hourc,minutec,secondc)
-    if verbose:
-        print('# add_month')
-        print(dt)
-        print(dtnew)
-    return dtnew
-
-#==========================================================================
-
 def f_diurnal_cycle_cube(cube_in,source,verbose=True):
     """Calculate mean diurnal cycle from iris cube.
 
@@ -1481,7 +1443,7 @@ def f_diurnal_cycle_cube(cube_in,source,verbose=True):
         x4=x3.collapsed('time',iris.analysis.MEAN)
         # Set time axis for diurnal cycle contribution to 1 Jan 1000
         time1=tunits.num2date(tcoordii.points[0])
-        timec=datetime.datetime(1000,1,1,time1.hour,time1.minute,time1.second)
+        timec=cftime.DatetimeGregorian(1000,1,1,time1.hour,time1.minute,time1.second)
         timecval=tunitsdc.date2num(timec)
         tcoordc=iris.coords.DimCoord([timecval],standard_name='time',units=tunitsdc)
         x5=create_cube(x4.data.reshape((1,)+x4.shape),x1,new_axis=tcoordc)
@@ -1628,13 +1590,13 @@ class TimeDomain(object):
     in time domain, if time domain is of type 'event'.
 
     Note on calendars. The TimeDomain class works with
-    datetime.datetime objects which implicitly assume a gregorian
-    calendar. When using 360_day calendar data, still use the
-    TimeDomain class, and call the set_time_constraint function when
-    creating iris time constraints from the TimeDomain
-    datetime.datetime objects. This will convert the datetime.datetime
-    objects to cftime.Datetime360Day objects needed to extract 360_day
-    calendar data.
+    cftime.DatetimeGregorian objects which implicitly assume a
+    gregorian calendar. When using 360_day calendar data, still use
+    the TimeDomain class, and call the set_time_constraint function
+    when creating iris time constraints from the TimeDomain
+    cftime.DatetimeGregorian objects. This will convert the
+    cftime.DatetimeGregorian objects to cftime.Datetime360Day objects
+    needed to extract 360_day calendar data.
 
     However, the actual dates in a time domain might have to change
     according to the calendar. For example, a JJA average time domain
@@ -1737,7 +1699,7 @@ class TimeDomain(object):
                 microsecond='%06d' % (1000000*int(t1a[index_decimal_point+1:]))
                 t1b=t1a[:index_colon+1]+second+':'+microsecond
                 # Convert string time to a datetime object and append
-                xx=datetime.datetime.strptime(t1b,self._format2datetime)
+                xx=cftime.DatetimeGregorian.strptime(t1b,self._format2datetime)
                 datetimes_row.append(xx)
             # Append this row of datetime objects to master list
             datetimes.append(datetimes_row)
@@ -1800,7 +1762,7 @@ class TimeDomain(object):
                 # 'event' type
                 for t1 in row:
                     decimal_second=str(t1.second+float(t1.microsecond)/1e6)
-                    xx=datetime.datetime.strftime(t1,self._format2ascii)+':'+decimal_second+', '
+                    xx=cftime.DatetimeGregorian.strftime(t1,self._format2ascii)+':'+decimal_second+', '
                     lines_row+=xx
                 # Remove the final ', ' from the last time
                 lines_row=lines_row[:-2]
@@ -1808,7 +1770,7 @@ class TimeDomain(object):
                 # 'single' type
                 t1=row
                 decimal_second=str(t1.second+float(t1.microsecond)/1e6)
-                xx=datetime.datetime.strftime(t1,self._format2ascii)+':'+decimal_second
+                xx=cftime.DatetimeGregorian.strftime(t1,self._format2ascii)+':'+decimal_second
                 lines_row+=xx
             # Add newline character
             lines_row+='\n'
@@ -1870,44 +1832,44 @@ class TimeDomain(object):
             header1='# '+indexname+': '
             if counter=='001':
                 header1+='Index amplitude >=1, time range 1 Jan 1979 to 31 Dec 2015 \n'
-                time1=datetime.datetime(1979,1,1)
-                time2=datetime.datetime(2015,12,31)
-                time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+                time1=cftime.DatetimeGregorian(1979,1,1)
+                time2=cftime.DatetimeGregorian(2015,12,31)
+                time_constraint=set_time_constraint(time1,time2,calendar='gregorian')
                 amp_threshold=1
             elif counter=='002':
                 header1+='Index amplitude >=0.75, time range 1 Jan 1979 to 31 Dec 2015 \n'
-                time1=datetime.datetime(1979,1,1)
-                time2=datetime.datetime(2015,12,31)
-                time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+                time1=cftime.DatetimeGregorian(1979,1,1)
+                time2=cftime.DatetimeGregorian(2015,12,31)
+                time_constraint=set_time_constraint(time1,time2,calendar='gregorian')
                 amp_threshold=0.75
             elif counter=='003':
                 # Same conditions as Fig. 9 in Lee et al. (2013)
                 header1+='Index amplitude >=1.5, time range 1 Jan 1981 to 31 Dec 2010 \n'
-                time1=datetime.datetime(1981,1,1)
-                time2=datetime.datetime(2010,12,31)
-                time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+                time1=cftime.DatetimeGregorian(1981,1,1)
+                time2=cftime.DatetimeGregorian(2010,12,31)
+                time_constraint=set_time_constraint(time1,time2,calendar='gregorian')
                 amp_threshold=1.5
             elif counter=='004':
                 # As '001', but only from 1980-2014 because of loss
                 # of ends of data set from time filtering
                 header1+='Index amplitude >=1, time range 1 Jan 1980 to 31 Dec 2014 \n'
-                time1=datetime.datetime(1980,1,1)
-                time2=datetime.datetime(2014,12,31)
-                time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+                time1=cftime.DatetimeGregorian(1980,1,1)
+                time2=cftime.DatetimeGregorian(2014,12,31)
+                time_constraint=set_time_constraint(time1,time2,calendar='gregorian')
                 amp_threshold=1
             elif counter=='005':
                 # As '001', but for 1998-2018
                 header1+='Index amplitude >=1, time range 1 Jan 1998 to 31 Dec 2018 \n'
-                time1=datetime.datetime(1998,1,1)
-                time2=datetime.datetime(2018,12,31)
-                time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+                time1=cftime.DatetimeGregorian(1998,1,1)
+                time2=cftime.DatetimeGregorian(2018,12,31)
+                time_constraint=set_time_constraint(time1,time2,calendar='gregorian')
                 amp_threshold=1
             elif counter=='006':
                 # As '005', but for 1999-2017
                 header1+='Index amplitude >=1, time range 1 Jan 1998 to 31 Dec 2018 \n'
-                time1=datetime.datetime(1999,1,1)
-                time2=datetime.datetime(2017,12,31)
-                time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+                time1=cftime.DatetimeGregorian(1999,1,1)
+                time2=cftime.DatetimeGregorian(2017,12,31)
+                time_constraint=set_time_constraint(time1,time2,calendar='gregorian')
                 amp_threshold=1
             else:
                 raise UserWarning('Counter is not valid.')
@@ -1955,7 +1917,7 @@ class TimeDomain(object):
             flag_previous_time=False
             flag_current_time=False
             datetimes_list=[]
-            # Create list of datetime.datetime pairs of (start,end) dates
+            # Create list of datetime pairs of (start,end) dates
             #   for events
             # Loop over time
             for timevalc in time_coord.points:
@@ -2121,7 +2083,7 @@ class TimeDomain(object):
 
         max_day_shift : integer (typical value 15)
 
-        time_first, time_last : datetime.datetime objects
+        time_first, time_last : cftime.DatetimeGregorian objects
         corresponding to the time range of the data this randomised
         time domain will be applied to.
         
@@ -2153,7 +2115,7 @@ class TimeDomain(object):
             while not checked_valid_time_range:
                 year_rand=random.randrange(time_first.year,time_last.year+1)
                 day_increment_rand=random.randrange(-max_day_shift,max_day_shift+1)
-                dt0_rand=datetime.datetime(year_rand,dt0.month,dt0.day,dt0.hour,dt0.minute,dt0.second)+datetime.timedelta(days=day_increment_rand)
+                dt0_rand=cftime.DatetimeGregorian(year_rand,dt0.month,dt0.day,dt0.hour,dt0.minute,dt0.second)+datetime.timedelta(days=day_increment_rand)
                 print(year_rand,day_increment_rand,dt0,dt0_rand)
                 # If type is 'event' change end datetime consistently to preserve time difference between start and end time of this datetime pair
                 if self.type=='event':
@@ -2834,7 +2796,7 @@ class TimeDomStats(object):
     randomisation of time domain times for use in calculation of null
     distribution.
 
-    self.time_first : datetime.datetime object that is first (i.e.,
+    self.time_first : cftime.DatetimeGregorian object that is first (i.e.,
     lowest) allowable date for the randomised times in the Monte Carlo
     simulation.
 
@@ -3201,7 +3163,7 @@ class TimeDomStats(object):
             self.nlags=len(tcoord.points)
             print('nlags: {0.nlags!s}'.format(self))
             lag_units=cf_units.Unit(timelag_units,calendar=self.calendar)
-            lag_first=datetime.datetime(1000,1,1)+delta_beg
+            lag_first=cftime.DatetimeGregorian(1000,1,1)+delta_beg
             lag_vals=[lag_units.date2num(lag_first+xx*self.timedelta).round(8) for xx in range(self.nlags)]
             lag_coord=iris.coords.DimCoord(lag_vals,standard_name='time',units=timelag_units)
             print('lag_coord: {0!s}'.format(lag_coord))
@@ -3269,8 +3231,8 @@ class TimeDomStats(object):
         first_day=xx[0]
         last_day=xx[-1]
         print('first_day,last_day: {0!s}, {1!s}'.format(first_day,last_day))
-        time1=datetime.datetime(first_day.year,first_day.month,first_day.day)
-        time2=datetime.datetime(first_day.year,first_day.month,first_day.day,23,59,59)
+        time1=cftime.DatetimeGregorian(first_day.year,first_day.month,first_day.day)
+        time2=cftime.DatetimeGregorian(first_day.year,first_day.month,first_day.day,23,59,59)
         time_constraint=set_time_constraint(time1,time2,calendar=self.calendar,verbose=self.verbose)
         x1=self.data_in.extract(time_constraint)
         x1=x1.concatenate_cube()
@@ -3298,7 +3260,7 @@ class TimeDomStats(object):
         time_units=tc.units
         x2=[tc.units.num2date(xx) for xx in tc.points]
         # Reset these times to year=1,month=1,day=1
-        times_datetime=[datetime.datetime(1,1,1,xx.hour,xx.minute,xx.second) for xx in x2]
+        times_datetime=[cftime.DatetimeGregorian(1,1,1,xx.hour,xx.minute,xx.second) for xx in x2]
         times_val=[time_units.date2num(xx) for xx in times_datetime]
         time_coord=iris.coords.DimCoord(times_val,standard_name='time',units=time_units)
         print('times_datetime: {0!s}'.format(times_datetime))
@@ -3310,7 +3272,7 @@ class TimeDomStats(object):
         time1+=timedelta_day
         time2+=timedelta_day
         while time1<=last_day:
-            raise ToDoError('Recode time constraint to use datetime.datetime')
+            raise ToDoError('Recode time constraint to use cftime.DatetimeGregorian')
             time_constraint=set_time_constraint(time1,time2,calendar=self.calendar,verbose=self.verbose)
             x1=self.data_in.extract(time_constraint)
             x1=x1.concatenate_cube()
@@ -3329,10 +3291,10 @@ class TimeDomStats(object):
             first_day=xx[0]
             last_day=xx[-1]
             print('first_day,last_day: {0!s}, {1!s}'.format(first_day,last_day))
-            time1=datetime.datetime(first_day.year,first_day.month,first_day.day)
-            time2=datetime.datetime(first_day.year,first_day.month,first_day.day,23,59,59)
+            time1=cftime.DatetimeGregorian(first_day.year,first_day.month,first_day.day)
+            time2=cftime.DatetimeGregorian(first_day.year,first_day.month,first_day.day,23,59,59)
             while time1<=last_day:
-                raise ToDoError('Recode time constraint to use datetime.datetime')
+                raise ToDoError('Recode time constraint to use cftime.DatetimeGregorian')
                 time_constraint=set_time_constraint(time1,time2,calendar=self.calendar,verbose=self.verbose)
                 x1=self.data_in.extract(time_constraint)
                 x1=x1.concatenate_cube()
@@ -3363,7 +3325,7 @@ class TimeDomStats(object):
         if double:
             print('Create a double diurnal cycle (ie two identical days)')
             # Create a new time axis for 2 Jan year 1
-            times_datetime=[datetime.datetime(1,1,2,xx.hour,xx.minute,xx.second) for xx in x2]
+            times_datetime=[cftime.DatetimeGregorian(1,1,2,xx.hour,xx.minute,xx.second) for xx in x2]
             times_val=[time_units.date2num(xx) for xx in times_datetime]
             time_coord=iris.coords.DimCoord(times_val,standard_name='time',units=time_units)
             print('times_datetime: {0!s}'.format(times_datetime))
@@ -5771,10 +5733,10 @@ class GliderMission(object):
 
     self.gliderids : list of integer glider ids for mission
 
-    self.time1 : datetime.datetime object for 00 UTC on day of
+    self.time1 : cftime.DatetimeGregorian object for 00 UTC on day of
     deployment of first glider in mission
 
-    self.time2 : datetime.datetime object for 00 UTC on day after
+    self.time2 : cftime.DatetimeGregorian object for 00 UTC on day after
     recovery of last glider in mission
 
     """
@@ -5790,8 +5752,8 @@ class GliderMission(object):
         self.name=var_name2long_name[self.var_name]
         if self.mission==31:
             self.gliderids=[579,534,532,620,613]
-            self.time1=datetime.datetime(2016,6,30)
-            self.time2=datetime.datetime(2016,7,21)
+            self.time1=cftime.DatetimeGregorian(2016,6,30)
+            self.time2=cftime.DatetimeGregorian(2016,7,21)
         else:
             raise UserWarning('Invalid mission')
         # self.gliders is a dictionary of glider objects
@@ -6989,9 +6951,9 @@ class CubeDiagnostics(object):
         tcoord_anncycle=vrtbar.coord('time')
         anncycle_year=tcoord_anncycle.units.num2date(tcoord_anncycle.points[0]).year
         xx=self.time1
-        x1=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        x1=cftime.DatetimeGregorian(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
         xx=self.time2
-        x2=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        x2=cftime.DatetimeGregorian(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
         print('anncycle_year,x1,x2: {0!s}, {1!s}, {2!s}'.format(anncycle_year,x1,x2))
         time_anncycle_constraint=set_time_constraint(x1,x2,calendar=self.calendar)
         vrtbar=vrtbar.extract(time_anncycle_constraint)
@@ -7226,9 +7188,9 @@ class CubeDiagnostics(object):
         tcoord_anncycle=uwndbar.coord('time')
         anncycle_year=tcoord_anncycle.units.num2date(tcoord_anncycle.points[0]).year
         xx=self.time1
-        x1=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        x1=cftime.DatetimeGregorian(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
         xx=self.time2
-        x2=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        x2=cftime.DatetimeGregorian(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
         print('anncycle_year,x1,x2: {0!s}, {1!s}, {2!s}'.format(anncycle_year,x1,x2))
         time_anncycle_constraint=set_time_constraint(x1,x2,calendar=self.calendar)
         uwndbar=uwndbar.extract(time_anncycle_constraint)
@@ -7481,9 +7443,9 @@ class CubeDiagnostics(object):
         tcoord_anncycle=vwndbar.coord('time')
         anncycle_year=tcoord_anncycle.units.num2date(tcoord_anncycle.points[0]).year
         xx=self.time1
-        x1=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        x1=cftime.DatetimeGregorian(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
         xx=self.time2
-        x2=datetime.datetime(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
+        x2=cftime.DatetimeGregorian(anncycle_year,xx.month,xx.day,xx.hour,xx.minute)
         print('anncycle_year,x1,x2: {0!s}, {1!s}, {2!s}'.format(anncycle_year,x1,x2))
         time_anncycle_constraint=set_time_constraint(x1,x2,calendar=self.calendar)
         vwndbar=vwndbar.extract(time_anncycle_constraint)
@@ -9490,8 +9452,8 @@ class CCEWLagrangian(object):
            longitude indices of the maxima (the 1's) in
            self.data_hovmax.
 
-           'times' : a list of length npts of datetime.datetime or
-           similar objects corresponding to the actual times of the
+           'times' : a list of length npts of datetime-like or similar
+           objects corresponding to the actual times of the
            time_indices.
 
            'lons' : a list of length npts of longitude values
@@ -9984,7 +9946,7 @@ class CCEWLagrangian(object):
                 # Round time if required
                 if self.round_to_nearest_time=='d':
                     if self.calendar=='gregorian':
-                        xx=datetime.datetime(timec.year,timec.month,timec.day)
+                        xx=cftime.DatetimeGregorian(timec.year,timec.month,timec.day)
                         if timec.hour>=12:
                             xx=xx+datetime.timedelta(days=1)
                         timec=xx
@@ -9994,7 +9956,7 @@ class CCEWLagrangian(object):
                     if self.calendar=='gregorian':
                         deltahour=6
                         x1,x2=divmod(timec.hour,deltahour)
-                        xx=datetime.datetime(timec.year,timec.month,timec.day,x1*deltahour) # round down to previous 6h
+                        xx=cftime.DatetimeGregorian(timec.year,timec.month,timec.day,x1*deltahour) # round down to previous 6h
                         if x2>=deltahour/2:
                             xx=xx+datetime.timedelta(hours=deltahour) # round up to next 6h
                         print('timec,xx: {0!s}, {1!s}'.format(timec,xx))
@@ -10008,7 +9970,7 @@ class CCEWLagrangian(object):
         crossing_times.sort()
         # Create list of paired (start_time,end_time) at (00UTC,23:59:59UTC)
         if self.calendar=='gregorian':
-            crossing_times2=[[datetime.datetime(xx.year,xx.month,xx.day),datetime.datetime(xx.year,xx.month,xx.day,23,59,59)] for xx in crossing_times]
+            crossing_times2=[[cftime.DatetimeGregorian(xx.year,xx.month,xx.day),cftime.DatetimeGregorian(xx.year,xx.month,xx.day,23,59,59)] for xx in crossing_times]
         else:
             raise ToDoError('Code up for non-Gregorian calendar.')
         # Create time domain
