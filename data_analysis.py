@@ -29,7 +29,9 @@ A note on time handling and setting iris time constraints. Have phased
 out all use of datetime.datetime objects and replaced them with
 cftime.DatetimeGregorian objects, for data sets with a 'gregorian'
 calendar. This is due to issues in iris with cftime and datetime
-datetime-like objects not being comparable.
+datetime-like objects not being comparable.  Also, always use the
+set_time_constraint function rather than calling
+iris.Constraint(time=...) directly.
 
 """
 
@@ -923,7 +925,7 @@ def concatenate_cube(cubelist):
     x1=iris.load('uwnd_200_????.nc') # Load data stored in single file per year
     time1=cftime.DatetimeGregorian(1994,12,31)
     time2=cftime.DatetimeGregorian(1995,1,6)
-    time_constraint=iris.Constraint(time=lambda cell: time1<=cell<=time2)
+    time_constraint=set_time_constraint(time1,time2)
     x3=x2.concatenate_cube()
 
     x2 is a cube list containing two cubes.  The first cube only has
@@ -1480,7 +1482,7 @@ def f_subtract_diurnal_cycle_cube(cube_in,cube_dc,verbose=True):
         timec=tunits.num2date(timecval)
         timec_dc=cftime.DatetimeGregorian(1000,1,1,timec.hour,timec.minute,timec.second)
         print('ii,timecval,timec,timec_dc: {0!s}, {1!s}, {2!s}, {3!s}'.format(ii,timecval,timec,timec_dc))
-        time_constraint=iris.Constraint(time=timec_dc)
+        time_constraint=set_time_constraint(timec_dc,False)
         xx_dc=cube_dc.extract(time_constraint)
         x1[ii]=xx_dc.data
     # Subtract diurnal cycle
