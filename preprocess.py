@@ -38,10 +38,10 @@ FILE_MASK=False # Default value
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_3h'
 VAR_NAME='ucur'; LEVEL=0.494025; SOURCE='glorys12v1_zlev_d'
 
-YEAR_BEG=2018; YEAR_END=2018 # if outfile_frequency is 'year' or less
+YEAR_BEG=2005; YEAR_END=2010 # if outfile_frequency is 'year' or less
 
 #MONTH1=MONTH2=-999 # if outfile_frequency is 'year'
-MONTH1=12; MONTH2=12 # if outfile_frequency is less than 'year'
+MONTH1=1; MONTH2=12 # if outfile_frequency is less than 'year'
 
 PLOT=False
 

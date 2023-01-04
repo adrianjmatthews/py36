@@ -1,11 +1,12 @@
 """Spectrally truncate iris cube."""
 
-import datetime
 import os
 
+import cftime
 import iris
 import iris.quickplot as qplt
 import matplotlib.pyplot as plt
+import pdb
 from windspharm.iris import VectorWind
 
 import data_analysis as da
@@ -14,13 +15,13 @@ BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 TRUNCATION=42 # Triangular truncation limit
 
-SOURCE1='erainterim_plev_d'
+SOURCE1='erainterimNEK1_plev_6h'
 SUBDIR='processed'
-VAR_NAME='mf_lambda'
-TDOMAINID='djf1999'
-FILENAME=VAR_NAME+'_500_'+TDOMAINID+'.nc'
+VAR_NAME='vwnd'
+TDOMAINID='CCEK75E98-18-0.5-6h'
+FILENAME=VAR_NAME+'_850_'+TDOMAINID+'_lag.nc'
 
-PLOT=True
+PLOT=False
 
 VERBOSE=2
 
@@ -50,7 +51,7 @@ iris.save(cube_out,fileout1)
 if PLOT:
     print('# Plot')
 
-    #time1=datetime.datetime(1000,1,1) # lag 0 is 1 Jan 1000
+    #time1=cftime.DatetimeGregorian(1000,1,1) # lag 0 is 1 Jan 1000
     #time_constraint=iris.Constraint(time=time1)
     #x1=cube_in.intersection(longitude=(75,255),latitude=(-50,5))
     #y1=cube_out.intersection(longitude=(75,255),latitude=(-50,5))

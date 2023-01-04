@@ -1,6 +1,6 @@
 """Ad hoc script to calculate dependence of extreme precip at location on CCKW existence."""
 
-import datetime
+import cftime
 
 import data_analysis as da
 
@@ -8,8 +8,8 @@ TDOMAINID1='CCEK102E98-20-00UTC' # time domain for CCKW crossing times at locati
 TDOMAINID2='M0003' # time domain for dates of extreme precip at location
 
 # (Start,end) valid time range for subsequent analysis
-TIME1=datetime.datetime(1998,1,1)
-TIME2=datetime.datetime(2020,12,31)
+TIME1=cftime.DatetimeGregorian(1998,1,1)
+TIME2=cftime.DatetimeGregorian(2020,12,31)
 
 VERBOSE=True
 

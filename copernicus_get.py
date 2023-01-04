@@ -4,10 +4,10 @@ Run this script from ada.  Can run interactively, but best to run as batch job.
 
 """
 
-import datetime
 import os
 
 import cdsapi
+import cftime
 import iris
 import iris.quickplot as qplt
 import matplotlib.pyplot as plt
@@ -18,14 +18,14 @@ import info
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-SDOMAIN='mcw'
+SDOMAIN='ewa'
 
-VAR_NAME='uwnd'; LEVEL=850; SOURCE='era5'+SDOMAIN+'_plev_h'
+VAR_NAME='vwnd'; LEVEL=850; SOURCE='era5'+SDOMAIN+'_plev_h'
 #VAR_NAME='ta'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
 
 YEAR_BEG=2020; YEAR_END=2020 # if outfile_frequency is 'year' or less
-MONTH1=1; MONTH2=1 # if outfile_frequency is less than 'year'
+MONTH1=2; MONTH2=5 # if outfile_frequency is less than 'year'
 
 DOWNLOAD=True
 
@@ -79,11 +79,11 @@ for year in range(YEAR_BEG,YEAR_END+1):
         print('### year={0!s} month={1!s}'.format(year,month))
 
         # Create list of day numbers
-        t1=datetime.datetime(year,month,1)
+        t1=cftime.DatetimeGregorian(year,month,1)
         if month<12:
-            t2=datetime.datetime(year,month+1,1)-datetime.timedelta(days=1)
+            t2=cftime.DatetimeGregorian(year,month+1,1)-datetime.timedelta(days=1)
         else:
-            t2=datetime.datetime(year+1,1,1)-datetime.timedelta(days=1)
+            t2=cftime.DatetimeGregorian(year+1,1,1)-datetime.timedelta(days=1)
         ndays=t2.day
         print('year,month,ndays: {0!s}, {1!s}, {2!s}'.format(year,month,ndays))
         daylist=[str(xx).zfill(2) for xx in range(1,ndays+1)]

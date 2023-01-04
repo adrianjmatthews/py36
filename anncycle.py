@@ -1,8 +1,8 @@
 """Calculate and subtract annual cycle using data_analysis.AnnualCycle."""
 
-import datetime
 import os
 
+import cftime
 import iris
 import iris.quickplot as qplt
 import matplotlib.pyplot as plt
@@ -32,10 +32,10 @@ VAR_NAME='ucur'; LEVEL=0.494025; SOURCE='glorys12v1_zlev_d'; YEAR1=2005; YEAR2=2
 # If TIME1 is datetime object and TIME2 is False, calculated from TIME1 to end
 # If TIME1 is False and TIME2 is datetime, calculated from start to TIME2
 # If TIME1 and TIME2 are datetime, calculated from TIME1 to TIME2
-#TIME1=TIME2=False
-TIME1=datetime.datetime(2005,1,1); TIME2=False
-#TIME1=False;  TIME2=datetime.datetime(1980,12,31)
-#TIME1=datetime.datetime(1998,1,1);  TIME2=datetime.datetime(1998,12,31)
+TIME1=TIME2=False
+#TIME1=cftime.DatetimeGregorian(2005,1,1); TIME2=False
+#TIME1=False;  TIME2=cftime.DatetimeGregorian(1980,12,31)
+#TIME1=cftime.DatetimeGregorian(1998,1,1);  TIME2=cftime.DatetimeGregorian(1998,12,31)
 
 # ANNCYCLE_SOURCE is e.g., 'erainterim_plev_d' if subtracting annual cycle of daily 
 # data from higher frequency (e.g., 6h) data.
@@ -102,9 +102,9 @@ aa.f_subtract_anncycle()
 #aa.f_read_subtract_anncycle()
 
 if PLOT:
-    #timecon=da.set_time_constraint(datetime.datetime(1,1,16),False,calendar=aa.calendar,verbose=True)
-    timecon=da.set_time_constraint(datetime.datetime(2017,1,16),False,calendar=aa.calendar,verbose=True)
-    #timecon=da.set_time_constraint(datetime.datetime(1980,1,1),datetime.datetime(2010,12,31))
+    #timecon=da.set_time_constraint(cftime.DatetimeGregorian(1,1,16),False,calendar=aa.calendar,verbose=True)
+    timecon=da.set_time_constraint(cftime.DatetimeGregorian(2017,1,16),False,calendar=aa.calendar,verbose=True)
+    #timecon=da.set_time_constraint(cftime.DatetimeGregorian(1980,1,1),cftime.DatetimeGregorian(2010,12,31))
     latcon=iris.Constraint(latitude=0.)
     loncon=iris.Constraint(longitude=90.)
 

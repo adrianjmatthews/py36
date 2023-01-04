@@ -23,12 +23,13 @@ VAR_NAME='vrt'; LEVEL=850; SOURCE='erainterim_plev_d'
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_d'
 
-FILTER='b20_200_n241' # 'rm5_n5' 'h20_n241' 'b20_200_n241' etc.
+FILTER='l20_n241' # 'rm5_n5' 'h20_n241' 'b20_200_n241' etc.
 
-FILEPRE='_rac' # e.g., '', '_rac',
+FILEPRE='' # e.g., '', '_rac',
 SUBTRACT=False
 
-YEAR_BEG=2010; YEAR_END=2010
+YEAR_BEG=YEAR; YEAR_END=YEAR
+#YEAR_BEG=1998; YEAR_END=2018
 MONTH1=MONTH2=-999 # Set both MONTH1 and MONTH2 to same (irrelevant) value if outfile_frequency is 'year'
 #MONTH1=1; MONTH2=1 # Set month ranges if outfile_frequency is less than 'year'
 

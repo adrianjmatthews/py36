@@ -1,8 +1,8 @@
 """Calculate time mean statistics using data_analysis.TimeDomStats."""
 
-import datetime
 import os
 
+import cftime
 import iris
 import iris.quickplot as qplt
 import matplotlib.pyplot as plt
@@ -12,18 +12,21 @@ import data_analysis as da
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-ARCHIVE=False
+ARCHIVE=True
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-VAR_NAME='vwnd'; LEVEL=850; SOURCE='erainterim_plev_d'; TDOMAINID='CCEK75E98-18-0.5-6h'
+#VAR_NAME='vwnd'; LEVEL=975; SOURCE='era5ewa_plev_h'; TDOMAINID='fmam20'
+#VAR_NAME='vrt'; LEVEL=850; SOURCE='erainterim_plev_d'; TDOMAINID='rmm006all2'
 #VAR_NAME='swpd'; LEVEL='all'; SOURCE='sg613m031oi01_zlev_h'; TDOMAINID='boballsg'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_d'; TDOMAINID='jjas98-12'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_d'; TDOMAINID='jjas98-19'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergmcw_sfc_30m'; TDOMAINID='djf0102-1920'
 #VAR_NAME='vwnd'; LEVEL=850; SOURCE='erainterim_plev_d'; TDOMAINID='cckw75Epm10gt109812'
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'; TDOMAINID='jja86-88-360day'
-#VAR_NAME='zg'; LEVEL=250; SOURCE='ncepncar_plev_d'; TDOMAINID='ann9917'
+VAR_NAME='zg'; LEVEL=850; SOURCE='ncepdoe_plev_d'; 
+#TDOMAINID='mam79-17'
 #VAR_NAME='uwnd'; LEVEL=1; SOURCE='ncepncar_sfc_d'; TDOMAINID='apr9815'
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrinterp_toa_d'; TDOMAINID='rmm004djf3'
-#VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'; TDOMAINID='djf8182-1516'
+#VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'; TDOMAINID='mam82-16'
 
 FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
 
@@ -31,18 +34,18 @@ FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
 # To calculate time mean from annual cycle (i.e., to get a mean background state for selected dates)
 #   set DATA_FROM_ANNCYCLE to a 2-tuple of (year_beg,year_end) from which annual cycle was calculated
 #   e.g., (1998,2018)
-#DATA_FROM_ANNCYCLE=False
-DATA_FROM_ANNCYCLE=(1998,2018)
+DATA_FROM_ANNCYCLE=False
+#DATA_FROM_ANNCYCLE=(1998,2018)
 
 # Optional parameters for use in null distribution calculation
 #NMC=10; PERCENTILES_NULL=[1,2.5,5,10,20,30,50,70,80,90,95,97.5,99]; MAX_DAY_SHIFT=15
-#TIME_FIRST=datetime.datetime(1998,1,1)
-#TIME_LAST=datetime.datetime(2012,12,31)
+#TIME_FIRST=cftime.DatetimeGregorian(1998,1,1)
+#TIME_LAST=cftime.DatetimeGregorian(2012,12,31)
 
 LAZY_LOAD=True
 VERBOSE=2
 
-PLOT=True
+PLOT=False
 
 #==========================================================================
 
@@ -90,6 +93,9 @@ if PLOT:
 
     #per_constraint=iris.Constraint(percentile=2.5)
     #x1=aa.mean_percentiles_null.extract(per_constraint)
+    lat_constraint=iris.Constraint(latitude=lambda cell: 30<=cell<=60)
+    lon_constraint=iris.Constraint(longitude=lambda cell: 300<=cell<=350)
+    #x1=x1.extract(lat_constraint & lon_constraint)
 
     qplt.contourf(x1)
     plt.gca().coastlines()
