@@ -8457,7 +8457,10 @@ class WheelerKiladis(object):
         else:
             str1=''
         self.filein1=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_ss_lat_'+str(self.lat1)+'_'+str(self.lat2)+str1+'_'+self.wildcard+'.nc')
-        self.data_in=iris.load(self.filein1,self.name)
+        if self.clean_callback:
+            self.data_in=iris.load(self.filein1,self.name,callback=clean_callback)
+        else:
+            self.data_in=iris.load(self.filein1,self.name)
         # Output files
         ss='_lat_'+str(self.lat1)+'_'+str(self.lat2)+str1+'_'+str(self.time1)[:10]+'_'+str(self.time2)[:10]
         self.file_hov=os.path.join(self.basedir,self.source,'processed',self.var_name+'_'+str(self.level)+self.filepre+'_hov'+ss+'.nc')
