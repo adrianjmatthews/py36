@@ -1701,7 +1701,8 @@ class TimeDomain(object):
                 microsecond='%06d' % (1000000*int(t1a[index_decimal_point+1:]))
                 t1b=t1a[:index_colon+1]+second+':'+microsecond
                 # Convert string time to a datetime object and append
-                xx=cftime.DatetimeGregorian.strptime(t1b,self._format2datetime)
+                xx=datetime.datetime.strptime(t1b,self._format2datetime)
+                xx=create_DatetimeGregorian(xx)
                 datetimes_row.append(xx)
             # Append this row of datetime objects to master list
             datetimes.append(datetimes_row)
@@ -1763,14 +1764,15 @@ class TimeDomain(object):
             if isinstance(row,list):
                 # 'event' type
                 for t1 in row:
-                    decimal_second=str(t1.second+float(t1.microsecond)/1e6)
-                    xx=cftime.DatetimeGregorian.strftime(t1,self._format2ascii)+':'+decimal_second+', '
+                    t1a=create_DatetimeGregorian(t1)
+                    decimal_second=str(t1a.second+float(t1a.microsecond)/1e6)
+                    xx=cftime.DatetimeGregorian.strftime(t1a,self._format2ascii)+':'+decimal_second+', '
                     lines_row+=xx
                 # Remove the final ', ' from the last time
                 lines_row=lines_row[:-2]
             else:
                 # 'single' type
-                t1=row
+                t1=create_DatetimeGregorian(row)
                 decimal_second=str(t1.second+float(t1.microsecond)/1e6)
                 xx=cftime.DatetimeGregorian.strftime(t1,self._format2ascii)+':'+decimal_second
                 lines_row+=xx
@@ -5010,7 +5012,7 @@ class AnnualCycle(object):
             x1=self.data_in[0].coord('time')[0]
             x2=x1.cell(0)[0]
             if self.calendar=='gregorian':
-                self.time1=create_datetime(x2)
+                self.time1=create_DatetimeGregorian(x2)
             elif self.calendar=='360_day':
                 self.time1=create_Datetime360Day(x2)
             else:
@@ -5020,7 +5022,7 @@ class AnnualCycle(object):
             x1=self.data_in[-1].coord('time')[-1]
             x2=x1.cell(0)[0]
             if self.calendar=='gregorian':
-                self.time2=create_datetime(x2)
+                self.time2=create_DatetimeGregorian(x2)
             elif self.calendar=='360_day':
                 self.time2=create_Datetime360Day(x2)
         if self.verbose:
