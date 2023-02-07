@@ -5703,15 +5703,15 @@ class AnnualCycle(object):
                     fileout=replace_wildcard_with_time(self,self.file_anncycle_rm)
                     print('fileout: {0!s}'.format(fileout))
                     if self.calendar=='gregorian':
-                        time1=cftime.DatetimeGregorian(yearc,monthc,1)
+                        time1=cftime.DatetimeGregorian(yearc,monthc,1,0,0)
                         if monthc!=12:
-                            time2=cftime.DatetimeGregorian(yearc,monthc+1,1)
+                            time2=cftime.DatetimeGregorian(yearc,monthc+1,1,23,59)
                         else:
-                            time2=cftime.DatetimeGregorian(yearc+1,1,1)
+                            time2=cftime.DatetimeGregorian(yearc+1,1,1,23,59)
                         time2-=datetime.timedelta(days=1)
                     elif self.calendar=='360_day':
-                        time1=cftime.Datetime360Day(yearc,monthc,1)
-                        time2=cftime.Datetime360Day(yearc,monthc,30)
+                        time1=cftime.Datetime360Day(yearc,monthc,1,0,0)
+                        time2=cftime.Datetime360Day(yearc,monthc,30,23,59)
                     print('time1,time2: {0!s}, {1!s}'.format(time1,time2))
                     time_constraint=set_time_constraint(time1,time2,calendar=self.calendar,verbose=self.verbose)
                     x1=data_anom.extract(time_constraint)
