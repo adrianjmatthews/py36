@@ -2427,6 +2427,8 @@ class DataConverter(object):
                 self.raw_name='d'
             elif self.var_name=='vrt':
                 self.raw_name='vo'
+            elif self.var_name=='omega':
+                self.raw_name='w'
         elif self.data_source in ['era5plp','era5bar','era5mcw','era5ewa','era5glo'] and self.level_type=='sfc':
             if self.var_name=='uwnd':
                 self.raw_name='u10'
