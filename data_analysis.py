@@ -634,7 +634,7 @@ def conv_float32(old_array):
 
 #==========================================================================
 
-def block_times(aa,verbose=False):
+def block_times(aa,verbose=False,outfile_frequency_override=False):
     """Set start and end times for current block.
 
     Input <aa> is an object with the following attributes:
@@ -658,11 +658,16 @@ def block_times(aa,verbose=False):
     1st of current month and year, and 1 second before 00 UTC on 1st
     of the following month.
 
+    If optional argument outfile_frequency_override is 'year', then
+    block_times acts as if outfile_frequency is 'year'.
+
     """
     timedelta_second=datetime.timedelta(seconds=1)
     if aa.calendar not in ['gregorian','360_day']:
         raise UserWarning('calendar not valid.')
-    if aa.outfile_frequency=='year':
+    if outfile_frequency_override and outfile_frequency_override!='year':
+        raise UserWarning('outfile_frequency_override not valid.')
+    if aa.outfile_frequency=='year' or outfile_frequency_override=='year':
         if aa.calendar=='gregorian':
             time1=cftime.DatetimeGregorian(aa.year,1,1) # 00:00:00 on 1 Jan
             time2=cftime.DatetimeGregorian(aa.year,12,31,23,59,59) # 23:59:59 on 31 Dec
@@ -4741,6 +4746,13 @@ class CombineLatitudes(object):
     latitudes, and resplit for storage by time (into yearly or monthly
     files again). Hence, this process creates a new "source" of data.
 
+    Note, this programme takes a long time to run. Takes one hour to
+    do each block, whether that block is a year or a month
+    long. Hence, if outfile_frequency for the source is 'month', then
+    instead of running this separately for each month, a year worth of
+    data is processed at a time, then split up into twelve individual
+    monthly files at the end.
+
     Attributes:
 
     self.source1 : source of original data, e.g.,
@@ -4807,7 +4819,7 @@ class CombineLatitudes(object):
         """
         # Read data at all latitudes and combine latitudes into single cube
         x2=iris.cube.CubeList([])
-        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        self.time1,self.time2=block_times(self,verbose=self.verbose,outfile_frequency_override='year')
         time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
         for latitudec in self.latitudes:
             print('latitudec: {0!s}'.format(latitudec))
@@ -4843,22 +4855,33 @@ class CombineLatitudes(object):
         #
         print('dtype: {0!s}'.format(x2.data.dtype))
         if x2.data.dtype==np.float64:
-            # Convert to float32 (single precision) as input is unnecessarily float62
+            # Convert to float32 (single precision) as input is unnecessarily float64
             x2.data=np.float32(x2.data)
             print('dtype: {0!s}'.format(x2.data.dtype))
-        self.data_all=x2
         print('x2 after: {0!s}'.format(x2))
         # Save multi-latitude data cube
         if self.outfile_frequency=='year':
+            self.data_all=x2
             fileout1=self.file_data_out.replace(self.wildcard,str(self.year))
+            print('fileout1: {0!s}'.format(fileout1))
+            iris.save(self.data_all,fileout1)
+            if self.archive:
+                archive_file(self,fileout1)
         elif self.outfile_frequency=='month':
-            fileout1=self.file_data_out.replace(self.wildcard,str(self.year)+str(self.month).zfill(2))
+            # Split up year long output into individual months and save
+            for monthc in range(1,12+1):
+                print('### monthc: {0!s}'.format(monthc))
+                self.month=monthc
+                time1a,time2a=block_times(self,verbose=self.verbose)
+                time_constraint=set_time_constraint(time1a,time2a,calendar=self.calendar,verbose=self.verbose)
+                self.data_all=x2.extract(time_constraint)
+                fileout1=self.file_data_out.replace(self.wildcard,str(self.year)+str(self.month).zfill(2))
+                print('fileout1: {0!s}'.format(fileout1))
+                iris.save(self.data_all,fileout1)
+                if self.archive:
+                    archive_file(self,fileout1)
         else:
             raise UserWarning('Invalid outfile_frequency.')
-        print('fileout1: {0!s}'.format(fileout1))
-        iris.save(self.data_all,fileout1)
-        if self.archive:
-            archive_file(self,fileout1)
 
 #==========================================================================
 
