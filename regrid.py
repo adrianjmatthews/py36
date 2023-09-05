@@ -1,6 +1,5 @@
 """Regrid data using data_analysis.ModifySource."""
 
-import datetime
 import os
 
 import iris
@@ -10,40 +9,47 @@ import pdb
 
 import data_analysis as da
 
-#BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
-BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
+BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
+#BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-ARCHIVE=False
+ARCHIVE=True
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 # Data to be regridded
-VAR_NAME='ppt'; LEVEL=1; SOURCE1='trmm3b42v7p1_sfc_d'; SOURCE2='trmm3b42v7p4_sfc_d'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE1='imergtrm_sfc_3h'; SOURCE2='imergtrmp1_sfc_3h'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE1='trmm3b42v7p1_sfc_d'; SOURCE2='trmm3b42v7p4_sfc_d'
+#VAR_NAME='vrt'; LEVEL=825; SOURCE1='era5glo_plev_h'; SOURCE2='era5gloerai_plev_h'
+VAR_NAME='swtheta'; LEVEL=0.494; SOURCE1='glorys12v1eq1_zlev_d'; SOURCE2='glorys12v1eq1erai_zlev_d'
 
 # If SUBDIR is 'std', will regrid data over time
 # If SUBDIR is 'processed', will just do a one-off regridding
-SUBDIR='processed'
+SUBDIR='std'
 
 # Data set on the target grid. Only the grid is used, not the data
 #FILE_GRID=os.path.join(BASEDIR,'ncepdoe_plev_d',SUBDIR,'uwnd_850_2010.nc')
-FILE_GRID=os.path.join(BASEDIR,SOURCE2,SUBDIR,'dummy_1.nc')
+#FILE_GRID=os.path.join(BASEDIR,SOURCE2,SUBDIR,'dummy_1.nc')
+#FILE_GRID=os.path.join(BASEDIR_ARCHIVE,'trmm3b42v7_sfc_3h',SUBDIR,'ppt_1_201912.nc')
+FILE_GRID=os.path.join(BASEDIR,'erainterim_plev_6h',SUBDIR,'uwnd_850_1998.nc')
 
 # Option to restrict min/max latitudes on new grid
 #LATMIN=LATMAX=False # Set both to False to disable this option
-LATMIN=-45; LATMAX=45
+#LATMIN=-45; LATMAX=45
+LATMIN=-15; LATMAX=15
 
+YEAR=2017
+#YEAR=range(1998,2022+1)
 
-YEAR_BEG=1998; YEAR_END=2018 # if outfile_frequency is 'year' or less
-
-#MONTH1=MONTH2=-999 # if outfile_frequency is 'year'
-MONTH1=1; MONTH2=12 # if outfile_frequency is less than 'year'
+#MONTH=-999 # if outfile_frequency is 'year'
+#MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
+MONTH=1
 
 if SUBDIR=='processed':
     # Set one-off FILEIN1 and FILEOUT1
-    dum1='_jjas98-12.nc'
+    dum1='_jjas98-19.nc'
     FILEIN1=os.path.join(BASEDIR,SOURCE1,SUBDIR,VAR_NAME+'_'+str(LEVEL)+dum1)
     FILEOUT1=os.path.join(BASEDIR,SOURCE2,SUBDIR,VAR_NAME+'_'+str(LEVEL)+dum1)
 
-PLOT=True
+PLOT=False
 
 VERBOSE=2
 
@@ -72,9 +78,11 @@ aa=da.ModifySource(**descriptor)
 # Get target grid
 aa.f_get_target_grid()
 
+iter_year=da.iter_generator(YEAR)
+iter_month=da.iter_generator(MONTH)
 if SUBDIR=='std':
-    for year in range(YEAR_BEG,YEAR_END+1):
-        for month in range(MONTH1,MONTH2+1):
+    for year in iter_year:
+        for month in iter_month:
             print('### year={0!s} month={1!s}'.format(year,month))
             aa.year=year
             aa.month=month
@@ -87,7 +95,7 @@ else:
 if PLOT:
     fig=plt.figure()
 
-    if False:
+    if True:
         tcoord=aa.cube_in.coord('time')[0]
         time1=tcoord.cell(0)[0]
         timecon=iris.Constraint(time=time1)
@@ -98,10 +106,10 @@ if PLOT:
         fig.savefig('/gpfs/home/e058/tmp/fig1.png')
 
     if True:
-        #tcoord=aa.cube_out.coord('time')[0]
-        #time1=tcoord.cell(0)[0]
-        #timecon=iris.Constraint(time=time1)
-        #x2=aa.cube_out.extract(timecon)
+        tcoord=aa.cube_out.coord('time')[0]
+        time1=tcoord.cell(0)[0]
+        timecon=iris.Constraint(time=time1)
+        x2=aa.cube_out.extract(timecon)
         x2=aa.cube_out
         qplt.contourf(x2)
         plt.gca().coastlines()

@@ -18,8 +18,9 @@ BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 FILE_MASK=False # Default value
 
-#VAR_NAME='vwnd'; LEVEL=975; SOURCE='era5ewa_plev_h'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='era5mcw_sfc_h'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='cmap_sfc_5d'
+#VAR_NAME='uwnd'; LEVEL=975; SOURCE='era5mcw_plev_h'
+#VAR_NAME='vrt'; LEVEL=825; SOURCE='era5glo_plev_h'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='erainterim_sfc_d'
 #VAR_NAME='zg'; LEVEL=850; SOURCE='erainterim_plev_6h'
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'
@@ -36,12 +37,14 @@ FILE_MASK=False # Default value
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_7d'; FILE_MASK='lsmask.nc'
 #VAR_NAME='tauy'; LEVEL=1; SOURCE='tropflux_sfc_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_3h'
-VAR_NAME='ucur'; LEVEL=0.494025; SOURCE='glorys12v1_zlev_d'
+VAR_NAME='swtheta'; LEVEL=0.494; SOURCE='glorys12v1eq1_zlev_d'
 
-YEAR_BEG=2005; YEAR_END=2010 # if outfile_frequency is 'year' or less
+YEAR=2017
+#YEAR=range(1998,2022+1)
 
-#MONTH1=MONTH2=-999 # if outfile_frequency is 'year'
-MONTH1=1; MONTH2=12 # if outfile_frequency is less than 'year'
+#MONTH=-999 # if outfile_frequency is 'year'
+#MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
+MONTH=1
 
 PLOT=False
 
@@ -61,8 +64,10 @@ descriptor['file_mask']=FILE_MASK
 
 aa=da.DataConverter(**descriptor)
 
-for year in range(YEAR_BEG,YEAR_END+1):
-    for month in range(MONTH1,MONTH2+1):
+iter_year=da.iter_generator(YEAR)
+iter_month=da.iter_generator(MONTH)
+for year in iter_year:
+    for month in iter_month:
         print('### year={0!s} month={1!s}'.format(year,month))
         aa.year=year
         aa.month=month

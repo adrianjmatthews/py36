@@ -180,6 +180,8 @@ var_name2long_name={
     'ssft':'sea_surface_foundation_temperature',
     'sst':'sea_surface_temperature',
     'swp':'sea_water_pressure',
+    'swsal':'sea_water_salinity',
+    'swtheta':'sea_water_potential_temperature',
     'swpd':'sea_water_potential_density',
     'swrd':'surface_net_downward_shortwave_flux',
     'ta':'air_temperature',
@@ -239,14 +241,14 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','glorys12v1','cmap']
+    valid_data_sources=['era5trp','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','cmap']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
     if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','cmap_sfc_5d','cmap_sfc_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -2400,6 +2402,8 @@ class DataConverter(object):
                 self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_day_HadGEM2-ES_piControl_r1i1p1_*.nc')
         elif self.source in ['glorys12v1_zlev_d']:
             self.filein1=os.path.join(self.basedir,self.source,'raw','NEMO_GR_PHY_001_030_'+str(self.year)+str(self.month).zfill(2)+'*.nc')
+        elif self.source in ['glorys12v1eq1_zlev_d']:
+            self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_'+str(self.level)+'_'+str(self.year)+str(self.month).zfill(2)+'*.nc')
         else:
             raise UserWarning('Data source not recognised.')
         #
@@ -2416,6 +2420,9 @@ class DataConverter(object):
             level_constraint=iris.Constraint(air_pressure=self.level)
         elif self.data_source in ['glorys12v1'] and self.level_type=='zlev':
             leveltol=0.01
+            level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
+        elif self.data_source in ['glorys12v1eq1'] and self.level_type=='zlev':
+            leveltol=0.001
             level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
         elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d']:
             level_constraint=False
@@ -2490,9 +2497,15 @@ class DataConverter(object):
                 self.raw_name='lwr'
             elif self.var_name in ['taux','tauy']:
                 self.raw_name=self.var_name
-        elif self.data_source in ['glorys12v1',]:
-            if self.var_name=='ucur':
+        elif self.data_source in ['glorys12v1','glorys12v1eq1']:
+            if self.var_name=='swtheta':
+                self.raw_name='thetao'
+            elif self.var_name=='swsal':
+                self.raw_name='so'
+            elif self.var_name=='ucur':
                 self.raw_name='uo'
+            elif self.var_name=='vcur':
+                self.raw_name='vo'
         #
         # Load cube using a constraint on var_name because if there is a
         # long_name attribute in the netcdf file this will take precendence
@@ -2507,7 +2520,7 @@ class DataConverter(object):
             print('# Load using var_name.')
             var_constraint=iris.Constraint(cube_func=(lambda c: c.var_name==self.raw_name))
             if level_constraint:
-                if self.source in ['erainterim_plev_6h','erainterim_sfc_6h','ncepdoe_plev_d','glorys12v1_zlev_d']:
+                if self.source in ['erainterim_plev_6h','erainterim_sfc_6h','ncepdoe_plev_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d']:
                     # time constraint does not work with erainterim, but redundant as file name constrains time
                     xx=iris.load(self.filein1,constraints=var_constraint & level_constraint,callback=clean_callback)
                 else:
@@ -2545,7 +2558,7 @@ class DataConverter(object):
                 cubec.add_dim_coord(latcoord1,1)
         #
         # Convert time coordinate to standard for ostia and glorys12v1
-        if self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d']:
+        if self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d']:
             for cubec in xx:
                 cubec=standardise_time_coord_units(cubec,tunits='days')
         #
@@ -2714,7 +2727,7 @@ class DataConverter(object):
             self.cube=x5
         # glorys daily data.
         # Time stamp is at 12 UTC. Change to 00 UTC by subtracting 0.5 (days).
-        if self.source=='glorys12v1_zlev_d':
+        if self.source in ['glorys12v1_zlev_d','glorys12v1eq1_zlev_d']:
             change_time_stamp_from_12_to_00(self,verbose=self.verbose)
         #
         # trmm3b42v7_sfc_3h first data is at 1998-01-01: 03 UTC, not 00 UTC
@@ -5363,7 +5376,7 @@ class AnnualCycle(object):
             print('npts_missing,npts',npts_missing,npts)
             print('frac_missing,frac_crit',frac_missing,self.frac_crit)
             if (frac_missing>self.frac_crit):
-                if self.source in ['glorys12v1_zlev_d']:
+                if self.source in ['glorys12v1_zlev_d','glorys12v1eq1_zlev_d']:
                     print('Letting this go as likely due to land points.')
                 else:
                     raise UserWarning('Warning: Too many missing points. Rethink algorithm.')
