@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH -t 23:59:59
-#SBATCH -p compute-16-64
-#SBATCH --mem 4G
+#SBATCH -t 24:00:00
+#SBATCH -p compute-64-512
+#SBATCH --mem 12G
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=e058@uea.ac.uk
 #SBATCH --job-name=ajm
 #SBATCH -o out-%j.out
 #SBATCH -e out-%j.err
 
-# Run this script with 'sbatch job_ada.sub' from ada login node, not interactive node
+# Run this script with 'sbatch job_ada.sub'
 #
 # 'squeue -u <userid>' to look at jobs, once submitted.
 #
@@ -25,8 +25,8 @@
 # requested will cause swap space to be used, which has a highly
 # detrimental effect on performance and time taken.
 
-module load python/anaconda/2019.10/3.7
-source activate py36
+#module load python/anaconda/2019.10/3.7
+#source activate py36
 
 export DIR1='/gpfs/home/e058/home/PythonScripts/py36'
 echo $DIR1
@@ -44,6 +44,7 @@ echo $DIR1
 #python ${DIR1}/ostia_get.py
 #python ${DIR1}/preprocess.py
 #python ${DIR1}/spatial_subset.py
-#python ${DIR1}/time_domain_create.py
+#python ${DIR1}/tdomain_create.py
 #python ${DIR1}/time_average.py
 python ${DIR1}/copernicus_get.py
+#python ${DIR1}/anncycle.py
