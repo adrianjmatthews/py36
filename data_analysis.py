@@ -1891,11 +1891,21 @@ class TimeDomain(object):
                 time2=cftime.DatetimeGregorian(2020,10,4)
                 time_constraint=set_time_constraint(time1,time2,calendar='gregorian')
                 amp_threshold=1
+            elif counter=='008':
+                # As '001', but for 1 Jan 2003 to 31 Dec 2020
+                # For Connor's glorys12v1 ocean reanalysis
+                header1+='Index amplitude >=1, time range 1 Jan 2003 to 31 Dec 2020'
+                time1=cftime.DatetimeGregorian(2003,1,1)
+                time2=cftime.DatetimeGregorian(2020,12,31)
+                time_constraint=set_time_constraint(time1,time2,calendar='gregorian')
+                amp_threshold=1
             else:
                 raise UserWarning('Counter is not valid.')
             # Seasons
             if season=='djf':
                 valid_months=[12,1,2]
+            elif season=='jja':
+                valid_months=[6,7,8]
             elif season=='n2a':
                 valid_months=[11,12,1,2,3,4]
             elif season=='m2o':
@@ -4939,8 +4949,10 @@ class AnnualCycle(object):
     annual cycle calculated in f_anncycle_smooth().
 
     self.detrend : Boolean. If true, calculate the temporal linear
-    trend over the whole period and remove this along with the mean
-    and annual cycle.
+    trend over the whole period and remove this along with the annual
+    cycle. Note, in this case (detrend being true), then the "mean"
+    part of the annual cycle is contained in the trend, and the
+    (smoothed) annual cycle does not include the mean.
 
     self.frac_crit: float. Currently hard set to 0.01. If greater than
     self.frac_crit of grid points have missing data in the raw annual
@@ -5112,7 +5124,7 @@ class AnnualCycle(object):
     def f_trend(self):
         """Calculate and save temporal linear trend over whole time period.
 
-        Create mm and cc attributes.
+        Create mm and cc attributes. (mm is gradient, cc is intercept, y=mx+c).
 
         N.B., calculcation of the linear trend at each grid point of
         (typically) decades of daily (or sub-daily) data would either
@@ -5427,9 +5439,15 @@ class AnnualCycle(object):
 
         B_k = 2/N \Sum_{k=1}^\{N} f(t_i) \sin \omega_k t_i
 
+        NB If the detrend attribute is True, then the smoothed annual
+        cycle does NOT include the mean (i.e., \overline f in equation
+        above), as when the (smoothed annual) cycle is subtracted
+        later to create anomalies, the the mean value is accounted for
+        the linear trend part.
+
         Create data_mean, data_anncycle_smooth attributes.
         Create data_anncycle_smooth_leap attribute if calendar is gregorian.
-        
+
         """
         if self.frequency!='d':
             raise ToDoError('Annual cycle presently only coded up for daily data.')
