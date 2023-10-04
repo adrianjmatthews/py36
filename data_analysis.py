@@ -1503,6 +1503,47 @@ def f_subtract_diurnal_cycle_cube(cube_in,cube_dc,verbose=True):
 
 #==========================================================================
 
+def f_cube_step_time(cube_in,tstep,tcoord_name='time',verbose=True):
+    """Extract every tstep-time slice in cube and return.
+
+    Inputs:
+
+    cube_in : iris cube. Must have a 'time' axis.
+
+    tstep: datetime.timedelta object. Used for stepping through time
+    coordinate of cube_in and extracting (subsetting) data.
+
+    tcoord_name : string. Default value is 'time'.
+
+    Output: cube_out : iris cube subset of cube_in only including
+    first time, then every tstep times.
+
+    """
+    tcoord=cube_in.coord(tcoord_name)
+    tunits=tcoord.units
+    ntime=len(tcoord.points)
+    print('ntime: {0!s}'.format(ntime))
+    cubelist=iris.cube.CubeList([])
+    #
+    time1=tunits.num2date(tcoord.points[0])
+    print('time1: {0!s}'.format(time1))
+    time2=tunits.num2date(tcoord.points[-1])
+    print('time2: {0!s}'.format(time2))
+    #
+    timec=time1
+    while timec<=time2:
+        if verbose:
+            print('timec: {0!s}'.format(timec))
+        tconstraint=set_time_constraint(timec,False,calendar=tunits.calendar)
+        x1=cube_in.extract(tconstraint)
+        cubelist.append(x1)
+        timec=timec+tstep
+    cube_out=concatenate_cube(cubelist)
+    #
+    return cube_out
+
+#==========================================================================
+
 class ToDoError(UserWarning):
 
     """An exception that indicates I need to write some more code.
@@ -3149,12 +3190,11 @@ class TimeDomStats(object):
         self.timedelta is 1 day, then lagged means will be calculated
         at lags of -5, 0, and 5 days.
 
-        If method is 2, lags is a 2-tuple of (start
-        datetime.timedelta, end datetime.timedelta).
+        If method is 2, lags is a 2- (or 3-) tuple of (start
+        datetime.timedelta, end datetime.timedelta), with an optional
+        step datetime.timedelta.
 
         Create attributes:
-
-        self.lags : lags
 
         self.nlags : length of list of lags
 
@@ -3195,8 +3235,8 @@ class TimeDomStats(object):
         elif method==2:
             if self.tdomain.type!='single':
                 raise UserWarning("Method 2 only works with time domains of type 'single'.")
-            if len(lags)!=2:
-                raise UserWarning('For method 2, lags must be a 2-tuple.')
+            if len(lags) not in [2,3]:
+                raise UserWarning('For method 2, lags must be a 2- or 3-tuple.')
             delta_beg=lags[0]
             delta_end=lags[1]
             kount=0
@@ -3253,6 +3293,10 @@ class TimeDomStats(object):
         # Add cell method to describe time mean
         cm=iris.coords.CellMethod('point','time',comments='lagged mean over time domain '+self.tdomain.idx)
         lagged_mean.add_cell_method(cm)
+        #
+        if method==2 and len(lags)==3:
+            print('Step through lagged_mean output to subset it and reduce size.')
+            lagged_mean=f_cube_step_time(lagged_mean,lags[2])
         #
         self.lagged_mean=lagged_mean
         iris.save(self.lagged_mean,self.fileout_lagged_mean)
