@@ -1518,6 +1518,11 @@ def f_cube_step_time(cube_in,tstep,tcoord_name='time',verbose=True):
     Output: cube_out : iris cube subset of cube_in only including
     first time, then every tstep times.
 
+    Example. If cube_in has a time coordinate with time interval 3
+    hours, and tstep is a datetime.timedelta of 1 day, then cube_out
+    will have a subsetted time coordinate, starting at first time of
+    cube_in, and a time interval of 1 day.
+
     """
     tcoord=cube_in.coord(tcoord_name)
     tunits=tcoord.units
