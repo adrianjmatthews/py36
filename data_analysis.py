@@ -4188,9 +4188,13 @@ class SpatialSubset(object):
     self.data_subset : iris cube list of all subsetted data.
 
     self.file_data_in : path name for file(s) of input data.  If input
-    data has a time dimension, contains a wild card * character, which
-    will be replaced by, e.g., year numbers (if self.outfile_frequency
-    is 'year').
+    data has a time dimension, and the self.year and self.month
+    attributes are already set on creation of the class instance, then
+    self.file_data_in will be the path name for the relevant file
+    (i.e., specific year or specific year-month). If the year and
+    month attributes are not set, then self.file_data_in will contain
+    a wild card * character, which will be replaced by, e.g., year
+    numbers (if self.outfile_frequency is 'year') later.
 
     self.file_data_subset : path name for file(s) of subsetted data.
     If input data has a time dimension, contains a wild card *
@@ -4238,7 +4242,18 @@ class SpatialSubset(object):
         source_info(self)
         if self.subdir=='std':
             # Input data assumed to contain time dimension
-            self.file_data_in=os.path.join(self.basedir,self.source,self.subdir,self.var_name+'_'+str(self.level)+self.filepre+'_'+self.wildcard+'.nc')
+            if hasattr(self,'year') and hasattr(self,'month'):
+                if self.outfile_frequency=='year':
+                    # Set input file to current year
+                    self.file_data_in=os.path.join(self.basedir,self.source,self.subdir,self.var_name+'_'+str(self.level)+self.filepre+'_'+str(self.year)+'.nc')
+                elif self.outfile_frequency=='month':
+                    # Set input file to current year/month
+                    self.file_data_in=os.path.join(self.basedir,self.source,self.subdir,self.var_name+'_'+str(self.level)+self.filepre+'_'+str(self.year)+str(self.month).zfill(2)+'.nc')
+                else:
+                    raise UserWarning('Invalid outfile_frequency.')
+            else:
+                # Set input file to be all possible years/months (wildcard)
+                self.file_data_in=os.path.join(self.basedir,self.source,self.subdir,self.var_name+'_'+str(self.level)+self.filepre+'_'+self.wildcard+'.nc')
         elif self.subdir=='processed':
             # Input data does not contain a time dimension
             self.file_data_in=os.path.join(self.basedir,self.source,self.subdir,self.var_name+'_'+str(self.level)+self.filepre+'.nc')
