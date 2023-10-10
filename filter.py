@@ -22,17 +22,16 @@ BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrinterp_toa_d'
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_d'
-VAR_NAME='uvec'; LEVEL=0.42925; SOURCE='glorys12v1_zlev_d'
+VAR_NAME='swtheta'; LEVEL=0.494; SOURCE='glorys12v1eq1erai_zlev_d'
 
 FILTER='b20_200_n241' # 'rm5_n5' 'h20_n241' 'b20_200_n241' etc.
 
 FILEPRE='_rac' # e.g., '', '_rac',
 SUBTRACT=False
 
-#YEAR_BEG=YEAR; YEAR_END=YEAR
-YEAR_BEG=2003; YEAR_END=2020
-#MONTH1=MONTH2=-999 # Set both MONTH1 and MONTH2 to same (irrelevant) value if outfile_frequency is 'year'
-MONTH1=1; MONTH2=12 # Set month ranges if outfile_frequency is less than 'year'
+YEAR=range(2004,2019+1)
+#MONTH=-999 # Dummy value if outfile_frequency is 'year'
+MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
 
 SPLITBLOCK=False
 
@@ -60,10 +59,12 @@ aa=da.TimeFilter(**descriptor)
 
 # Overwrite irrelevant MONTH1,MONTH2 if outfile_frequency is 'year'
 if aa.outfile_frequency=='year':
-    MONTH1=MONTH2=-999
+    MONTH=-999
 
-for year in range(YEAR_BEG,YEAR_END+1):
-    for month in range(MONTH1,MONTH2+1):
+iter_year=da.iter_generator(YEAR)
+iter_month=da.iter_generator(MONTH)
+for year in iter_year:
+    for month in iter_month:
         print('### year={0!s} month={1!s}'.format(year,month))
         aa.year=year
         aa.month=month
