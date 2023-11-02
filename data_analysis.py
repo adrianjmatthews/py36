@@ -241,14 +241,14 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','cmap']
+    valid_data_sources=['era5trp','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07atrm','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','cmap']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
     if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','cmap_sfc_5d','cmap_sfc_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergtrm_sfc_3h','imergtrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -2436,7 +2436,7 @@ class DataConverter(object):
             # 2000-2010 files end in .7A.nc
             # Use '.7*.nc' to cover both
             self.filein1=os.path.join(self.basedir,self.source,'raw',str(self.year)+str(self.month).zfill(2),'3B42.'+str(self.year)+str(self.month).zfill(2)+'*.7*.nc')
-        elif self.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m']:
+        elif self.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m']:
             self.filein1=os.path.join(self.basedir,self.source,'raw',str(self.year),str(self.month).zfill(2),'3B-HHR.MS.MRG.3IMERG.'+str(self.year)+str(self.month).zfill(2)+'*.nc')
         elif self.source in ['tropflux_sfc_d']:
             if self.var_name=='lhfd':
@@ -2480,7 +2480,7 @@ class DataConverter(object):
         elif self.data_source in ['glorys12v1eq1'] and self.level_type=='zlev':
             leveltol=0.001
             level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
-        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d']:
+        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d']:
             level_constraint=False
         else:
             raise ToDoError('Set an instruction for level_constraint.')
@@ -2566,7 +2566,7 @@ class DataConverter(object):
         # Load cube using a constraint on var_name because if there is a
         # long_name attribute in the netcdf file this will take precendence
         # over var_name if just using a standard load_cube call.
-        if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
+        if self.source in ['sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','trmm3b42v7_sfc_3h','ncepdoegg_zlev_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d']:
             print('# var_name constraint does not work with this data source.')
             if level_constraint:
                 xx=iris.load(self.filein1,constraints=level_constraint & time_constraint,callback=clean_callback)
@@ -3779,7 +3779,7 @@ class ModifySource(object):
         """
         # Extract input data for current block of time
         time1,time2=block_times(self,verbose=self.verbose)
-        if fnmatch.fnmatch(self.source1,'imerg???_sfc_30m') and fnmatch.fnmatch(self.source2,'imerg???_sfc_3h'):
+        if (fnmatch.fnmatch(self.source1,'imerg???_sfc_30m') and fnmatch.fnmatch(self.source2,'imerg???_sfc_3h')) or (fnmatch.fnmatch(self.source1,'imergv07a???_sfc_30m') and fnmatch.fnmatch(self.source2,'imergv07a???_sfc_3h')):
             # Special case. Time averaging 30 minute IMERG data onto 3 hour TRMM time axis.
             # See comments below in method 3 for explanation
             tdc=datetime.timedelta(minutes=60)
@@ -3897,8 +3897,10 @@ class ModifySource(object):
                 # TRMM 3-hour time axis, to effectively extend the TRMM data set
                 # beyond Dec 2019, when the TRMM data ended.
                 #
-                # For this special case source1 must be 'imergXXX_sfc_30m' and 
-                # source2 must be 'imergXXX_sfc_3h'
+                # For this special case source1 must be
+                # 'imergXXX_sfc_30m' (or 'imergv07aXXX_sfc_30m') and
+                # source2 must be 'imergXXX_sfc_3h' (or
+                # 'imergv07aXXX_sfc_3h')
                 #
                 # NB Time stamp convention for source2 is time stamp at
                 # approximate CENTRE of interval that has been averaged over.
@@ -3951,7 +3953,7 @@ class ModifySource(object):
                 x4=x3/nave
                 # Create new time axis for data on source2 time interval
                 timec=time1
-                if fnmatch.fnmatch(self.source1,'imerg???_sfc_30m') and fnmatch.fnmatch(self.source2,'imerg???_sfc_3h'):
+                if (fnmatch.fnmatch(self.source1,'imerg???_sfc_30m') and fnmatch.fnmatch(self.source2,'imerg???_sfc_3h')) or (fnmatch.fnmatch(self.source1,'imergv07a???_sfc_30m') and fnmatch.fnmatch(self.source2,'imergv07a???_sfc_3h')):
                     # Special case. Averaging IMERG 30 min data to TRMM 3 hour time axis
                     # Reset starting time so new time axis is at approx CENTRE of input times and corresponds
                     # to TRMM 3 hour time axis
@@ -5815,6 +5817,7 @@ class AnnualCycle(object):
                 str1='anomaly: subtracted smoothed annual cycle: '
             cm=iris.coords.CellMethod('point','time',comments=str1+str(self.year1)+'-'+str(self.year2)+': mean + '+str(self.nharm)+' harmonics')
             data_anom.add_cell_method(cm)
+            data_anom=create_cube(conv_float32(data_anom.data),data_anom)
             # Save anomaly data (anncycle subtracted)
             self.year=yearc
             if self.outfile_frequency=='year':
