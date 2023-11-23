@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 import data_analysis as da
 import info
 
-#BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
-BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
+BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
+#BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
@@ -20,10 +20,12 @@ SUBDIR='processed' # 'std': input data with time axis
                    # 'processed': input data with no time axis
 
 # Optional
-TDOMAINID='ann1999'
+TDOMAINID='CCER75Elat-15-15-98-20-0.05-00UTC'
 
-VAR_NAME='omega_lambda';SOURCE='ncepdoe_plev_d'
-LEVELS=info.ncepdoe_levels
+VAR_NAME='uwnd'; SOURCE='era5gloeraiER1_plev_3h'
+
+#LEVELS=info.levels['ncepdoe']
+LEVELS=[975,500]
 
 if SUBDIR=='std':
     FILEPRE='' # e.g., '', '_rac', '_rac_b20_200_n241', '_rac_rm5_n5'
@@ -31,11 +33,11 @@ if SUBDIR=='std':
     MONTH1=MONTH2=-999 # Set both MONTH1 and MONTH2 to same (irrelevant) value if outfile_frequency is 'year'
     #MONTH1=1; MONTH2=1 # Set month ranges if outfile_frequency is less than 'year'
 elif SUBDIR=='processed':
-    FILEPRE='_'+TDOMAINID # e.g., TDOMAINID of time mean data.
+    FILEPRE='_'+TDOMAINID+'_lag' # e.g., TDOMAINID of time mean data.
 else:
     raise ValueError('SUBDIR is invalid.')
 
-PLOT=True
+PLOT=False
 
 VERBOSE=2
 

@@ -4815,8 +4815,31 @@ class CombineLevels(object):
             x1.add_aux_coord(levelcoord)
             x2.append(x1)
         # 14 May 2020, noted in f_combine_latitudes that order of dimensions is not conventional
-        raise ToDoError('Check that dimensions are in normal order tzyx. Also that data is float32 not float64. See f_combine_latitudes for code and copy here.')
-        self.data_all=x2.merge_cube()
+        #raise ToDoError('Check that dimensions are in normal order tzyx. Also that data is float32 not float64. See f_combine_latitudes for code and copy here.')
+        x2=x2.merge_cube()
+        #
+        print('x2 before: {0!s}'.format(x2))
+        dc=x2.dim_coords
+        dclen=len(dc)
+        dcname0=dc[0].name()
+        dcname1=dc[1].name()
+        dcname2=dc[2].name()
+        print('dclen,dcname0,dcname1,dcname2: {0!s}, {1!s}, {2!s}, {3!s}'.format(dclen,dcname0,dcname1,dcname2))
+        if dclen>3:
+            dcname3=dc[3].name()
+            print('dcname3: {0!s}'.format(dcname3))
+        if (dclen==4 and dcname0=='time' and dcname1=='level' and dcname2=='latitude' and dcname3=='longitude'):
+            # Dimensions are in order [time,level,latitude,longitude]
+            pass
+        elif (dclen==4 and dcname0=='level' and dcname1=='time' and dcname2=='latitude' and dcname3=='longitude'):
+            # Dimensions are in order [level,time,latitude,longitude]
+            # Reorder to [time,level,latitude,longitude]
+            x2.transpose([1,0,2,3])
+        else:
+            raise ToDoError('Code up for dimension order other than level,time,lat,lon.')
+        print('x2 before: {0!s}'.format(x2))
+        #
+        self.data_all=x2
         # Save multi-level data cube
         fileout1=self.file_data.replace('LEVEL','all')
         print('fileout1: {0!s}'.format(fileout1))
@@ -4941,7 +4964,7 @@ class CombineLatitudes(object):
         if (dclen==3 and dcname0=='time' and dcname1=='latitude' and dcname2=='longitude'):
             # Dimensions are in order [time,latitude,longitude]
             pass
-        if (dclen==3 and dcname0=='latitude' and dcname1=='time' and dcname2=='longitude'):
+        elif (dclen==3 and dcname0=='latitude' and dcname1=='time' and dcname2=='longitude'):
             # Dimensions are in order [latitude,time,longitude]
             # Reorder to [time,latitude,longitude]
             x2.transpose([1,0,2])
