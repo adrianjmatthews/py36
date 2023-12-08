@@ -65,10 +65,10 @@ class Plot(object):
 
         self.ADHOC1=False # Should be False unless good reason. Search code for (ad hoc!) use.
 
-        self.NROW=3; self.NCOL=1
+        self.NROW=2; self.NCOL=1
 
         self.XVAR='longitude'; self.YVAR='latitude'
-        self.XVAR1=0; self.XVAR2=360; self.YVAR1=-90; self.YVAR2=90
+        self.XVAR1=90; self.XVAR2=130; self.YVAR1=-15; self.YVAR2=20
 
         #self.XVAR='longitude'; self.YVAR='Level'
         #self.XVAR1=0; self.XVAR2=360; self.YVAR1=50; self.YVAR2=1000
@@ -97,13 +97,13 @@ class Plot(object):
         self.XLABELS_BOTTOM_ONLY=True
         self.YLABELS_LEFT_ONLY=True
         self.PLOT_LINES=False # False, 'all', or list of panel indices, e.g., [0,1,2,4,5]
-        self.PLOT_MARKERS='all' # False, 'all', or list of panel indices, e.g., [0,1,2,4,5]
-        self.PRINT_TITLE=False
+        self.PLOT_MARKERS=False # False, 'all', or list of panel indices, e.g., [0,1,2,4,5]
+        self.PRINT_TITLE=True
         self.PANEL_LABELS=True
         self.PRINT_FILENAMES=True
         self.VIEW=VIEW
         self.SAVE_IMAGE=True
-        self.DPI=False # Can be False or eg 50 (for quick look), 300 (manuscript)
+        self.DPI=False # Can be False (default dpi) or eg 50 (for quick look), 300 (manuscript)
         
         self.LABELS_FONTSIZE=11 # for tick and colorbar labels.  Try 10-28
         self.XTICKLABEL_ROTATION=0 # degrees
@@ -112,8 +112,9 @@ class Plot(object):
         # Could be phases of MJO, level, time of day, etc.
         #self.LOOPPANEL=[-999] # dummy
         #self.LOOPPANEL=range(self.NROW*self.NCOL)
-        #self.LOOPPANEL=['rmm006all'+str(xx) for xx in range(1,8+1)]
-        self.LOOPPANEL=[0,10,20]
+        #self.LOOPPANEL=['rmm007n2a'+str(xx) for xx in range(1,8+1)]
+        #self.LOOPPANEL=[0,10,20]
+        self.LOOPPANEL=['imergmcw_sfc_30m','imergv07amcw_sfc_30m']
         #self.LOOPPANEL=['CCEK102E98-18-00UTC-and-M0002b','M0002b-and-not-CCEK102E98-18-00UTC']
         #self.LOOPPANEL=[500,]
         #self.LOOPPANEL=[ cftime.DatetimeGregorian(2018,9,13,19,30),
@@ -132,10 +133,10 @@ class Plot(object):
 
         # Other variables for use in file names or data extraction
         #self.SEC_NO=1; self.LOC1=info.sections[self.SEC_NO]['location1']; self.LOC2=info.sections[self.SEC_NO]['location2']
-        self.YEAR=1000; self.MONTH=1; self.DAY_START=1 # lagged composites day zero is 1 Jan 1000, by convention
+        #self.YEAR=1000; self.MONTH=1; self.DAY_START=1 # lagged composites day zero is 1 Jan 1000, by convention
         #self.YEAR=2018; self.MONTH=9#; self.DAY_START=11 # Typhoon Ompong
-        #self.YEAR=2019; self.MONTH=3; self.DAY=1
-        self.TDOMAINID='rmm001a-n2a5'
+        self.YEAR=2021; self.MONTH=9; self.DAY=1
+        #self.TDOMAINID='rmm001a-n2a5'
 
         self.IMAGEFILE=os.path.join(os.path.sep,'gpfs','home','e058','tmp','fig1.png')
         #self.IMAGEFILE=os.path.join(os.path.sep,'gpfs','home','e058','tmp',str(self.YEAR)+'-'+str(self.MONTH).zfill(2)+'-'+str(self.DAY).zfill(2)+'.png')
@@ -146,8 +147,8 @@ class Plot(object):
         #self.BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
         #self.BASEDIR=os.path.join(os.path.sep,'gpfs','home','e058','home','data')
         
-        #self.SUBDIR='std'
-        self.SUBDIR='processed'
+        self.SUBDIR='std'
+        #self.SUBDIR='processed'
 
         # Use SINGLEFILE for one-off file names that do not fit data naming convention
         # Note, if file name relies on e.g., var_name or level then use
@@ -227,11 +228,11 @@ class Plot(object):
         factor can be False or a scaling number. NB consider convert_units instead of factor."""
         # Variable 1: to be contourf'd
         self.var1=dict([('plot',True),
-                        ('source','ncepdoe_plev_d'),
-                        ('var','zg'),
-                        ('level',200),
+                        ('source','dummy'),
+                        ('var','ppt'),
+                        ('level',1),
                         ('colorbar',True),
-                        ('filepre','_rac'),
+                        ('filepre',''),
                         ('factor',False),
                         ('constant',False),
                         ('basedir',self.BASEDIR),
@@ -340,7 +341,9 @@ class Plot(object):
                     else:
                         #file1=os.path.join(dictc['dir'],dictc['var']+'_'+str(dictc['level'])+dictc['filepre']+'_'+str(self.YEAR)+str(self.MONTH).zfill(2)+'.nc')
                         #file1=os.path.join(dictc['dir'],dictc['var']+'_'+str(dictc['level'])+dictc['filepre']+'_2018.nc') # from eg anncycle.py
-                        file1=os.path.join(dictc['dir'],dictc['var']+'_'+str(dictc['level'])+dictc['filepre']+'_'+self.TDOMAINID+'_lag.nc') # from eg lagged_mean.py
+                        #file1=os.path.join(dictc['dir'],dictc['var']+'_'+str(dictc['level'])+dictc['filepre']+'_'+self.TDOMAINID+'_lag.nc') # from lagged_mean.py
+                        #file1=os.path.join(dictc['dir'],dictc['var']+'_'+str(dictc['level'])+dictc['filepre']+'_'+str(looppanelc)+'.nc') # from mean.py
+                        file1=os.path.join(dictc['dir'].replace('dummy',looppanelc),dictc['var']+'_'+str(dictc['level'])+dictc['filepre']+'_'+str(self.YEAR)+str(self.MONTH).zfill(2)+'.nc') # when looping over source
                         #file1=os.path.join(dictc['dir'],dictc['var']+'_'+str(dictc['level'])+dictc['filepre']+'_'+str(looppanelc)+'_lag_ss_lat_-2.625_2.625.nc') # from eg lagged_mean.py
                         #file1=os.path.join(dictc['dir'],dictc['var']+'_'+str(dictc['level'])+'_CCEK102E01-20-00UTC-and-M0002a_lag.nc')
                         #file1=os.path.join(dictc['dir'],dictc['var']+'_'+str(dictc['level'])+'_rac_rmm001djf'+str(looppanelc)+'.nc')
@@ -403,10 +406,10 @@ class Plot(object):
                     if self.TIME_EXTRACT:
                         # Option to extract data based on times or lags
                         #timec=looppanelc
-                        # timec=cftime.DatetimeGregorian(1,1,1,looppanelc)
-                        #timec=cftime.DatetimeGregorian(self.YEAR,self.MONTH,self.DAY)
+                        #timec=cftime.DatetimeGregorian(1,1,1,looppanelc)
+                        timec=cftime.DatetimeGregorian(self.YEAR,self.MONTH,self.DAY)
                         #timec=cftime.DatetimeGregorian(self.YEAR,self.MONTH,self.DAY_START,0)+looppanelc*datetime.timedelta(days=1)
-                        timec=cftime.DatetimeGregorian(self.YEAR,self.MONTH,self.DAY_START,0)+looppanelc*datetime.timedelta(days=1)
+                        #timec=cftime.DatetimeGregorian(self.YEAR,self.MONTH,self.DAY_START,0)+looppanelc*datetime.timedelta(days=1)
                         #lagc=0
                         #timec=cftime.DatetimeGregorian(self.YEAR,self.MONTH,self.DAY_START,0)+lagc*datetime.timedelta(hours=1)
                         print('timec: {0!s}'.format(timec))
@@ -460,15 +463,15 @@ class Plot(object):
 
         if 'longitude' in [self.XVAR,self.YVAR]:
             print('# Create longitude ticks and labels')
-            label_int=30.
-            self.lon_ticks=np.arange(-180,360+self.delta,label_int)
+            label_int=10.
+            self.lon_ticks=np.arange(0,360+self.delta,label_int)
             self.lon_labels= [plotter.lonlat2string(xx,'lon',format=1) for xx in self.lon_ticks]
             print('lon_ticks: {0.lon_ticks!s}'.format(self))
             print('lon_labels: {0.lon_labels!s}'.format(self))
         
         if 'latitude' in [self.XVAR,self.YVAR]:
             print('# Create latitude ticks and labels')
-            label_int=30.
+            label_int=10.
             self.lat_ticks=np.arange(-90,90+self.delta,label_int)
             self.lat_labels= [plotter.lonlat2string(xx,'lat',format=1) for xx in self.lat_ticks]
             if self.ADHOC1:
@@ -521,12 +524,14 @@ class Plot(object):
             # Code below is from trial and error
             # Set projc as projection to be used for PlateCarree projections
             if self.XVAR=='longitude' and self.YVAR=='latitude':
-                if 0<self.XVAR1<180 and 0<self.XVAR2<180: # Eastern hemisphere
+                if 0<self.XVAR1<180 and 0<self.XVAR2<180: # Entirely within eastern hemisphere
                     self.projc=self.proj0
                 elif 0<=self.XVAR1<180 and 180<self.XVAR2<=360: # Straddling dateline, with longitude in Western hemisphere going from 180 to 360, not -180 to 0
                     self.projc=self.proj180
                 elif -180<=self.XVAR1<0 and 0<self.XVAR2<=180: # Straddling 0E, with longitude in Western hemisphere going from -180 to 0, not 180 to 360
                     self.projc=self.proj0
+                elif 0<self.XVAR1<180 and self.XVAR2>360: # Left boundary in Eastern Hemisphere, right boundary beyond 360E, ie wrapping, eg 20E to 20E (20,380)
+                    self.projc=self.proj180
                 else:
                     raise da.ToDoError('Find by trial and error how it works for other ranges!')
         elif self.PROJTYPE=='NorthPolarStereo':
@@ -547,14 +552,14 @@ class Plot(object):
             # Sequential single hue: Reds Blues Greens Greys Oranges Purples
             # Sequential multi hue: OrRd PuBu YlOrBr YlOrRd RdPu etc
             # Number of levels: 03-11 for divergent, 03-09 for sequential
-            cmap1_name='brewer_'+'RdBu_11'
+            cmap1_name='brewer_'+'Blues_09'
             self.cmap1=mpl_cm.get_cmap(cmap1_name)
             #self.cmap1=plotter.reverse_colormap(self.cmap1)
             #self.cmap1=mpl.colors.ListedColormap(['cyan','violet','blue','green','yellow','orange','red','pink'])
             self.constant_interval=True
             if self.constant_interval:
-                cint1=10; ndigits1=1; clow1=-4.5*cint1; chigh1=-clow1
-                #cint1=250; ndigits1=0; clow1=0; chigh1=clow1+9*cint1
+                #cint1=1; ndigits1=1; clow1=-4.5*cint1; chigh1=-clow1
+                cint1=20; ndigits1=0; clow1=0; chigh1=clow1+9*cint1
                 #cint1=2.5; ndigits1=1; clow1=2.5; chigh1=14*cint1+clow1
                 self.levels1=plotter.levels_list(clow1,chigh1,cint1,zero=True,ndigits=ndigits1)
             else:
@@ -726,13 +731,13 @@ class Plot(object):
                 axc.set_xlabel(xlabel,fontsize=ticklabels_fontsize)
             else:
                 axc.set_xticklabels([])
-                axc.tick_params(labelbottom='off')
+                axc.tick_params(labelbottom=False)
             if not(self.YLABELS_LEFT_ONLY) or (self.YLABELS_LEFT_ONLY and icol==0) and not(self.PROJTYPE=='NorthPolarStereo'):
                 axc.set_yticklabels(yticklabels,fontsize=ticklabels_fontsize)
                 axc.set_ylabel(ylabel,fontsize=ticklabels_fontsize)
             else:
                 axc.set_yticklabels([])
-                axc.tick_params(labelleft='off')
+                axc.tick_params(labelleft=False)
             if self.INVERT_YAXIS:
                 axc.invert_yaxis()
 
@@ -857,7 +862,7 @@ class Plot(object):
                     x2,y2=info.getlonlat('Jakarta')
                     line1=mpl.lines.Line2D((x1,x2),(y1,y2),transform=self.proj0,linewidth=3,color='green')
                     axc.add_line(line1)
-                if True:
+                if False:
                     # Read in CCKW database and extract trajectories that lie in 
                     # the current domain
                     self.file_traj_pickle=os.path.join(self.BASEDIR,self.var1['source'],'processed',self.var1['var']+'_'+str(self.var1['level'])+'_trajEK_lat_-2.625_2.625_1998-01-01_2019-09-29.pkl')
@@ -870,17 +875,17 @@ class Plot(object):
                     print('Trajectories that lie in domain:')
                     def testoverlap(x1,x2,y1,y2):
                         """Return true if interval [x1,x2] overlaps [y1,y2], otherwise return False."""
-                        if x1<=y1 and x2>=y1 or x1>=y1 and x2<=y2 or x1<=y2 and x2>=y2:
-                            return True
-                        else:
+                        if x2<y1 or x1>y2:
                             return False
+                        else:
+                            return True
                     for keyc in self.trajectories.keys():
                         trajc=self.trajectories[keyc]
                         lon1=trajc['lons'][0]
                         lon2=trajc['lons'][-1]
                         time1=trajc['times'][0]
                         time2=trajc['times'][-1]
-                        if testoverlap(lon1,lon2,self.XVAR1,self.XVAR2) and testoverlap(time1,time2,self.YVAR1,self.YVAR2):
+                        if testoverlap(time1,time2,self.YVAR1,self.YVAR2):
                             print('keyc, lon1, lon2, time1, time2: {0!s}, {1!s}, {2!s}, {3!s}, {4!s}'.format(keyc,lon1,lon2,time1,time2))
                             traj_in_domain.append(trajc)
                             xx=[ trajc['lons'][ii] for ii in range(trajc['npts']) if self.XVAR1<=trajc['lons'][ii]<=self.XVAR2 and self.YVAR1<=trajc['times'][ii]<=self.YVAR2 ]
@@ -902,10 +907,10 @@ class Plot(object):
 
             # Set panel labels
             if self.PANEL_LABELS:
-                self.panel_labels=['DJF','JJA'] # Can overwrite here
+                #self.panel_labels=['DJF','JJA'] # Can overwrite here
                 #text=self.panel_labels[ipanel]
-                #text=str(self.LOOPPANEL[ipanel])
-                text='lag '+str(self.LOOPPANEL[ipanel])+' d'
+                text=str(self.LOOPPANEL[ipanel])
+                #text='MJO phase '+str(self.LOOPPANEL[ipanel][-1])
                 #text=str(self.LOOPPANEL[ipanel]); text=text.upper()[0]+text[1:]
                 # Add (a), (b), etc to label;  chr(97) returns 'a', chr(98) returns 'b'
                 text='('+chr(ipanel+97)+') '+text
@@ -925,7 +930,7 @@ class Plot(object):
         # Set colorbar for var1
         if self.var1['plot'] and self.var1['colorbar']:
             print('# Colorbar for var1')
-            colorbar_yoffset=0.05
+            colorbar_yoffset=0.10
             colorbar_position='horizontal_below_centred_figure'
             colorbar_fontsize=self.LABELS_FONTSIZE
             if colorbar_position=='horizontal_below_last_panel':
@@ -949,7 +954,7 @@ class Plot(object):
             ndigits_cbar=1
             colorbar_labels='bottom' # 'bottom', 'top_and_bottom'
             if colorbar_labels=='bottom':
-                # Lables on bottom of colorbar (default)
+                # Labels on bottom of colorbar (default)
                 xticks=[round(zz,ndigits_cbar) for zz in self.levels1] # all labels
             elif colorbar_labels=='top_and_bottom':
                 # Alternate labels on top and bottom of colorbar
@@ -974,7 +979,7 @@ class Plot(object):
                 sm.set_array([]) # Not clear why this is needed
                 cbar1=plt.colorbar(sm,cax=cbaxes1,orientation='horizontal',ticks=xticks,spacing='uniform',boundaries=[self.levels1[0]-self.var1['cint'],]+self.levels1+[self.levels1[-1]+self.var1['cint'],],extend='both',extendfrac='auto')
             cbar1.ax.tick_params(labelsize=colorbar_fontsize)
-            #cbar1_label='Precipitation rate (mm day$^{-1}$)'
+            cbar1_label='Precipitation rate (mm day$^{-1}$)'
             #cbar1_label='Local Hadley circulation (kg m$^{-2}$ s$^{-1}$)'
             #cbar1_label='Vertical pressure velocity (Pa s$^{-1}$)'
             #cbar1_label='1000 hPa temperature anomaly ($^\circ$C)'
@@ -982,7 +987,7 @@ class Plot(object):
             #cbar1_label='Vorticity (x $10^{-6}$ s$^{-1}$)'
             #cbar1_label='Vorticity tendency (x $10^{-12}$ s$^{-2}$)'
             #cbar1_label='OLR (W m$^{-2}$)'
-            cbar1_label='Geopotential height anomaly (m)'
+            #cbar1_label='Geopotential height anomaly (m)'
             cbar1.set_label(cbar1_label,fontsize=colorbar_fontsize)
 
         # Set colorbar for var7
@@ -1055,7 +1060,7 @@ class Plot(object):
             #fig_title='MAM mean: NCEP-DOE (u,$\omega$) averaged 10$^\circ$S-10$^\circ$N'
             #fig_title=plotter.months_January[MONTH]+' '+str(YEAR)
             #fig_title='GPM IMERG mean: '+self.TDOMAINID
-            fig_title='Daily mean IMERG precipitation, ERA-5 surface wind: '+str(self.YEAR)+'-'+str(self.MONTH).zfill(2)+'-'+str(self.DAY).zfill(2)
+            fig_title='Instantaneous IMERG precipitation: '+str(self.YEAR)+'-'+str(self.MONTH).zfill(2)+'-'+str(self.DAY).zfill(2)
             if False:
                 fig_title='Anomalous: '# header text or ''
                 for varc in self.dictlist:
