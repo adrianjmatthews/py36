@@ -9848,6 +9848,39 @@ class CCEWLagrangian(object):
             print(ss)
         if xx>300: # Arbitrary cutoff
             raise UserWarning("Sorry, that is too many 1's left.")
+        #
+        # Remove duplicate times (at same longitude) within trajectory
+        # These accumulate because of method of finding trajectory points
+        for keyc in self.trajectories.keys():
+            print('Removing duplicate times keyc: {0!s}'.format(keyc))
+            time_indices_all=self.trajectories[keyc]['time_indices']
+            npts_all=len(time_indices_all)
+            lon_indices_all=self.trajectories[keyc]['lon_indices']
+            if len(lon_indices_all)!=npts_all:
+                raise UserWarning('Mismatching lists.')
+            # Add first point to new list of time,lon indices (first point is never a duplicate)
+            time_indices=[]
+            lon_indices=[]
+            ii=0
+            time_index_c=time_indices_all[ii]
+            lon_index_c=lon_indices_all[ii]
+            time_indices.append(time_index_c)
+            lon_indices.append(lon_index_c)
+            # Add remaining points if not duplicates
+            for ii in range(1,npts_all):
+                time_index_c=time_indices_all[ii]
+                time_index_c_m1=time_indices_all[ii-1]
+                lon_index_c=lon_indices_all[ii]
+                if time_index_c==time_index_c_m1:
+                    print('Removing time_index_c: {0!s}'.format(time_index_c))
+                else:
+                    time_indices.append(time_index_c)
+                    lon_indices.append(lon_index_c)
+            npts=len(time_indices)
+            print('npts_all,npts: {0!s}, {1!s}'.format(npts_all,npts))
+            self.trajectories[keyc]['time_indices']=time_indices
+            self.trajectories[keyc]['lon_indices']=lon_indices
+        #
         # Prune western and eastern ends of trajectories using unfiltered
         # data to avoid over extension of trajectories because of wavenumber-
         # frequency filtering
