@@ -422,11 +422,19 @@ the&nbsp;time&nbsp;domain.&nbsp;Keys&nbsp;are:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;between&nbsp;at&nbsp;least&nbsp;80&nbsp;and&nbsp;100&nbsp;degrees&nbsp;east.&nbsp;Set&nbsp;to&nbsp;False&nbsp;to<br>
 &nbsp;&nbsp;&nbsp;&nbsp;disable.<br>
 &nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;'round_to_nearest_time'&nbsp;:&nbsp;string&nbsp;of&nbsp;False.&nbsp;If&nbsp;False,&nbsp;pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'round_to_nearest_time'&nbsp;:&nbsp;string&nbsp;or&nbsp;False.&nbsp;If&nbsp;False,&nbsp;pass<br>
 &nbsp;&nbsp;&nbsp;&nbsp;datetime&nbsp;of&nbsp;crossing&nbsp;lonc&nbsp;to&nbsp;time&nbsp;domain&nbsp;at&nbsp;full<br>
 &nbsp;&nbsp;&nbsp;&nbsp;resolution,&nbsp;e.g.,&nbsp;3&nbsp;hour&nbsp;resolution.&nbsp;If&nbsp;'d',&nbsp;then&nbsp;round<br>
 &nbsp;&nbsp;&nbsp;&nbsp;datetime&nbsp;to&nbsp;nearest&nbsp;day&nbsp;at&nbsp;00&nbsp;UTC.&nbsp;If&nbsp;'6h',&nbsp;then&nbsp;round<br>
-&nbsp;&nbsp;&nbsp;&nbsp;datetime&nbsp;to&nbsp;nearest&nbsp;00,&nbsp;06,&nbsp;12,&nbsp;18&nbsp;UTC.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;datetime&nbsp;to&nbsp;nearest&nbsp;00,&nbsp;06,&nbsp;12,&nbsp;18&nbsp;UTC.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'dbsubset&nbsp;:&nbsp;Boolean'.&nbsp;If&nbsp;True,&nbsp;create&nbsp;and&nbsp;save&nbsp;a&nbsp;new<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dictionary&nbsp;of&nbsp;trajectories.&nbsp;This&nbsp;is&nbsp;the&nbsp;subset&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;trajectories&nbsp;used&nbsp;in&nbsp;the&nbsp;creation&nbsp;of&nbsp;the&nbsp;time&nbsp;domain,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;along&nbsp;with&nbsp;the&nbsp;parameters&nbsp;in&nbsp;tdomain_params&nbsp;added&nbsp;in,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;i.e.,&nbsp;lonc,&nbsp;threshold,&nbsp;etc.&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;by&nbsp;later<br>
+&nbsp;&nbsp;&nbsp;&nbsp;scripts&nbsp;to&nbsp;analyse&nbsp;properties&nbsp;of&nbsp;the&nbsp;trajectories&nbsp;(e.g.,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;phase&nbsp;speeds)&nbsp;that&nbsp;went&nbsp;into&nbsp;the&nbsp;time&nbsp;domain.</tt></dd></dl>
 
 <dl><dt><a name="CCEWLagrangian-f_events"><strong>f_events</strong></a>(self, event_params)</dt><dd><tt>Create&nbsp;Lagrangian&nbsp;database&nbsp;of&nbsp;CCEW&nbsp;events.<br>
 &nbsp;<br>
@@ -502,6 +510,31 @@ equatorial&nbsp;wave-filtered&nbsp;data.</tt></dd></dl>
 Creates&nbsp;attributes:<br>
 &nbsp;<br>
 self.<strong>trajectories</strong>&nbsp;:&nbsp;as&nbsp;defined&nbsp;in&nbsp;<a href="#CCEWLagrangian-f_events">f_events</a>()</tt></dd></dl>
+
+<dl><dt><a name="CCEWLagrangian-f_traj_speeds"><strong>f_traj_speeds</strong></a>(self, lagmax)</dt><dd><tt>Calculate&nbsp;speeds&nbsp;of&nbsp;trajectories.<br>
+&nbsp;<br>
+Inputs:<br>
+&nbsp;<br>
+Assumes&nbsp;trajectories&nbsp;attribute&nbsp;exists.<br>
+&nbsp;<br>
+lagmax&nbsp;:&nbsp;a&nbsp;datetime.timedelta&nbsp;<a href="builtins.html#object">object</a>.&nbsp;Typical&nbsp;value&nbsp;+2<br>
+days.&nbsp;Speed&nbsp;of&nbsp;each&nbsp;trajectory&nbsp;is&nbsp;calculated&nbsp;over&nbsp;period<br>
+(crossing&nbsp;time&nbsp;-&nbsp;lagmax,&nbsp;crossing&nbsp;time&nbsp;+&nbsp;lagmax).<br>
+&nbsp;<br>
+Creates&nbsp;attributes:<br>
+&nbsp;<br>
+self.<strong>speeds</strong>&nbsp;:&nbsp;average&nbsp;speed&nbsp;of&nbsp;each&nbsp;trajectory<br>
+&nbsp;<br>
+Statistics&nbsp;of&nbsp;self.<strong>speeds</strong>&nbsp;distribution:<br>
+&nbsp;<br>
+self.<strong>speeds_mean</strong>&nbsp;:&nbsp;mean<br>
+self.<strong>speeds_stddev</strong>&nbsp;:&nbsp;standard&nbsp;deviation<br>
+self.<strong>speeds_per25</strong>&nbsp;:&nbsp;25th&nbsp;percentile<br>
+self.<strong>speeds_per75</strong>&nbsp;:&nbsp;75th&nbsp;percentile<br>
+self.<strong>speeds_min</strong>&nbsp;:&nbsp;minimum&nbsp;value&nbsp;of&nbsp;self.<strong>speeds</strong><br>
+self.<strong>speeds_max</strong>&nbsp;:&nbsp;maximum&nbsp;value&nbsp;of&nbsp;self.<strong>speeds</strong><br>
+&nbsp;<br>
+These&nbsp;created&nbsp;attributes&nbsp;are&nbsp;all&nbsp;saved&nbsp;in&nbsp;a&nbsp;new&nbsp;pickle&nbsp;file.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -911,7 +944,7 @@ self.<strong>data_in</strong>['tsc_LEVEL']&nbsp;and&nbsp;self.<strong>data_in</s
 Uses&nbsp;gsw.rho_CT(tsc,sa,pref)&nbsp;where&nbsp;pref&nbsp;is&nbsp;reference&nbsp;sea&nbsp;water<br>
 pressure&nbsp;in&nbsp;dbar.<br>
 &nbsp;<br>
-Choose&nbsp;&lt;method&gt;&nbsp;to&nbsp;calculate&nbsp;mixed&nbsp;layer&nbsp;depth.<br>
+Choose&nbsp;&lt;method&gt;&nbsp;to&nbsp;calculate&nbsp;potential&nbsp;density.<br>
 &nbsp;<br>
 Method&nbsp;1&nbsp;(default).&nbsp;&nbsp;Assumes&nbsp;do&nbsp;not&nbsp;have&nbsp;explicit&nbsp;values&nbsp;of<br>
 swp,&nbsp;but&nbsp;tsc&nbsp;and&nbsp;sa&nbsp;are&nbsp;on&nbsp;a&nbsp;grid&nbsp;with&nbsp;a&nbsp;depth&nbsp;axis&nbsp;(in&nbsp;m).<br>

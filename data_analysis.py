@@ -241,14 +241,14 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07atrm','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','cmap']
+    valid_data_sources=['era5trp','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07atrm','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','glorys12v1aeq1','cmap']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
     if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','cmap_sfc_5d','cmap_sfc_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -427,6 +427,14 @@ def clean_callback(cube,field,filename):
               'summary',
               'time_coverage_end',
               'time_coverage_start',
+              'latitude_max',
+              'latitude_min',
+              'longitude_max',
+              'longitude_min',
+              'field_type',
+              'copernicusmarine_version',
+              'CDI',
+              'CDO',
               'uuid',]
     for attribute in att_list:
         if attribute in cube.attributes:
@@ -2458,7 +2466,7 @@ class DataConverter(object):
                 self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_day_HadGEM2-ES_piControl_r1i1p1_*.nc')
         elif self.source in ['glorys12v1_zlev_d']:
             self.filein1=os.path.join(self.basedir,self.source,'raw','NEMO_GR_PHY_001_030_'+str(self.year)+str(self.month).zfill(2)+'*.nc')
-        elif self.source in ['glorys12v1eq1_zlev_d']:
+        elif self.source in ['glorys12v1eq1_zlev_d','glorys12v1aeq1_zlev_d']:
             self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_'+str(self.level)+'_'+str(self.year)+str(self.month).zfill(2)+'*.nc')
         else:
             raise UserWarning('Data source not recognised.')
@@ -2477,7 +2485,7 @@ class DataConverter(object):
         elif self.data_source in ['glorys12v1'] and self.level_type=='zlev':
             leveltol=0.01
             level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
-        elif self.data_source in ['glorys12v1eq1'] and self.level_type=='zlev':
+        elif self.data_source in ['glorys12v1eq1','glorys12v1aeq1'] and self.level_type=='zlev':
             leveltol=0.001
             level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
         elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d']:
@@ -2553,7 +2561,7 @@ class DataConverter(object):
                 self.raw_name='lwr'
             elif self.var_name in ['taux','tauy']:
                 self.raw_name=self.var_name
-        elif self.data_source in ['glorys12v1','glorys12v1eq1']:
+        elif self.data_source in ['glorys12v1','glorys12v1eq1','glorys12v1aeq1']:
             if self.var_name=='swtheta':
                 self.raw_name='thetao'
             elif self.var_name=='swsal':
@@ -2613,8 +2621,8 @@ class DataConverter(object):
                 cubec.remove_coord('latitude')
                 cubec.add_dim_coord(latcoord1,1)
         #
-        # Convert time coordinate to standard for ostia and glorys12v1
-        if self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d']:
+        # Convert time coordinate to standard for ostia, glorys data sets
+        if self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1aeq1_zlev_d']:
             for cubec in xx:
                 cubec=standardise_time_coord_units(cubec,tunits='days')
         #
@@ -2781,7 +2789,7 @@ class DataConverter(object):
             x5.rename(x1.name())
             x5.var_name=x1.var_name
             self.cube=x5
-        # glorys daily data.
+        # glorys12v1 and glorys12v1eq1 (but not glorys12v1aeq1) daily data.
         # Time stamp is at 12 UTC. Change to 00 UTC by subtracting 0.5 (days).
         if self.source in ['glorys12v1_zlev_d','glorys12v1eq1_zlev_d']:
             change_time_stamp_from_12_to_00(self,verbose=self.verbose)
@@ -5477,7 +5485,7 @@ class AnnualCycle(object):
             print('npts_missing,npts',npts_missing,npts)
             print('frac_missing,frac_crit',frac_missing,self.frac_crit)
             if (frac_missing>self.frac_crit):
-                if self.source in ['glorys12v1_zlev_d','glorys12v1eq1_zlev_d']:
+                if self.source in ['glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1aeq1_zlev_d']:
                     print('Letting this go as likely due to land points.')
                 else:
                     raise UserWarning('Warning: Too many missing points. Rethink algorithm.')
@@ -6468,7 +6476,7 @@ class CubeDiagnostics(object):
         Uses gsw.rho_CT(tsc,sa,pref) where pref is reference sea water
         pressure in dbar.
 
-        Choose <method> to calculate mixed layer depth.
+        Choose <method> to calculate potential density.
 
         Method 1 (default).  Assumes do not have explicit values of
         swp, but tsc and sa are on a grid with a depth axis (in m).
@@ -10079,11 +10087,19 @@ class CCEWLagrangian(object):
             between at least 80 and 100 degrees east. Set to False to
             disable.
 
-            'round_to_nearest_time' : string of False. If False, pass
+            'round_to_nearest_time' : string or False. If False, pass
             datetime of crossing lonc to time domain at full
             resolution, e.g., 3 hour resolution. If 'd', then round
             datetime to nearest day at 00 UTC. If '6h', then round
             datetime to nearest 00, 06, 12, 18 UTC.
+
+            'dbsubset : Boolean'. If True, create and save a new
+            dictionary of trajectories. This is the subset of the
+            trajectories used in the creation of the time domain,
+            along with the parameters in tdomain_params added in,
+            i.e., lonc, threshold, etc. This can be used by later
+            scripts to analyse properties of the trajectories (e.g.,
+            phase speeds) that went into the time domain.
 
         """
         self.tdomain_params=tdomain_params
@@ -10092,6 +10108,7 @@ class CCEWLagrangian(object):
         self.threshold_units=self.tdomain_params['threshold_units']
         self.min_lon_extent=self.tdomain_params['min_lon_extent']
         self.round_to_nearest_time=self.tdomain_params['round_to_nearest_time']
+        self.dbsubset=self.tdomain_params['dbsubset']
         # Create time domain idx (name) and headers
         # Permission to be ad hoc here!
         if self.band1_sym:
@@ -10124,6 +10141,8 @@ class CCEWLagrangian(object):
         # Extract crossing times from Lagrangian data base
         # (Apply extra thresholds if necessary here)
         crossing_times=[]
+        if self.dbsubset:
+            self.trajectories_subset={}
         for keyc in self.trajectories.keys():
             lons=self.trajectories[keyc]['lons']
             lon1=lons[0]
@@ -10170,6 +10189,19 @@ class CCEWLagrangian(object):
                 if amp_flag:
                     print('Including: keyc,lon1,lonc,lon2,time1,timec,time2: {0!s}, {1!s}, {2!s}, {3!s}, {4!s}, {5!s}, {6!s}'.format(keyc,lon1,self.lonc,lon2,time1,timec,time2))
                     crossing_times.append(timec)
+                    if self.dbsubset:
+                        # Add this trajectory, with timec as new dictionary attribute, to subset trajectory dictionary
+                        self.trajectories_subset[keyc]=self.trajectories[keyc]
+                        self.trajectories_subset[keyc]['lonc']=self.lonc
+                        self.trajectories_subset[keyc]['timec']=timec
+        # Save subset of trajectories to new pickle file
+        if self.dbsubset:
+            # File name is input pickle + time domain id
+            self.file_traj_pickle_subset=self.file_traj_pickle[:-4]+'_'+idx+'.pkl'
+            print('file_traj_pickle_subset: {0.file_traj_pickle_subset!s}'.format(self))
+            filec=open(self.file_traj_pickle_subset,'wb')
+            pickle.dump(self.trajectories_subset,filec)
+            filec.close()
         # Sort by time as this is not guaranteed by the methodology
         crossing_times.sort()
         # Create list of paired (start_time,end_time) at (00UTC,23:59:59UTC)
@@ -10186,3 +10218,56 @@ class CCEWLagrangian(object):
         print('nevents: {0!s}'.format(tdomain.nevents))
         tdomain.datetime2ascii()
         tdomain.write_ascii()
+
+    def f_traj_speeds(self,lagmax):
+        """Calculate speeds of trajectories.
+
+        Inputs:
+
+        Assumes trajectories attribute exists.
+
+        lagmax : a datetime.timedelta object. Typical value +2
+        days. Speed of each trajectory is calculated over period
+        (crossing time - lagmax, crossing time + lagmax).
+
+        Creates attributes:
+
+        self.speeds : average speed of each trajectory
+
+        Statistics of self.speeds distribution:
+
+        self.speeds_mean : mean
+        self.speeds_stddev : standard deviation
+        self.speeds_per25 : 25th percentile
+        self.speeds_per75 : 75th percentile
+        self.speeds_min : minimum value of self.speeds
+        self.speeds_max : maximum value of self.speeds
+
+        These created attributes are all saved in a new pickle file.
+
+        """
+        self.lagmax=lagmax
+        print('lagmax: {0.lagmax!s}'.format(self))
+        # Calculate speed of each trajectory
+        self.speeds=[]
+        for keyc in list(self.trajectories.keys())[:1]:
+            lons=self.trajectories[keyc]['lons']
+            times=self.trajectories[keyc]['times']
+            npts=self.trajectories[keyc]['npts']
+            lonc=self.trajectories[keyc]['lonc']
+            timec=self.trajectories[keyc]['timec']
+            print('keyc,lonc,timec: {0!s}, {1!s}, {2!s}'.format(keyc,lonc,timec))
+            time1=timec-self.lagmax
+            time2=timec+self.lagmax
+            print('time1,time2: {0!s}, {1!s}'.format(time1,time2))
+            nlons=len(lons)
+            ntimes=len(times)
+            if nlons!=ntimes!=npts:
+                raise UserWarning('Error. Should all be same length.')
+            # Find indices on trajectory corresponding to time1 and time2
+            # If this fails (index out of range), then trajectory is too short for lagmax
+            # Consider reducing lagmax (or could exclude trajectory, but keep a track of this)
+            index1=times.index(time1)
+            index2=times.index(time2)
+            print('index1,index2: {0!s}, {1!s}'.format(index1,index2))
+            pdb.set_trace()
