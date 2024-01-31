@@ -6527,6 +6527,105 @@ class CubeDiagnostics(object):
         if self.archive:
             archive_file(self,fileout)
 
+    def f_SA_from_SP(self):
+        """Calculate absolute salinity from practical salinity.
+
+        Assumes swsal (practical salinity) has already been loaded, in
+        self.data_in['swsal_LEVEL'].
+
+        Uses gsw.SA_from_SP(SP, p, lon, lat) 
+
+        SP is swsal, practical salinity.
+
+        p is pressure. Calculate this from LEVEL (assumed to be z level) using gsw.p_from_z(lat)
+
+        lon is longitude. Calculated from longitude dimension in swsal input cube.
+        lat is longitude. Calculated from latitude dimension in swsal input cube.
+
+        """
+        # Read in swsal for current time block and assign to swsal attributes
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        x1=self.data_in['swsal_'+str(self.level)].extract(time_constraint)
+        self.swsal=x1.concatenate_cube()
+        swsal=self.swsal.data
+        # Extract latitudes and longitudes
+        lons=self.swsal.coord('longitude').points
+        lats=self.swsal.coord('latitude').points
+        if self.verbose:
+            lon1=lons[0]
+            lon2=lons[-1]
+            print('lons: {0!s}, {1!s}'.format(lon1,lon2))
+            lat1=lats[0]
+            lat2=lats[-1]
+            print('lats: {0!s}, {1!s}'.format(lat1,lat2))
+        # Calculate pressure from level  and latitude(!)
+        if self.source.split('_')[1]=='zlev':
+            pressure=gsw.p_from_z(-self.level,lats)
+            print('level (m): {0.level!s}'.format(self))
+            print('pressure (dbar): {0!s}'.format(pressure))
+        else:
+            raise UserWarning('Levels need to be z levels.')
+        # Calculate absolute salinity (sa) from practical salinity (swsal)
+        coords=self.swsal.coords()
+        nlon=lons.shape[0]
+        nlat=lats.shape[0]
+        ntime=swsal.shape[0]
+        def broadcast_lat_array(a,nlon,nlat,ntime,verbose=True):
+            """Broadcast input a(nlat,) to shape (ntime,nlat,nlon) """
+            a1=a.reshape((nlat,1))
+            ones=np.ones((1,ntime*nlon))
+            a2=np.dot(a1,ones) # shape (nlat,nlon*ntime)
+            a3=a2.reshape((nlat,ntime,nlon))
+            a4=np.moveaxis(a3,0,1) # switch axes 0 and 1 to get (ntime,nlat,nlon)
+            x1=a4[3,:,7]-a # time index 3 and lon index 7 are just randomly chosen.
+            if verbose:
+                print('# Function broadcast_lat_array.')
+                print('Original a array: {0!s}'.format(a))
+                print('Test x1 should be all zeroes: {0!s}'.format(x1))
+            return a4
+        def broadcast_lon_array(a,nlon,nlat,ntime,verbose=True):
+            """Broadcast input a(nlon,) to shape (ntime,nlat,nlon) """
+            a1=a.reshape((nlon,1))
+            ones=np.ones((1,ntime*nlat))
+            a2=np.dot(a1,ones) # shape (nlon,ntime*nlat)
+            a3=a2.reshape((nlon,ntime,nlat))
+            a4=np.moveaxis(a3,0,2) # switch axes 0 and 1 to get (ntime,nlat,nlon)
+            x1=a4[3,7,:]-a # time index 3 and lat index 7 are just randomly chosen.
+            if verbose:
+                print('# Function broadcast_lon_array.')
+                print('Original a array: {0!s}'.format(a))
+                print('Test x1 should be all zeroes: {0!s}'.format(x1))
+            return a4
+        if coords[0].name()=='time' and coords[1].name()=='latitude' and coords[2].name()=='longitude':
+            pressure_broadcast=broadcast_lat_array(pressure,nlon,nlat,ntime,verbose=self.verbose)
+            lons_broadcast=broadcast_lon_array(lons,nlon,nlat,ntime,verbose=self.verbose)
+            lats_broadcast=broadcast_lat_array(lats,nlon,nlat,ntime,verbose=self.verbose)
+            sa=gsw.SA_from_SP(swsal,pressure_broadcast,lons_broadcast,lats_broadcast)
+            if self.verbose:
+                print('Sample values:')
+                timec=5; latc=7; lonc=9
+                swsalc=swsal[timec,latc,lonc]
+                sac=sa[timec,latc,lonc]
+                print('swsalc: {0!s}'.format(swsalc))
+                print('sac: {0!s}'.format(sac))
+        else:
+            raise UserWarning('Order must be (tine,latitude,longitude)')
+        # Create iris cube of sa
+        var_name='sa'
+        self.sa=create_cube(conv_float32(sa),self.swsal,new_var_name=var_name)
+        self.sa.units='g kg-1'
+        # Add cell method to describe calculation of sea_water_absolute_salinity
+        cm=iris.coords.CellMethod('point','depth',comments='sa calculated using gsw.SA_from_SP in f_SA_from_SP')
+        self.sa.add_cell_method(cm)
+        # Save cube
+        fileout=self.file_data_out.replace('VAR_NAME',var_name)
+        fileout=replace_wildcard_with_time(self,fileout)
+        print('fileout: {0!s}'.format(fileout))
+        iris.save(self.sa,fileout)
+        if self.archive:
+            archive_file(self,fileout)
+
     def f_specific_humidity(self):
         """Calculate specific humidity from relative humidity and temperature.
 
