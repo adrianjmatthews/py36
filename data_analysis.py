@@ -936,6 +936,15 @@ def concatenate_cube(cubelist):
     If the cubelist concatenate_cube method is used, it will fail because
     of this mismatch of dimensions.
 
+    Also, separate issue. iris cubes have a global attribute
+    'Conventions' containing the version number of
+    CF-compatibility. This seems to be automatically created every
+    time a cube is saved to a netcdf file. And the version number
+    creeps up over time, so can sometimes get a change in the value of
+    this attribute part way through a data set, which stops
+    concatenate_cube working. This function strips out this attribute
+    to allow cubes to be concatenated.
+
     Example:
     x1=iris.load('uwnd_200_????.nc') # Load data stored in single file per year
     time1=cftime.DatetimeGregorian(1994,12,31)
@@ -974,6 +983,7 @@ def concatenate_cube(cubelist):
     #   time dimensions
     for index in range(len(cubelist)):
         cubec=cubelist[index]
+        cubec.attributes.pop('Conventions')
         time_coord=cubec.coord('time')
         if time_coord.shape==(1,):
             print('concatenate_cube.  Promoting singleton time dimension.')
@@ -4775,7 +4785,7 @@ class CombineLevels(object):
         self.descriptor=descriptor
         source_info(self)
         if self.subdir=='std':
-            self.file_data=os.path.join(self.basedir,self.source,self.subdir,self.var_name+'LEVEL'+self.filepre+'_'+self.wildcard+'.nc')
+            self.file_data=os.path.join(self.basedir,self.source,self.subdir,self.var_name+'_LEVEL'+self.filepre+'_'+self.wildcard+'.nc')
         elif self.subdir=='processed':
             self.file_data=os.path.join(self.basedir,self.source,self.subdir,self.var_name+'_LEVEL'+self.filepre+'.nc')
         else:
@@ -4849,7 +4859,10 @@ class CombineLevels(object):
         #
         self.data_all=x2
         # Save multi-level data cube
-        fileout1=self.file_data.replace('LEVEL','all')
+        if self.subdir=='std':
+            raise ToDoError('Have not done with std yet. Check whole code carefully.')
+        elif self.subdir=='processed':
+            fileout1=self.file_data.replace('LEVEL','all')
         print('fileout1: {0!s}'.format(fileout1))
         iris.save(self.data_all,fileout1)
         if self.archive:
@@ -10348,17 +10361,35 @@ class CCEWLagrangian(object):
         self.lagmax=lagmax
         print('lagmax: {0.lagmax!s}'.format(self))
         # Calculate speed of each trajectory
+        def find_nearest_time(timec,times):
+            """Find nearest time in times to timec.
+
+            timec is a datetime-like object.
+            times is a list of datetime-like objects.
+            """
+            timedeltamin=1e20 # initial dummy value
+            for xx in times:
+                timedeltac=abs((timec-xx).total_seconds())
+                if timedeltac<timedeltamin:
+                    timedeltamin=timedeltac
+                    time_nearest=xx
+            exact_hit=bool(timec==time_nearest)
+            print('timec,time_nearest,exact_hit: {0!s}, {1!s}, {2!s}'.format(timec,time_nearest,exact_hit))
+            return time_nearest
         self.speeds=[]
-        for keyc in list(self.trajectories.keys())[:1]:
+        lon2x=Planet().circum/360
+        print('lon2x conversion factor: {0!s}'.format(lon2x))
+        for keyc in list(self.trajectories.keys()):
             lons=self.trajectories[keyc]['lons']
             times=self.trajectories[keyc]['times']
             npts=self.trajectories[keyc]['npts']
             lonc=self.trajectories[keyc]['lonc']
             timec=self.trajectories[keyc]['timec']
-            print('keyc,lonc,timec: {0!s}, {1!s}, {2!s}'.format(keyc,lonc,timec))
+            print('## keyc,lonc,timec: {0!s}, {1!s}, {2!s}'.format(keyc,lonc,timec))
             time1=timec-self.lagmax
             time2=timec+self.lagmax
-            print('time1,time2: {0!s}, {1!s}'.format(time1,time2))
+            deltatime=(time2-time1).total_seconds() # s
+            print('time1,time2,deltatime: {0!s}, {1!s}, {2!s}'.format(time1,time2,deltatime))
             nlons=len(lons)
             ntimes=len(times)
             if nlons!=ntimes!=npts:
@@ -10366,7 +10397,33 @@ class CCEWLagrangian(object):
             # Find indices on trajectory corresponding to time1 and time2
             # If this fails (index out of range), then trajectory is too short for lagmax
             # Consider reducing lagmax (or could exclude trajectory, but keep a track of this)
-            index1=times.index(time1)
-            index2=times.index(time2)
-            print('index1,index2: {0!s}, {1!s}'.format(index1,index2))
-            pdb.set_trace()
+            if time1>=times[0] and time2<=times[-1]:
+                index1=times.index(find_nearest_time(time1,times))
+                index2=times.index(find_nearest_time(time2,times))
+                print('index1,index2: {0!s}, {1!s}'.format(index1,index2))
+                lon1=lons[index1]
+                lon2=lons[index2]
+                deltalon=lon2-lon1 # degrees longitude
+                deltax=deltalon*lon2x # m
+                print('lon1,lon2,deltalon,deltax: {0!s}, {1!s}, {2!s}, {3!s}'.format(lon1,lon2,deltalon,deltax))
+                if self.propagation_direction=='eastwards':
+                    if deltalon<0:
+                        raise UserWarning('Trajectory moving westwards but should be eastwards.')
+                elif self.propagation_direction=='westwards':
+                    if deltalon>0:
+                        raise UserWarning('Trajectory moving eastwards but should be westwards.')
+                else:
+                    raise UserWarning('propagation_direction invalid.')
+                speedc=deltax/deltatime # m s-1
+                print('speedc: {0!s}'.format(speedc))
+                self.speeds.append(speedc)
+            else:
+                print('Trajectory too short. Excluding.')
+        self.speeds.sort()
+        self.nspeeds=len(self.speeds)
+        self.speed_min=round(self.speeds[0],2)
+        self.speed_p25=round(self.speeds[int(self.nspeeds/4)],2)
+        self.speed_p50=round(self.speeds[int(self.nspeeds/2)],2)
+        self.speed_p75=round(self.speeds[int(3*self.nspeeds/4)],2)
+        self.speed_max=round(self.speeds[-1],2)
+        print('speeds: n,min,p25,p50,p75,max: {0.nspeeds!s}, {0.speed_min!s}, {0.speed_p25!s}, {0.speed_p50!s}, {0.speed_p75!s}, {0.speed_max!s}'.format(self))
