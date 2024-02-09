@@ -10124,7 +10124,7 @@ class CCEWLagrangian(object):
             self.trajectories[keyc]['dataunits']=dataunits
         # Save trajectories as pickle file
         # NB to re-read from the pickle file, use:
-        # trajectories=pickle.load(filec,'rb')
+        # filec=open(self.file_traj_pickle,'rb'); trajectories=pickle.load(filec)
         filec=open(self.file_traj_pickle,'wb')
         pickle.dump(self.trajectories,filec)
         filec.close()
@@ -10355,13 +10355,11 @@ class CCEWLagrangian(object):
         self.speeds_min : minimum value of self.speeds
         self.speeds_max : maximum value of self.speeds
 
-        These created attributes are all saved in a new pickle file.
-
         """
         self.lagmax=lagmax
         print('lagmax: {0.lagmax!s}'.format(self))
         # Calculate speed of each trajectory
-        def find_nearest_time(timec,times):
+        def find_nearest_time(timec,times,verbose=True):
             """Find nearest time in times to timec.
 
             timec is a datetime-like object.
@@ -10374,22 +10372,26 @@ class CCEWLagrangian(object):
                     timedeltamin=timedeltac
                     time_nearest=xx
             exact_hit=bool(timec==time_nearest)
-            print('timec,time_nearest,exact_hit: {0!s}, {1!s}, {2!s}'.format(timec,time_nearest,exact_hit))
+            if verbose>1:
+                print('timec,time_nearest,exact_hit: {0!s}, {1!s}, {2!s}'.format(timec,time_nearest,exact_hit))
             return time_nearest
         self.speeds=[]
         lon2x=Planet().circum/360
         print('lon2x conversion factor: {0!s}'.format(lon2x))
+        self.ntraj=len(self.trajectories.keys())
         for keyc in list(self.trajectories.keys()):
             lons=self.trajectories[keyc]['lons']
             times=self.trajectories[keyc]['times']
             npts=self.trajectories[keyc]['npts']
             lonc=self.trajectories[keyc]['lonc']
             timec=self.trajectories[keyc]['timec']
-            print('## keyc,lonc,timec: {0!s}, {1!s}, {2!s}'.format(keyc,lonc,timec))
+            if self.verbose:
+                print('## keyc,lonc,timec: {0!s}, {1!s}, {2!s}'.format(keyc,lonc,timec))
             time1=timec-self.lagmax
             time2=timec+self.lagmax
             deltatime=(time2-time1).total_seconds() # s
-            print('time1,time2,deltatime: {0!s}, {1!s}, {2!s}'.format(time1,time2,deltatime))
+            if self.verbose>1:
+                print('time1,time2,deltatime: {0!s}, {1!s}, {2!s}'.format(time1,time2,deltatime))
             nlons=len(lons)
             ntimes=len(times)
             if nlons!=ntimes!=npts:
@@ -10398,14 +10400,16 @@ class CCEWLagrangian(object):
             # If this fails (index out of range), then trajectory is too short for lagmax
             # Consider reducing lagmax (or could exclude trajectory, but keep a track of this)
             if time1>=times[0] and time2<=times[-1]:
-                index1=times.index(find_nearest_time(time1,times))
-                index2=times.index(find_nearest_time(time2,times))
-                print('index1,index2: {0!s}, {1!s}'.format(index1,index2))
+                index1=times.index(find_nearest_time(time1,times,verbose=self.verbose))
+                index2=times.index(find_nearest_time(time2,times,verbose=self.verbose))
+                if self.verbose>1:
+                    print('index1,index2: {0!s}, {1!s}'.format(index1,index2))
                 lon1=lons[index1]
                 lon2=lons[index2]
                 deltalon=lon2-lon1 # degrees longitude
                 deltax=deltalon*lon2x # m
-                print('lon1,lon2,deltalon,deltax: {0!s}, {1!s}, {2!s}, {3!s}'.format(lon1,lon2,deltalon,deltax))
+                if self.verbose>1:
+                    print('lon1,lon2,deltalon,deltax: {0!s}, {1!s}, {2!s}, {3!s}'.format(lon1,lon2,deltalon,deltax))
                 if self.propagation_direction=='eastwards':
                     if deltalon<0:
                         raise UserWarning('Trajectory moving westwards but should be eastwards.')
@@ -10415,10 +10419,13 @@ class CCEWLagrangian(object):
                 else:
                     raise UserWarning('propagation_direction invalid.')
                 speedc=deltax/deltatime # m s-1
-                print('speedc: {0!s}'.format(speedc))
+                if self.verbose:
+                    print('speedc: {0!s}'.format(speedc))
                 self.speeds.append(speedc)
             else:
-                print('Trajectory too short. Excluding.')
+                if self.verbose:
+                    print('Trajectory too short. Excluding.')
+        # Calculate statistics of speeds distribution
         self.speeds.sort()
         self.nspeeds=len(self.speeds)
         self.speed_min=round(self.speeds[0],2)
@@ -10427,3 +10434,4 @@ class CCEWLagrangian(object):
         self.speed_p75=round(self.speeds[int(3*self.nspeeds/4)],2)
         self.speed_max=round(self.speeds[-1],2)
         print('speeds: n,min,p25,p50,p75,max: {0.nspeeds!s}, {0.speed_min!s}, {0.speed_p25!s}, {0.speed_p50!s}, {0.speed_p75!s}, {0.speed_max!s}'.format(self))
+
