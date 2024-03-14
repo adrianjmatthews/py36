@@ -532,9 +532,7 @@ self.<strong>speeds_stddev</strong>&nbsp;:&nbsp;standard&nbsp;deviation<br>
 self.<strong>speeds_per25</strong>&nbsp;:&nbsp;25th&nbsp;percentile<br>
 self.<strong>speeds_per75</strong>&nbsp;:&nbsp;75th&nbsp;percentile<br>
 self.<strong>speeds_min</strong>&nbsp;:&nbsp;minimum&nbsp;value&nbsp;of&nbsp;self.<strong>speeds</strong><br>
-self.<strong>speeds_max</strong>&nbsp;:&nbsp;maximum&nbsp;value&nbsp;of&nbsp;self.<strong>speeds</strong><br>
-&nbsp;<br>
-These&nbsp;created&nbsp;attributes&nbsp;are&nbsp;all&nbsp;saved&nbsp;in&nbsp;a&nbsp;new&nbsp;pickle&nbsp;file.</tt></dd></dl>
+self.<strong>speeds_max</strong>&nbsp;:&nbsp;maximum&nbsp;value&nbsp;of&nbsp;self.<strong>speeds</strong></tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -702,6 +700,20 @@ Compulsory&nbsp;keywords:&nbsp;'verbose','source','level'<br>
 <dl><dt><a name="CubeDiagnostics-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
 
 <dl><dt><a name="CubeDiagnostics-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<dl><dt><a name="CubeDiagnostics-f_SA_from_SP"><strong>f_SA_from_SP</strong></a>(self)</dt><dd><tt>Calculate&nbsp;absolute&nbsp;salinity&nbsp;from&nbsp;practical&nbsp;salinity.<br>
+&nbsp;<br>
+Assumes&nbsp;swsal&nbsp;(practical&nbsp;salinity)&nbsp;has&nbsp;already&nbsp;been&nbsp;loaded,&nbsp;in<br>
+self.<strong>data_in</strong>['swsal_LEVEL'].<br>
+&nbsp;<br>
+Uses&nbsp;gsw.SA_from_SP(SP,&nbsp;p,&nbsp;lon,&nbsp;lat)&nbsp;<br>
+&nbsp;<br>
+SP&nbsp;is&nbsp;swsal,&nbsp;practical&nbsp;salinity.<br>
+&nbsp;<br>
+p&nbsp;is&nbsp;pressure.&nbsp;Calculate&nbsp;this&nbsp;from&nbsp;LEVEL&nbsp;(assumed&nbsp;to&nbsp;be&nbsp;z&nbsp;level)&nbsp;using&nbsp;gsw.p_from_z(lat)<br>
+&nbsp;<br>
+lon&nbsp;is&nbsp;longitude.&nbsp;Calculated&nbsp;from&nbsp;longitude&nbsp;dimension&nbsp;in&nbsp;swsal&nbsp;input&nbsp;cube.<br>
+lat&nbsp;is&nbsp;longitude.&nbsp;Calculated&nbsp;from&nbsp;latitude&nbsp;dimension&nbsp;in&nbsp;swsal&nbsp;input&nbsp;cube.</tt></dd></dl>
 
 <dl><dt><a name="CubeDiagnostics-f_div_components"><strong>f_div_components</strong></a>(self, level)</dt><dd><tt>Calculate&nbsp;and&nbsp;save&nbsp;duwnddx&nbsp;and&nbsp;dvwnddy&nbsp;contributions&nbsp;to&nbsp;divergence.<br>
 &nbsp;<br>
@@ -2504,6 +2516,15 @@ coordinate&nbsp;to&nbsp;a&nbsp;scalar&nbsp;coordinate&nbsp;when&nbsp;it&nbsp;ext
 other&nbsp;cubes&nbsp;will&nbsp;have&nbsp;time&nbsp;coordinates&nbsp;as&nbsp;dimension&nbsp;coordinates.<br>
 If&nbsp;the&nbsp;cubelist&nbsp;concatenate_cube&nbsp;method&nbsp;is&nbsp;used,&nbsp;it&nbsp;will&nbsp;fail&nbsp;because<br>
 of&nbsp;this&nbsp;mismatch&nbsp;of&nbsp;dimensions.<br>
+&nbsp;<br>
+Also,&nbsp;separate&nbsp;issue.&nbsp;iris&nbsp;cubes&nbsp;have&nbsp;a&nbsp;global&nbsp;attribute<br>
+'Conventions'&nbsp;containing&nbsp;the&nbsp;version&nbsp;number&nbsp;of<br>
+CF-compatibility.&nbsp;This&nbsp;seems&nbsp;to&nbsp;be&nbsp;automatically&nbsp;created&nbsp;every<br>
+time&nbsp;a&nbsp;cube&nbsp;is&nbsp;saved&nbsp;to&nbsp;a&nbsp;netcdf&nbsp;file.&nbsp;And&nbsp;the&nbsp;version&nbsp;number<br>
+creeps&nbsp;up&nbsp;over&nbsp;time,&nbsp;so&nbsp;can&nbsp;sometimes&nbsp;get&nbsp;a&nbsp;change&nbsp;in&nbsp;the&nbsp;value&nbsp;of<br>
+this&nbsp;attribute&nbsp;part&nbsp;way&nbsp;through&nbsp;a&nbsp;data&nbsp;set,&nbsp;which&nbsp;stops<br>
+concatenate_cube&nbsp;working.&nbsp;This&nbsp;function&nbsp;strips&nbsp;out&nbsp;this&nbsp;attribute<br>
+to&nbsp;allow&nbsp;cubes&nbsp;to&nbsp;be&nbsp;concatenated.<br>
 &nbsp;<br>
 Example:<br>
 x1=iris.load('uwnd_200_????.nc')&nbsp;#&nbsp;Load&nbsp;data&nbsp;stored&nbsp;in&nbsp;single&nbsp;file&nbsp;per&nbsp;year<br>
