@@ -14,6 +14,7 @@ locations['Darwin_W1']={'lon':127.5, 'lat':-12.4}
 locations['ELOX1']={'lon':105.9000, 'lat':-10.1667}
 locations['ELOX2']={'lon':106.5333, 'lat':-9.2500}
 locations['Padang']={'lon':100.4172, 'lat':-0.9471}
+locations['Terengganu']={'lon':103.1370, 'lat':5.3296}
 
 def getlonlat(xx):
     return locations[xx]['lon'],locations[xx]['lat']
@@ -36,6 +37,7 @@ sdomains['bar']={'lon1':302, 'lon2':304, 'lat1':13, 'lat2':15, 'desc':'Eureca4 g
 sdomains['trm']={'lon1':-180, 'lon2':180, 'lat1':-50, 'lat2':50, 'desc':'TRMM spatial domain'}
 sdomains['trp']={'lon1':-180, 'lon2':180, 'lat1':-30, 'lat2':30, 'desc':'Tropics'}
 sdomains['ewa']={'lon1':-20, 'lon2':30, 'lat1':0, 'lat2':60, 'desc':'Europe and West Africa'}
+sdomains['glo']={'lon1':0, 'lon2':359.9999, 'lat1':-90, 'lat2':90, 'desc':'Global'}
 
 class LevelWidths(object):
     """Calculate level widths from a set of levels. 
@@ -93,6 +95,8 @@ Mtdomain={}
 Mtdomain['0001']={'source':'trmm3b42v7p1_sfc_d', 'tseriesfile':'ppt_1_ss_lat_3.125_3.125_lon_101.625_101.625', 'method':'percentile_above', 'percentile':95}
 Mtdomain['0002']={'source':'trmm3b42v7p1_sfc_d', 'tseriesfile':'ppt_1_ss_lat_-0.875_-0.875_lon_100.375_100.375', 'method':'percentile_above', 'percentile':95}
 Mtdomain['0003']={'source':'trmm3b42v7p1_sfc_d', 'tseriesfile':'ppt_1_ss_lat_-0.875_-0.875_lon_100.375_100.375', 'method':'percentile_above', 'percentile':99}
+Mtdomain['0004']={'source':'trmm3b42v7p1_sfc_d', 'tseriesfile':'ppt_1_ss_lat_5.375_5.375_lon_103.125_103.125', 'method':'percentile_above', 'percentile':95}
+Mtdomain['0005']={'source':'trmm3b42v7p1_sfc_d', 'tseriesfile':'ppt_1_ss_lat_-0.125_-0.125_lon_109.375_109.375', 'method':'percentile_above', 'percentile':95}
 
 # ERA-Interim hybrid model to pressure level conversion
 # Values of A and B parameters from Berrisford et al. (2011)
