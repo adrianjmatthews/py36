@@ -3,6 +3,7 @@
 import os
 
 import cftime
+import datetime
 import iris
 import iris.quickplot as qplt
 import matplotlib.pyplot as plt
@@ -20,23 +21,26 @@ VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p2_sfc_3h'
 FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
 
 TIME1=cftime.DatetimeGregorian(1998,1,1)
-TIME2=TIME1+datetime.timedelta(23*365+6-1)-datetime.timedelta(seconds=1)
+#TIME2=TIME1+datetime.timedelta(21*365+6-1+272)-datetime.timedelta(seconds=1) # 29 Sep 2019 TRMM precip 
+#TIME2=TIME1+datetime.timedelta(23*365+6-1)-datetime.timedelta(seconds=1) # 30 Dec 2020 TRMM precip 
+TIME2=TIME1+datetime.timedelta(23*365+280-1)-datetime.timedelta(seconds=1) # 30 Sep 2021 TRMM precip 
 
-#LAT1=-2.625; LAT2=-LAT1
+LAT1=-2.625; LAT2=-LAT1
 #LAT1=-10; LAT2=-LAT1
 #LAT1=-15; LAT2=-LAT1
-LAT1=-15; LAT2=15
-# Option to use symmetric or antisymmetric component in latitude
-BAND1_SYM='sym' # False, 'sym', or 'antisym'
+#LAT1=-15; LAT2=15
 
-WAVE_TYPE='ER'; 
-#EVENT_PARAMS={'threshold':0.15 , 'threshold_units':'mm hr-1' , 'traj_min_time_length':12 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.5 , 'prune_threshold2':0.25} # EK for data averaged 2.625 degS-N
+# Option to use symmetric or antisymmetric component in latitude
+BAND1_SYM=False # False, 'sym', or 'antisym'
+
+WAVE_TYPE='EK'; 
+EVENT_PARAMS={'threshold':0.15 , 'threshold_units':'mm hr-1' , 'traj_min_time_length':12 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.5 , 'prune_threshold2':0.25} # EK for data averaged 2.625 degS-N
 #EVENT_PARAMS={'threshold':0.15 , 'threshold_units':'mm hr-1' , 'traj_min_time_length':12 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.5 , 'prune_threshold2':0.25} # EK for data averaged 10 degS-N
-EVENT_PARAMS={'threshold':0.05 , 'threshold_units':'mm hr-1' , 'traj_min_time_length':12 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.0 , 'prune_threshold2':0.0} # ER for data averaged 15S-15N
+#EVENT_PARAMS={'threshold':0.05 , 'threshold_units':'mm hr-1' , 'traj_min_time_length':12 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.0 , 'prune_threshold2':0.0} # ER for data averaged 15S-15N
 
 VERBOSE=2
 
-PLOT=True
+PLOT=False
 
 #==========================================================================
 

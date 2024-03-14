@@ -24,23 +24,23 @@ SUBDIR='std' # 'std': input data with time axis
 #TDOMAINID='CCEK102E01-20-00UTC-and-M0002a'
 #TDOMAINID='M0002a-and-not-CCEK102E01-20-00UTC'
 
-VAR_NAME='uwnd'; LEVEL=500; SOURCE='era5gloerai_plev_3h'
+#VAR_NAME='res_dvrtdt'; LEVEL=975; SOURCE='era5gloerai_plev_3h'
 #VAR_NAME='ta'; LEVEL=1; SOURCE='era5plp_sfc_h'
 #VAR_NAME='omega'; LEVEL=400; SOURCE='ncepdoe_plev_d'
 #VAR_NAME='vwndptap'; LEVEL=50; SOURCE='ncepncar_plev_d'
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrinterp_toa_d'
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_3h'
+VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_3h'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='imergmcw_sfc_30m'
 
 # Compulsory band1
 BAND1_NAME='latitude' # Dimension to average over: 'latitude' or 'longitude'
 #BAND1_VAL1=-2.625 # TRMM precip for CCKW trajectories
-#BAND1_VAL1=-10 # TRMM precip for CCKW trajectories
+BAND1_VAL1=-10 # TRMM precip for CCKW trajectories
 #BAND1_VAL1=-15 # TRMM precip for CCER trajectories
 #BAND1_VAL1='74.7364'
 #BAND1_VAL1='-0.875'
-BAND1_VAL2=BAND1_VAL1
+BAND1_VAL2=-BAND1_VAL1
 # Option to calculate symmetric or antisymmetric component in BAND1
 BAND1_SYM=False # False, 'sym', or 'antisym'
 
@@ -53,9 +53,9 @@ BAND2_VAL2=100.375
 
 if SUBDIR=='std':
     FILEPRE='' # e.g., '', '_rac', '_rac_b20_200_n241', '_rac_rm5_n5'
-    YEAR=range(1998,2022+1)
+    YEAR=range(1998,1998+1)
     #MONTH=[-999] # Dummy value if outfile_frequency is 'year'
-    MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
+    MONTH=range(1,1+1) # If outfile_frequency is less than 'year' 
 elif SUBDIR=='processed':
     FILEPRE='_'+TDOMAINID+'_lag' # e.g., TDOMAINID of time mean data.
 else:

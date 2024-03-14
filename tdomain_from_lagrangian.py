@@ -1,9 +1,15 @@
-"""Create time domain from CCEW Lagrangian data base."""
+"""Create time domain from CCEW Lagrangian data base.
 
-import datetime
+Optionally, if dbsubset is True, also create subset of CCEW Lagrangian
+data base with only the subset of trajectories that are used in the
+time domain, and added keywords from TDOMAIN_PARAMS.
+
+"""
+
 import os
 
 import cftime
+import datetime
 import iris
 import iris.quickplot as qplt
 import matplotlib.pyplot as plt
@@ -18,24 +24,25 @@ VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p2_sfc_3h'
 FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
 
 TIME1=cftime.DatetimeGregorian(1998,1,1)
-TIME2=TIME1+datetime.timedelta(23*365+6-1)-datetime.timedelta(seconds=1)
+#TIME2=TIME1+datetime.timedelta(23*365+6-1)-datetime.timedelta(seconds=1) # 30 Dec 2020 TRMM precip 
+TIME2=TIME1+datetime.timedelta(23*365+280-1)-datetime.timedelta(seconds=1) # 30 Sep 2021 TRMM precip 
 
-#LAT1=-2.625; LAT2=-LAT1 # EK
+LAT1=-2.625; LAT2=-LAT1 # EK
 #LAT1=-10; LAT2=-LAT1 # EK
 #LAT1=-15; LAT2=-LAT1 # ER
-LAT1=-15; LAT2=15 # ER
+#LAT1=-15; LAT2=15 # ER
 # Option to use symmetric or antisymmetric component in latitude
-BAND1_SYM='sym' # False, 'sym', or 'antisym'
+BAND1_SYM=False # False, 'sym', or 'antisym'
 
-WAVE_TYPE='ER' # 'EK' or 'ER'
+WAVE_TYPE='EK' # 'EK' or 'ER'
 
-LONC=103
+#LONC=-20
 
-#TDOMAIN_PARAMS={'lonc':LONC, 'threshold':0.5, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'6h'}
-#TDOMAIN_PARAMS={'lonc':LONC, 'threshold':False, 'threshold_units':False, 'min_lon_extent':False, 'round_to_nearest_time':'d'}
-#TDOMAIN_PARAMS={'lonc':LONC, 'threshold':False, 'threshold_units':False, 'min_lon_extent':False, 'round_to_nearest_time':False}
-#TDOMAIN_PARAMS={'lonc':LONC, 'threshold':0.4, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'d'}
-TDOMAIN_PARAMS={'lonc':LONC, 'threshold':0.05, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'d'} # ER
+#TDOMAIN_PARAMS={'lonc':LONC, 'threshold':0.5, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'6h', 'dbsubset':False}
+#TDOMAIN_PARAMS={'lonc':LONC, 'threshold':False, 'threshold_units':False, 'min_lon_extent':False, 'round_to_nearest_time':'d', 'dbsubset':False}
+#TDOMAIN_PARAMS={'lonc':LONC, 'threshold':False, 'threshold_units':False, 'min_lon_extent':False, 'round_to_nearest_time':False, 'dbsubset':False}
+TDOMAIN_PARAMS={'lonc':LONC, 'threshold':0.3, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':False, 'dbsubset':True} # EK
+#TDOMAIN_PARAMS={'lonc':LONC, 'threshold':0.05, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'d', 'dbsubset':False} # ER
 
 VERBOSE=2
 
