@@ -19,13 +19,16 @@ import data_analysis as da
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p2_sfc_3h'
+VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07btrmrgp2_sfc_3h'
 
 FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
 
-TIME1=cftime.DatetimeGregorian(1998,1,1)
+#TIME1=cftime.DatetimeGregorian(1998,1,1)
 #TIME2=TIME1+datetime.timedelta(23*365+6-1)-datetime.timedelta(seconds=1) # 30 Dec 2020 TRMM precip 
-TIME2=TIME1+datetime.timedelta(23*365+280-1)-datetime.timedelta(seconds=1) # 30 Sep 2021 TRMM precip 
+#TIME2=TIME1+datetime.timedelta(23*365+280-1)-datetime.timedelta(seconds=1) # 30 Sep 2021 TRMM precip 
+#
+TIME1=cftime.DatetimeGregorian(2000,7,1)
+TIME2=TIME1+datetime.timedelta(23*365+68-1)-datetime.timedelta(seconds=1) # 31 Aug 2023 imergv07b
 
 LAT1=-2.625; LAT2=-LAT1 # EK
 #LAT1=-10; LAT2=-LAT1 # EK
@@ -36,12 +39,13 @@ BAND1_SYM=False # False, 'sym', or 'antisym'
 
 WAVE_TYPE='EK' # 'EK' or 'ER'
 
-#LONC=-20
+LONC=-30
+SEASON=False # False (for all year round) or, e.g., 'djf', mam', etc.
 
 #TDOMAIN_PARAMS={'lonc':LONC, 'threshold':0.5, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'6h', 'dbsubset':False}
 #TDOMAIN_PARAMS={'lonc':LONC, 'threshold':False, 'threshold_units':False, 'min_lon_extent':False, 'round_to_nearest_time':'d', 'dbsubset':False}
 #TDOMAIN_PARAMS={'lonc':LONC, 'threshold':False, 'threshold_units':False, 'min_lon_extent':False, 'round_to_nearest_time':False, 'dbsubset':False}
-TDOMAIN_PARAMS={'lonc':LONC, 'threshold':0.3, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':False, 'dbsubset':True} # EK
+TDOMAIN_PARAMS={'lonc':LONC, 'threshold':0.3, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':False, 'dbsubset':True, 'season':SEASON} # EK
 #TDOMAIN_PARAMS={'lonc':LONC, 'threshold':0.05, 'threshold_units':'mm hr-1', 'min_lon_extent':False, 'round_to_nearest_time':'d', 'dbsubset':False} # ER
 
 VERBOSE=2

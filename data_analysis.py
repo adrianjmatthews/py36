@@ -242,14 +242,14 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07bmcw','imergv07atrm','imergv07btrm','imergv07btrmrg','imergv07btrmrgp1','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','glorys12v1aeq1','cmap']
+    valid_data_sources=['era5trp','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07bmcw','imergv07atrm','imergv07btrm','imergv07btrmrg','imergv07btrmrgp1','imergv07btrmrgp2','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','glorys12v1aeq1','cmap']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
     if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','cmap_sfc_5d','cmap_sfc_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergv07btrm_sfc_3h','imergv07btrmrg_sfc_3h','imergv07btrmrgp1_sfc_3h','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergv07btrm_sfc_3h','imergv07btrmrg_sfc_3h','imergv07btrmrgp1_sfc_3h','imergv07btrmrgp2_sfc_3h','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -1565,6 +1565,45 @@ def f_cube_step_time(cube_in,tstep,tcoord_name='time',verbose=True):
     cube_out=concatenate_cube(cubelist)
     #
     return cube_out
+
+#==========================================================================
+
+def check_datetime_in_season(dt,season,verbose=False):
+
+    """Check if datetime is in specified season.
+
+    Inputs:
+
+    dt : datetime-like object.
+
+    season : False, or string, denoting target season, e.g., 'djf',
+    'mam', etc.
+
+    Output : Boolean. True if dt in season, False otherwise.
+
+    Example. If dt is datetime '2023-01-12: 15:00' and season is
+    'djf', return True.
+
+    Example. If dt is datetime '2023-01-12: 15:00' and season is
+    'mam', return False.
+
+    Example. If season is False, always return True.
+
+    """
+    if not season:
+        # season is False, i.e., all year round. Return True.
+        return True
+    else:
+        # Check if dt is in season.
+        monthc=dt.month
+        if season not in ['djf','mam','jja','son','n2a','m2o']:
+            raise UserWarning('season not recognised.')
+        if season=='djf' and monthc in [12,1,2] or season=='mam' and monthc in [3,4,5] or season=='jja' and monthc in [6,7,8] or season=='son' and monthc in [9,10,11] or season=='n2a' and monthc in [11,12,1,2,3,4] or season=='m2o' and monthc in [5,6,7,8,9,10] :
+            if verbose:
+                print('check_datetime_in_season: True. {0!s}, {1!s}'.format(dt,season))
+            return True
+        else:
+            return False
 
 #==========================================================================
 
@@ -10208,13 +10247,18 @@ class CCEWLagrangian(object):
             datetime to nearest day at 00 UTC. If '6h', then round
             datetime to nearest 00, 06, 12, 18 UTC.
 
-            'dbsubset : Boolean'. If True, create and save a new
+            'dbsubset' : Boolean. If True, create and save a new
             dictionary of trajectories. This is the subset of the
             trajectories used in the creation of the time domain,
             along with the parameters in tdomain_params added in,
             i.e., lonc, threshold, etc. This can be used by later
             scripts to analyse properties of the trajectories (e.g.,
             phase speeds) that went into the time domain.
+
+            'season' : string or False. If False, include crossing
+            times at all times of year. Otherwise, only include
+            crossing times if they are within the stated season, e.g.,
+            'djf', 'mam', etc.
 
         """
         self.tdomain_params=tdomain_params
@@ -10224,6 +10268,7 @@ class CCEWLagrangian(object):
         self.min_lon_extent=self.tdomain_params['min_lon_extent']
         self.round_to_nearest_time=self.tdomain_params['round_to_nearest_time']
         self.dbsubset=self.tdomain_params['dbsubset']
+        self.season=self.tdomain_params['season']
         # Create time domain idx (name) and headers
         # Permission to be ad hoc here!
         if self.band1_sym:
@@ -10241,6 +10286,10 @@ class CCEWLagrangian(object):
             idx=idx+'-'+self.frequency
         else:
             raise UserWarning('Invalid round_to_nearest_time.')
+        if self.season:
+            idx=idx+'-'+self.season
+        else:
+            pass
         print('idx: {0!s}'.format(idx))
         header1='# CC'+self.wave_type+'W arrival times at basepoint.'
         if self.round_to_nearest_time:
@@ -10301,7 +10350,7 @@ class CCEWLagrangian(object):
                         timec=xx
                     else:
                         raise ToDoError('Code up for non-Gregorian calendar.')
-                if amp_flag:
+                if amp_flag and check_datetime_in_season(timec,self.season,verbose=self.verbose):
                     print('Including: keyc,lon1,lonc,lon2,time1,timec,time2: {0!s}, {1!s}, {2!s}, {3!s}, {4!s}, {5!s}, {6!s}'.format(keyc,lon1,self.lonc,lon2,time1,timec,time2))
                     crossing_times.append(timec)
                     if self.dbsubset:
