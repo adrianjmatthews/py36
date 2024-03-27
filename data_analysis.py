@@ -1596,9 +1596,9 @@ def check_datetime_in_season(dt,season,verbose=False):
     else:
         # Check if dt is in season.
         monthc=dt.month
-        if season not in ['djf','mam','jja','son','n2a','m2o']:
+        if season not in info.season_months.keys():
             raise UserWarning('season not recognised.')
-        if season=='djf' and monthc in [12,1,2] or season=='mam' and monthc in [3,4,5] or season=='jja' and monthc in [6,7,8] or season=='son' and monthc in [9,10,11] or season=='n2a' and monthc in [11,12,1,2,3,4] or season=='m2o' and monthc in [5,6,7,8,9,10] :
+        if monthc in info.season_months[season]:
             if verbose:
                 print('check_datetime_in_season: True. {0!s}, {1!s}'.format(dt,season))
             return True
@@ -6521,26 +6521,15 @@ class CubeDiagnostics(object):
         if self.archive:
             archive_file(self,fileout)
 
-    def f_sea_water_potential_density(self,pref=0):
-        """Calculate sea water potential density using Gibbs TEOS-10 routine.
+    def f_sea_water_potential_density(self):
+        """Calculate sea water potential density referenced to 0 dbar.
 
         Assumes tsc (conservative temperature) and sa (absolute
         salinity) hav already been loaded, in
         self.data_in['tsc_LEVEL'] and self.data_in['sa_LEVEL'].
 
-        Uses gsw.rho_CT(tsc,sa,pref) where pref is reference sea water
-        pressure in dbar.
+        Uses gsw.sigma0(tsc,sa) 
 
-        Choose <method> to calculate potential density.
-
-        Method 1 (default).  Assumes do not have explicit values of
-        swp, but tsc and sa are on a grid with a depth axis (in m).
-        Depth in m is sufficiently close to sea water pressure in dbar
-        to use directly, when only considering shallow depths.
-
-        Method 2.  Assumes swp has already been loaded, in
-        self.data_in['swp_LEVEL'], and uses this in the calculation of
-        sea water potential density.
         """
         # Read in tsc,sa for current time block and assign to tsc,sa attributes
         self.time1,self.time2=block_times(self,verbose=self.verbose)
@@ -6551,28 +6540,13 @@ class CubeDiagnostics(object):
         self.sa=x2.concatenate_cube()
         tsc=self.tsc.data
         sa=self.sa.data
-        # Get sea water pressure
-        #if method==1:
-        #    # Use depth (m) as surrogate for sea water pressure (dbar)
-        #    lev_coord=self.tsc.coord('depth')
-        #    if lev_coord.units!='m':
-        #        raise UserWarning('Depth coordinate must be in m.')
-        #    swp=lev_coord.points
-        #elif method==2:
-        #    # Explicitly read sea water pressure data
-        #    x3=self.data_in['swp_'+str(self.level)].extract(time_constraint)
-        #    self.swp=x3.concatenate_cube()
-        #    if self.swp.units!='dbar':
-        #        raise UserWarning('Sea water pressure must be in dbar.')
-        #    swp=self.swp.data
-        # Calculate seawater potential density
-        swpd=gsw.rho_CT_exact(sa,tsc,pref)
-        # Create iris cube of swp
+        swpd=gsw.sigma0(sa,tsc)
+        # Create iris cube of swpd
         var_name='swpd'
         self.swpd=create_cube(conv_float32(swpd),self.tsc,new_var_name=var_name)
         self.swpd.units='kg m-3'
         # Add cell method to describe calculation of sea water potential density
-        cm=iris.coords.CellMethod('point','depth',comments='swpd calculated using gsw.rho_CT_exact in f_sea_water_potential_density: pref='+str(pref))
+        cm=iris.coords.CellMethod('point','depth',comments='swpd calculated using gsw.sigma0')
         self.swpd.add_cell_method(cm)
         # Save cube
         fileout=self.file_data_out.replace('VAR_NAME',var_name)
