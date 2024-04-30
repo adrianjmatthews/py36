@@ -13,18 +13,18 @@ import data_analysis as da
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data') # UEA
 #BASEDIR=os.path.join(os.path.sep,'gws','nopw','j04','bobble','matthews','data') # JASMIN
 
-ARCHIVE=False
+ARCHIVE=True
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 FILE_MASK=False # Default value
 
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='cmap_sfc_5d'
 #VAR_NAME='uwnd'; LEVEL=975; SOURCE='era5mcw_plev_h'
-#VAR_NAME='uwnd'; LEVEL=950; SOURCE='era5glo_plev_h'
+VAR_NAME='uwnd'; LEVEL=950; SOURCE='era5glo_plev_h'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='erainterim_sfc_d'
 #VAR_NAME='zg'; LEVEL=850; SOURCE='erainterim_plev_6h'
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07amcw_sfc_30m'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07bmcw_sfc_30m'
 #VAR_NAME='zg'; LEVEL=200; SOURCE='ncepdoe_plev_d'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='ncepdoe_sfc_d'
 #VAR_NAME='vwnd'; LEVEL=10; SOURCE='ncepdoegg_zlev_d'
@@ -37,14 +37,14 @@ FILE_MASK=False # Default value
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_7d'; FILE_MASK='lsmask.nc'
 #VAR_NAME='tauy'; LEVEL=1; SOURCE='tropflux_sfc_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_3h'
-VAR_NAME='swsal'; LEVEL=1062.44; SOURCE='glorys12v1aeq1_zlev_d'
+#VAR_NAME='swtheta'; LEVEL=1062.44; SOURCE='glorys12v1aeq1_zlev_d'
 
-YEAR=2003
-#YEAR=range(1998,2022+1)
+#YEAR=2006
+#YEAR=range(2004,2006+1)
 
 #MONTH=-999 # if outfile_frequency is 'year'
-#MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
-MONTH=1
+MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
+#MONTH=12
 
 PLOT=False
 
@@ -76,6 +76,9 @@ for year in iter_year:
         aa.write_cube()
 
 if PLOT:
+    print('# Plot')
+    fig=plt.figure()
+
     tcoord=aa.cube.coord('time')
     time1=tcoord.units.num2date(tcoord.points[0])
     time_constraint=iris.Constraint(time=time1)
@@ -84,5 +87,6 @@ if PLOT:
     #x1=aa.cube
     qplt.contourf(x1)
     plt.gca().coastlines()
-    
     plt.show()
+
+    fig.savefig('/gpfs/home/e058/tmp/fig1.png')

@@ -12,36 +12,42 @@ import data_analysis as da
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-ARCHIVE=True
+ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 # Data to be regridded
-#VAR_NAME='ppt'; LEVEL=1; SOURCE1='imergtrm_sfc_3h'; SOURCE2='imergtrmp1_sfc_3h'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE1='imergv07btrm_sfc_3h'; SOURCE2='imergv07btrmrg_sfc_3h'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE1='trmm3b42v7p1_sfc_d'; SOURCE2='trmm3b42v7p4_sfc_d'
-#VAR_NAME='vrt'; LEVEL=825; SOURCE1='era5glo_plev_h'; SOURCE2='era5gloerai_plev_h'
-VAR_NAME='swtheta'; LEVEL=0.494; SOURCE1='glorys12v1eq1_zlev_d'; SOURCE2='glorys12v1eq1erai_zlev_d'
+VAR_NAME='uwnd'; LEVEL=950; SOURCE1='era5glo_plev_h'; SOURCE2='era5gloerai_plev_h'
+#VAR_NAME='swtheta'; LEVEL=0.494; SOURCE1='glorys12v1eq1_zlev_d'; SOURCE2='glorys12v1eq1erai_zlev_d'
 
 # If SUBDIR is 'std', will regrid data over time
 # If SUBDIR is 'processed', will just do a one-off regridding
 SUBDIR='std'
 
 # Data set on the target grid. Only the grid is used, not the data
-#FILE_GRID=os.path.join(BASEDIR,'ncepdoe_plev_d',SUBDIR,'uwnd_850_2010.nc')
-#FILE_GRID=os.path.join(BASEDIR,SOURCE2,SUBDIR,'dummy_1.nc')
-#FILE_GRID=os.path.join(BASEDIR_ARCHIVE,'trmm3b42v7_sfc_3h',SUBDIR,'ppt_1_201912.nc')
-FILE_GRID=os.path.join(BASEDIR,'erainterim_plev_6h',SUBDIR,'uwnd_850_1998.nc')
+if SOURCE2 in ['notsure1']:
+    FILE_GRID=os.path.join(BASEDIR,'ncepdoe_plev_d',SUBDIR,'uwnd_850_2010.nc')
+elif SOURCE2 in ['notsure2']:
+    FILE_GRID=os.path.join(BASEDIR,SOURCE2,SUBDIR,'dummy_1.nc')
+elif SOURCE2 in ['imergv07atrmp1_sfc_3h','imergv07btrmrg_sfc_3h']:
+    FILE_GRID=os.path.join(BASEDIR_ARCHIVE,'trmm3b42v7_sfc_3h',SUBDIR,'ppt_1_201912.nc')
+elif SOURCE2 in ['era5gloerai_plev_h']:
+    FILE_GRID=os.path.join(BASEDIR,'erainterim_plev_6h',SUBDIR,'uwnd_850_1998.nc')
+else:
+    raise UserWarning('Need to set target grid file for SOURCE2.')
 
 # Option to restrict min/max latitudes on new grid
-#LATMIN=LATMAX=False # Set both to False to disable this option
+LATMIN=LATMAX=False # Set both to False to disable this option
 #LATMIN=-45; LATMAX=45
-LATMIN=-15; LATMAX=15
+#LATMIN=-15; LATMAX=15
 
-YEAR=2017
-#YEAR=range(1998,2022+1)
+#YEAR=2000
+#YEAR=range(2001,2003+1)
 
 #MONTH=-999 # if outfile_frequency is 'year'
-#MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
-MONTH=1
+MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
+#MONTH=7
 
 if SUBDIR=='processed':
     # Set one-off FILEIN1 and FILEOUT1
