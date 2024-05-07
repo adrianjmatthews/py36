@@ -38,6 +38,11 @@ sdomains['trm']={'lon1':-180, 'lon2':180, 'lat1':-50, 'lat2':50, 'desc':'TRMM sp
 sdomains['trp']={'lon1':-180, 'lon2':180, 'lat1':-30, 'lat2':30, 'desc':'Tropics'}
 sdomains['ewa']={'lon1':-20, 'lon2':30, 'lat1':0, 'lat2':60, 'desc':'Europe and West Africa'}
 sdomains['glo']={'lon1':0, 'lon2':359.9999, 'lat1':-90, 'lat2':90, 'desc':'Global'}
+sdomains['tr2']={'lon1':0, 'lon2':359.9999, 'lat1':-20, 'lat2':20, 'desc':'Tropics 20S-20N'}
+
+# season_months
+season_months={'djf':[12,1,2], 'mam':[3,4,5], 'jja':[6,7,8], 'son':[9,10,11], 'n2a':[11,12,1,2,3,4], 'm2o':[5,6,7,8,9,10], 'jan':[1], 'feb':[2], 'mar':[3], 'apr':[4], 'may':[5], 'jun':[6], 'jul':[7], 'aug':[8], 'sep':[9], 'oct':[10], 'nov':[11], 'dec':[12]}
+
 
 class LevelWidths(object):
     """Calculate level widths from a set of levels. 
