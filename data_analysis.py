@@ -249,7 +249,7 @@ def source_info(aa):
     if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','cmap_sfc_5d','cmap_sfc_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergv07btrm_sfc_3h','imergv07btrmrg_sfc_3h','imergv07btrmrgp1_sfc_3h','imergv07btrmrgp2_sfc_3h','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergv07btrm_sfc_3h','imergv07btrmrg_sfc_3h','imergv07btrmrgp1_sfc_3h','imergv07btrmrgp2_sfc_3h','imergv07btrmrgp1_sfc_d','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','era5glo_sfc_h','era5glo_sfc_d','era5gloerai_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -2452,7 +2452,7 @@ class DataConverter(object):
         elif self.source in ['erainterim_sfc_d','erainterim_plev_d']:
             #self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+str(self.level)+'_'+str(self.year)+'_d.nc')
             raise UserWarning('Need to recode.')
-        elif self.source in ['era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
+        elif self.source in ['era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5glo_sfc_h']:
             self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_'+str(self.level)+'_'+str(self.year)+str(self.month).zfill(2)+'.nc')
         elif self.source in ['ncepdoe_plev_6h','ncepdoe_plev_d','ncepncar_plev_d']:
             if self.var_name=='ta':
@@ -2540,7 +2540,7 @@ class DataConverter(object):
         elif self.data_source in ['glorys12v1eq1','glorys12v1aeq1'] and self.level_type=='zlev':
             leveltol=0.001
             level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
-        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d']:
+        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5glo_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d']:
             level_constraint=False
         else:
             raise ToDoError('Set an instruction for level_constraint.')
@@ -6528,7 +6528,7 @@ class CubeDiagnostics(object):
         salinity) hav already been loaded, in
         self.data_in['tsc_LEVEL'] and self.data_in['sa_LEVEL'].
 
-        Uses gsw.sigma0(tsc,sa) 
+        Uses gsw.sigma0(sa,tsc) 
 
         """
         # Read in tsc,sa for current time block and assign to tsc,sa attributes
