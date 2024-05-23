@@ -282,7 +282,7 @@ def source_info(aa):
     # Printed output
     if aa.verbose:
         ss=h2a+'source_info.  Created attributes: \n'+\
-            'data source: {0.data_source!s} \n'+\
+            'data_source: {0.data_source!s} \n'+\
             'level_type: {0.level_type!s} \n'+\
             'frequency: {0.frequency!s} \n'+\
             'outfile_frequency: {0.outfile_frequency!s} \n'+\
@@ -984,7 +984,8 @@ def concatenate_cube(cubelist):
     #   time dimensions
     for index in range(len(cubelist)):
         cubec=cubelist[index]
-        cubec.attributes.pop('Conventions')
+        if 'Conventions' in cubec.attributes:
+            cubec.attributes.pop('Conventions')
         time_coord=cubec.coord('time')
         if time_coord.shape==(1,):
             print('concatenate_cube.  Promoting singleton time dimension.')
@@ -6771,6 +6772,109 @@ class CubeDiagnostics(object):
         iris.save(self.theta,fileout)
         if self.archive:
             archive_file(self,fileout)
+
+    def f_tau_from_wind(self,method,rho_air=1.17,cd=1.45e-3):
+        """Calculate surface wind stress from surface wind.
+
+        If METHOD is 'uwnd', assumes surface uwnd has already been
+        loaded, in self.data_in['uwnd_1']. Calculates eastward
+        component of surface wind stress taux.
+
+        If METHOD is 'vwnd', assumes surface vwnd has already been
+        loaded, in self.data_in['vwnd_1']. Calculates northward
+        component of surface wind stress tauy.
+
+        If METHOD is 'both', assumes surface uwnd and vwnd have
+        already been loaded. Calculates taux and tauy
+
+        taux = rho_a C_D uwnd |uwnd|
+        tauy = rho_a C_D vwnd |vwnd|
+
+        Default value of rho_air is 1.17 kg m-3 from ideal gas law 
+        p=rho_air R T with
+        p=1e5 Pa, R=287 J kg-1 K-1, T=298 K
+
+        Default value of drag coefficient is cd = 1.45e-3
+
+        """
+        self.method=method
+        self.rho_air=rho_air
+        self.cd=cd
+        # Check surface level is selected
+        if self.level!=1:
+            raise UserWarning('Surface level data needed.')
+        # Check method is valid
+        if self.method not in ['uwnd','vwnd','both']:
+            raise UserWarning('Invalid method.')
+        # Read in uwnd,vwnd as needed for current time block and assign 
+        #  to uwnd,vwnd attributes
+        self.time1,self.time2=block_times(self,verbose=self.verbose)
+        time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
+        if self.method in ['uwnd','both']:
+            x1=self.data_in['uwnd_'+str(self.level)].extract(time_constraint)
+            self.uwnd=x1.concatenate_cube()
+        if self.method in ['vwnd','both']:
+            x2=self.data_in['vwnd_'+str(self.level)].extract(time_constraint)
+            self.vwnd=x2.concatenate_cube()
+        # Calculate wind stress
+        if self.method in ['uwnd','both']:
+            uwnd=self.uwnd.data
+            taux=self.rho_air*self.cd*uwnd*np.abs(uwnd)
+        if self.method in ['vwnd','both']:
+            vwnd=self.vwnd.data
+            tauy=self.rho_air*self.cd*vwnd*np.abs(vwnd)
+        # Create iris cube of wind stress
+        if self.method in ['uwnd','both']:
+            var_name='taux'
+            self.taux=create_cube(conv_float32(taux),self.uwnd,new_var_name=var_name)
+            self.taux.units='N m-2'
+        if self.method in ['vwnd','both']:
+            var_name='tauy'
+            self.tauy=create_cube(conv_float32(tauy),self.vwnd,new_var_name=var_name)
+            self.tauy.units='N m-2'
+        # Add cell method to describe calculation of surface wind stress
+        if self.method in ['uwnd','both']:
+            cm=iris.coords.CellMethod('point','level',comments='eastward surface wind stress calculated from eastward surface wind with air density '+str(self.rho_air)+', drag coefficient '+str(self.cd))
+            self.taux.add_cell_method(cm)
+        if self.method in ['vwnd','both']:
+            cm=iris.coords.CellMethod('point','level',comments='northward surface wind stress calculated from northward surface wind with air density '+str(self.rho_air)+', drag coefficient '+str(self.cd))
+            self.tauy.add_cell_method(cm)
+        # Save cube
+        if self.method in ['uwnd','both']:
+            var_name='taux'
+            fileout=self.file_data_out.replace('VAR_NAME',var_name)
+            fileout=replace_wildcard_with_time(self,fileout)
+            print('fileout: {0!s}'.format(fileout))
+            iris.save(self.taux,fileout)
+            if self.archive:
+                archive_file(self,fileout)
+        if self.method in ['vwnd','both']:
+            var_name='tauy'
+            fileout=self.file_data_out.replace('VAR_NAME',var_name)
+            fileout=replace_wildcard_with_time(self,fileout)
+            print('fileout: {0!s}'.format(fileout))
+            iris.save(self.tauy,fileout)
+            if self.archive:
+                archive_file(self,fileout)
+        # Print
+        if self.verbose:
+            ss=h1a+'f_tau_from_wind\n'+\
+                'level: {0.level!s}\n'+\
+                'method: {0.method!s}\n'+\
+                'rho_air: {0.rho_air!s}\n'+\
+                'cd: {0.cd!s}\n'
+            print(ss.format(self))
+            if self.method in ['uwnd','both']:
+                taux_min=self.taux.data.min()
+                taux_max=self.taux.data.max()
+                print('taux min: {0!s}'.format(taux_min))
+                print('taux max: {0!s}'.format(taux_max))
+            if self.method in ['vwnd','both']:
+                tauy_min=self.tauy.data.min()
+                tauy_max=self.tauy.data.max()
+                print('tauy min: {0!s}'.format(tauy_min))
+                print('tauy max: {0!s}'.format(tauy_max))
+            print(h1b)
 
     def f_vwndptap(self):
         """Calculate v'T' from anomalous vwnd and ta.
