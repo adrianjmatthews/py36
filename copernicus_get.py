@@ -2,6 +2,14 @@
 
 Run this script from ada.  Can run interactively, but best to run as batch job.
 
+From 20 Aug 2024, moved to use the new CDS-beta Copernicus site to
+download ERA5 data, as the old site would no longer be suported from
+Sep 2024. Unfortunately the new site has very different metadata in
+the netcdf files, so iris will not be able to combine data from the
+old and new Copernicus sites. So, created new sources for the ERA5
+data from the new site with era5beta replacing just era5 in the
+data_source part, e.g., era5beta_trp2_plev_h.
+
 """
 
 import os
@@ -19,14 +27,14 @@ import info
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-SDOMAIN='glo'
+SDOMAIN='trp2'
 
-VAR_NAME='vrt'; LEVEL=950; SOURCE='era5'+SDOMAIN+'_plev_h'
-#VAR_NAME='ta'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='era5'+SDOMAIN+'_sfc_h'
+VAR_NAME='uwnd'; LEVEL=1000; SOURCE='era5beta'+SDOMAIN+'_plev_h'
+#VAR_NAME='vwnd'; LEVEL=1; SOURCE='era5beta'+SDOMAIN+'_sfc_h'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='era5beta'+SDOMAIN+'_sfc_h'
 
-#YEAR_BEG=2000; YEAR_END=2006
-YEAR_END=YEAR_BEG+8
+#YEAR_BEG=2017; YEAR_END=2018
+YEAR_END=YEAR_BEG+3
 MONTH1=1; MONTH2=12 # if outfile_frequency is less than 'year'
 
 DOWNLOAD=True
@@ -36,9 +44,9 @@ PLOT=False
 #==========================================================================
 
 # Set Copernicus dataset name
-if SOURCE in ['era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h']:
+if SOURCE in ['era5betatrp_plev_h','era5betaplp_plev_h','era5betamcw_plev_h','era5betaewa_plev_h','era5betaglo_plev_h','era5betauks_plev_h','era5betatrp2_plev_h']:
     dataset='reanalysis-era5-pressure-levels'
-elif SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
+elif SOURCE in ['era5betaplp_sfc_h','era5betabar_sfc_h','era5betamcw_sfc_h','era5betaglo_sfc_h']:
     dataset='reanalysis-era5-single-levels'
 else:
     raise UserWarning('SOURCE not recognised.')
@@ -49,16 +57,16 @@ else:
 # Select the variable you want then click Show API request.
 # This generates code to use below including the Copernicus variable name
 if VAR_NAME=='uwnd':
-    if SOURCE in ['era5trp_plev_h','era5plp_plev_h','era5ewa_plev_h','era5mcw_plev_h','era5glo_plev_h']:
+    if SOURCE in ['era5betatrp_plev_h','era5betaplp_plev_h','era5betaewa_plev_h','era5betamcw_plev_h','era5betaglo_plev_h','era5betauks_plev_h','era5betatrp2_plev_h']:
         variable='u_component_of_wind'
-    elif SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
+    elif SOURCE in ['era5betaplp_sfc_h','era5betabar_sfc_h','era5betamcw_sfc_h','era5betaglo_sfc_h']:
         variable='10m_u_component_of_wind'
     else:
         raise('SOURCE not recognised.')
 elif VAR_NAME=='vwnd':
-    if SOURCE in ['era5trp_plev_h','era5plp_plev_h','era5ewa_plev_h','era5mcw_plev_h','era5glo_plev_h']:
+    if SOURCE in ['era5betatrp_plev_h','era5betaplp_plev_h','era5betaewa_plev_h','era5betamcw_plev_h','era5betaglo_plev_h','era5betauks_plev_h','era5betatrp2_plev_h']:
         variable='v_component_of_wind'
-    elif SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
+    elif SOURCE in ['era5betaplp_sfc_h','era5betabar_sfc_h','era5betamcw_sfc_h','era5betaglo_sfc_h']:
         variable='10m_v_component_of_wind'
     else:
         raise('SOURCE not recognised.')
@@ -69,12 +77,12 @@ elif VAR_NAME=='vrt':
 elif VAR_NAME=='omega':
     variable='vertical_velocity'
 elif VAR_NAME=='ta':
-    if SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
+    if SOURCE in ['era5betaplp_sfc_h','era5betabar_sfc_h','era5betamcw_sfc_h']:
         variable='2m_temperature'
     else:
         raise('SOURCE not recognised.')
 elif VAR_NAME=='ppt':
-    if SOURCE in ['era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h']:
+    if SOURCE in ['era5betaplp_sfc_h','era5betabar_sfc_h','era5betamcw_sfc_h']:
         variable='mean_total_precipitation_rate'
     else:
         raise('SOURCE not recognised.')
@@ -104,9 +112,9 @@ for year in range(YEAR_BEG,YEAR_END+1):
         print('daylist: {0!s}'.format(daylist))
         
         # Create download dictionary
-        downloaddir={
+        request={
             'product_type': 'reanalysis',
-            'format': 'netcdf',
+            'data_format': 'netcdf',
             'variable': variable,
             'year': [str(year)],
             'month': str(month).zfill(2),
@@ -124,22 +132,22 @@ for year in range(YEAR_BEG,YEAR_END+1):
             'area': [lat2, lon1, lat1, lon2],
         }
         if SOURCE.split('_')[1]=='plev':
-            downloaddir['pressure_level']=[str(LEVEL)]
-        print('downloaddir: {0!s}'.format(downloaddir))
+            request['pressure_level']=[str(LEVEL)]
+        print('request: {0!s}'.format(request))
         
         # Set download file name
-        filei1=os.path.join(BASEDIR,SOURCE,'raw',VAR_NAME+'_'+str(LEVEL)+'_'+str(year)+str(month).zfill(2)+'.nc')
-        print('filei1: {0!s}'.format(filei1))
+        target=os.path.join(BASEDIR,SOURCE,'raw',VAR_NAME+'_'+str(LEVEL)+'_'+str(year)+str(month).zfill(2)+'.nc')
+        print('target: {0!s}'.format(target))
 
         if DOWNLOAD:
             # Retrieve data from Copernicus
             c=cdsapi.Client()
-            c.retrieve(dataset,downloaddir,filei1)
+            c.retrieve(dataset,request,target)
 
 if PLOT:
     print('# Plot')
     fig=plt.figure()
-    x1=iris.load(filei1)
+    x1=iris.load(target)
     x1=x1.concatenate_cube()
     tcoord=x1.coord('time')
     time1=tcoord.units.num2date(tcoord.points[0])
