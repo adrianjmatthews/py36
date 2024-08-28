@@ -13,14 +13,14 @@ import data_analysis as da
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data') # UEA
 #BASEDIR=os.path.join(os.path.sep,'gws','nopw','j04','bobble','matthews','data') # JASMIN
 
-ARCHIVE=True
+ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 FILE_MASK=False # Default value
 
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='cmap_sfc_5d'
-#VAR_NAME='uwnd'; LEVEL=975; SOURCE='era5mcw_plev_h'
-VAR_NAME='uwnd'; LEVEL=950; SOURCE='era5glo_plev_h'
+VAR_NAME='uwnd'; LEVEL=1000; SOURCE='era5betatrp2_plev_h'
+#VAR_NAME='vwnd'; LEVEL=1; SOURCE='era5glo_sfc_h'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='erainterim_sfc_d'
 #VAR_NAME='zg'; LEVEL=850; SOURCE='erainterim_plev_6h'
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'
@@ -39,12 +39,12 @@ VAR_NAME='uwnd'; LEVEL=950; SOURCE='era5glo_plev_h'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_3h'
 #VAR_NAME='swtheta'; LEVEL=1062.44; SOURCE='glorys12v1aeq1_zlev_d'
 
-#YEAR=2006
-#YEAR=range(2004,2006+1)
+YEAR=2001
+#YEAR=range(2003,2020+1)
 
 #MONTH=-999 # if outfile_frequency is 'year'
-MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
-#MONTH=12
+MONTH=1
+#MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
 
 PLOT=False
 
