@@ -10,6 +10,8 @@ old and new Copernicus sites. So, created new sources for the ERA5
 data from the new site with era5beta replacing just era5 in the
 data_source part, e.g., era5beta_trp2_plev_h.
 
+Run this script using py310, not py36, environment.
+
 """
 
 import os
@@ -29,13 +31,13 @@ BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 
 SDOMAIN='trp2'
 
-VAR_NAME='uwnd'; LEVEL=1000; SOURCE='era5beta'+SDOMAIN+'_plev_h'
+VAR_NAME='vwnd'; LEVEL=600; SOURCE='era5beta'+SDOMAIN+'_plev_h'
 #VAR_NAME='vwnd'; LEVEL=1; SOURCE='era5beta'+SDOMAIN+'_sfc_h'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='era5beta'+SDOMAIN+'_sfc_h'
 
-#YEAR_BEG=2017; YEAR_END=2018
-YEAR_END=YEAR_BEG+3
-MONTH1=1; MONTH2=12 # if outfile_frequency is less than 'year'
+# 2001-2023 for Natasha
+YEAR_BEG=2004; MONTH_BEG=8
+YEAR_END=2023; MONTH_END=12
 
 DOWNLOAD=True
 
@@ -50,6 +52,7 @@ elif SOURCE in ['era5betaplp_sfc_h','era5betabar_sfc_h','era5betamcw_sfc_h','era
     dataset='reanalysis-era5-single-levels'
 else:
     raise UserWarning('SOURCE not recognised.')
+print('dataset: {0!s}'.format(dataset))
 
 # Set Copernicus variable name
 # To find the Copernicus variable name go to
@@ -79,6 +82,8 @@ elif VAR_NAME=='omega':
 elif VAR_NAME=='ta':
     if SOURCE in ['era5betaplp_sfc_h','era5betabar_sfc_h','era5betamcw_sfc_h']:
         variable='2m_temperature'
+    elif SOURCE in ['era5betatrp2_plev_h']:
+        variable='temperature'
     else:
         raise('SOURCE not recognised.')
 elif VAR_NAME=='ppt':
@@ -95,54 +100,69 @@ lon2=info.sdomains[SDOMAIN]['lon2']
 lat1=info.sdomains[SDOMAIN]['lat1']
 lat2=info.sdomains[SDOMAIN]['lat2']
 
-# Loop over years and months
-for year in range(YEAR_BEG,YEAR_END+1):
-    for month in range(MONTH1,MONTH2+1):
-        print('### year={0!s} month={1!s}'.format(year,month))
-
-        # Create list of day numbers
-        t1=cftime.DatetimeGregorian(year,month,1)
-        if month<12:
-            t2=cftime.DatetimeGregorian(year,month+1,1)-datetime.timedelta(days=1)
-        else:
-            t2=cftime.DatetimeGregorian(year+1,1,1)-datetime.timedelta(days=1)
-        ndays=t2.day
-        print('year,month,ndays: {0!s}, {1!s}, {2!s}'.format(year,month,ndays))
-        daylist=[str(xx).zfill(2) for xx in range(1,ndays+1)]
-        print('daylist: {0!s}'.format(daylist))
-        
-        # Create download dictionary
-        request={
-            'product_type': 'reanalysis',
-            'data_format': 'netcdf',
-            'variable': variable,
-            'year': [str(year)],
-            'month': str(month).zfill(2),
-            'day': daylist,
-            'time': [
-                '00:00', '01:00', '02:00',
-                '03:00', '04:00', '05:00',
-                '06:00', '07:00', '08:00',
-                '09:00', '10:00', '11:00',
-                '12:00', '13:00', '14:00',
-                '15:00', '16:00', '17:00',
-                '18:00', '19:00', '20:00',
-                '21:00', '22:00', '23:00',
-            ],
-            'area': [lat2, lon1, lat1, lon2],
-        }
-        if SOURCE.split('_')[1]=='plev':
-            request['pressure_level']=[str(LEVEL)]
-        print('request: {0!s}'.format(request))
-        
-        # Set download file name
-        target=os.path.join(BASEDIR,SOURCE,'raw',VAR_NAME+'_'+str(LEVEL)+'_'+str(year)+str(month).zfill(2)+'.nc')
-        print('target: {0!s}'.format(target))
-
-        if DOWNLOAD:
+# Loop over months
+year=YEAR_BEG
+month=MONTH_BEG
+while datetime.datetime(year,month,1)<=datetime.datetime(YEAR_END,MONTH_END,1):
+    print('### year={0!s} month={1!s}'.format(year,month))
+    
+    # Create list of day numbers
+    t1=cftime.DatetimeGregorian(year,month,1)
+    if month<12:
+        t2=cftime.DatetimeGregorian(year,month+1,1)-datetime.timedelta(days=1)
+    else:
+        t2=cftime.DatetimeGregorian(year+1,1,1)-datetime.timedelta(days=1)
+    ndays=t2.day
+    print('year,month,ndays: {0!s}, {1!s}, {2!s}'.format(year,month,ndays))
+    daylist=[str(xx).zfill(2) for xx in range(1,ndays+1)]
+    #daylist=['01']
+    print('daylist: {0!s}'.format(daylist))
+    
+    # Create download dictionary
+    request={
+        'product_type': 'reanalysis',
+        'data_format': 'netcdf',
+        'variable': variable,
+        'year': [str(year)],
+        'month': str(month).zfill(2),
+        'day': daylist,
+        'time': [
+            '00:00', '01:00', '02:00',
+            '03:00', '04:00', '05:00',
+            '06:00', '07:00', '08:00',
+            '09:00', '10:00', '11:00',
+            '12:00', '13:00', '14:00',
+            '15:00', '16:00', '17:00',
+            '18:00', '19:00', '20:00',
+            '21:00', '22:00', '23:00',
+        ],
+        'area': [lat2, lon1, lat1, lon2],
+    }
+    if SOURCE.split('_')[1]=='plev':
+        request['pressure_level']=[str(LEVEL)]
+    print('request: {0!s}'.format(request))
+    
+    # Set download file name
+    target=os.path.join(BASEDIR,SOURCE,'raw',VAR_NAME+'_'+str(LEVEL)+'_'+str(year)+str(month).zfill(2)+'.nc')
+    print('target: {0!s}'.format(target))
+    
+    if DOWNLOAD:
+        attempts=0
+        whle attempts<3:
+        try:
             # Retrieve data from Copernicus
             c=cdsapi.Client()
             c.retrieve(dataset,request,target)
+            break
+        except Exception:
+            print('Error on attempt: {0!s}'.format(attempts))
+            attempts+=1
+
+    # Advance time
+    month=month+1
+    if month==13:
+        month=1
+        year=year+1
 
 if PLOT:
     print('# Plot')
