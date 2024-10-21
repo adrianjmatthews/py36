@@ -100,6 +100,10 @@ var_name2long_name={
     'bsiso2_cat':'BSISO_2_category',
     'bsiso2_theta':'BSISO_2_phase_angle',
     'chi':'atmosphere_horizontal_velocity_potential',
+    'cllowfrac':'low_type_cloud_area_fraction',
+    'clmedfrac':'medium_type_cloud_area_fraction',
+    'clhifrac':'high_type_cloud_area_fraction',
+    'clconvfrac':'convective_cloud_area_fraction',
     'cphasex':'eastward_phase_speed',
     'cphasey':'northward_phase_speed',
     'cphasez':'upward_phase_speed',
@@ -122,10 +126,13 @@ var_name2long_name={
     'kk':'wavenumber_in_eastward_direction',
     'lat':'latitude',
     'lhfd':'surface_downward_latent_heat_flux',
+    'lhfu':'surface_upward_latent_heat_flux',
     'ltt':'linear_temporal_trend',
     'll':'wavenumber_in_northward_direction',
     'lon':'longitude',
-    'lwrd':'surface_net_downward_longwave_flux',
+    'lwrsfcnetdown':'surface_net_downward_longwave_flux',
+    'lwrsfcdown':'surface_downwelling_longwave_flux_in_air',
+    'lwrsfcup':'surface_upwelling_longwave_flux_in_air',
     'mf_lambda':'upward_mass_flux_of_air_partitioned_eastward_component',
     'mf_phi':'upward_mass_flux_of_air_partitioned_northward_component',
     'mm':'wavenumber_in_upward_direction',
@@ -160,6 +167,8 @@ var_name2long_name={
     'omega_phi':'lagrangian_tendency_of_air_pressure_partitioned_northward_component',
     'omegaf':'angular_frequency',
     'ppt':'lwe_precipitation_rate',
+    'pptconv':'lwe_convective_precipitation_rate',
+    'pptls':'lwe_large_scale_precipitation_rate',
     'pa':'air_pressure',
     'phi':'geopotential',
     'psfc':'surface_air_pressure',
@@ -176,6 +185,7 @@ var_name2long_name={
     'rmm_cat':'RMM_category',
     'sa':'sea_water_absolute_salinity',
     'shfd':'surface_downward_sensible_heat_flux',
+    'shfu':'surface_upward_sensible_heat_flux',
     'shum':'specific_humidity',
     'source_dvrtdt':'total_source_of_tendency_of_atmosphere_relative_vorticity',
     'ss':'integer_zonal_wavenumber',
@@ -185,12 +195,15 @@ var_name2long_name={
     'swsal':'sea_water_salinity',
     'swtheta':'sea_water_potential_temperature',
     'swpd':'sea_water_potential_density',
-    'swrd':'surface_net_downward_shortwave_flux',
+    'swrsfcnetdown':'surface_net_downward_shortwave_flux',
+    'swrsfcdown':'surface_downwelling_shortwave_flux_in_air',
+    'swrsfcup':'surface_upwelling_shortwave_flux_in_air',
     'ta':'air_temperature',
     'taux':'surface_downward_eastward_stress',
     'tauy':'surface_downward_northward_stress',
     'theta':'air_potential_temperature',
     'tsc':'sea_water_conservative_temperature',
+    'tsfc':'surface_temperature',
     'ucur':'eastward_sea_water_velocity',
     'uwnd':'eastward_wind',
     'uwndchi':'irrotational_component_of_eastward_wind',
@@ -243,11 +256,11 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5trp2','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','era5uks','era5betatrp2','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07bmcw','imergv07atrm','imergv07btrm','imergv07btrmrg','imergv07btrmrgp1','imergv07btrmrgp2','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','glorys12v1aeq1','cmap']
+    valid_data_sources=['era5trp','era5trp2','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','era5uks','era5betatrp2','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07bmcw','imergv07atrm','imergv07btrm','imergv07btrmrg','imergv07btrmrgp1','imergv07btrmrgp2','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','igcm0001','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','glorys12v1aeq1','cmap']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
-    if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','cmap_sfc_5d','cmap_sfc_d']:
+    if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','igcm0001_plev_d','igcm0001_sfc_d','igcm0001_toa_d','cmap_sfc_5d','cmap_sfc_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
     elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergv07btrm_sfc_3h','imergv07btrmrg_sfc_3h','imergv07btrmrgp1_sfc_3h','imergv07btrmrgp2_sfc_3h','imergv07btrmrgp1_sfc_d','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','era5glo_sfc_h','era5glo_sfc_d','era5gloerai_sfc_d','era5uks_plev_h','era5trp2_plev_h','era5betatrp2_plev_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d']:
@@ -275,7 +288,7 @@ def source_info(aa):
         raise ToDoError('Need to code up for different frequency attribute.')
 
     # Set calendar attribute depending on data_source
-    if aa.data_source in ['hadgem2esajhog']:
+    if aa.data_source in ['hadgem2esajhog'] or fnmatch.filter([aa.data_source],'igcm????'):
         aa.calendar='360_day'
     else:
         aa.calendar='gregorian'
@@ -464,7 +477,10 @@ def clean_callback(cube,field,filename):
               'GRIB_totalNumber',
               'GRIB_typeOfLevel',
               'GRIB_units',
-              'GRIB_uvRelativeToGrid']
+              'GRIB_uvRelativeToGrid',
+              'Author',
+              'generated',
+              'lev_type_char']
     for attribute in att_list:
         if attribute in cube.attributes:
             del cube.attributes[attribute]
@@ -2438,10 +2454,6 @@ class DataConverter(object):
                 raise UserWarning('Expecting 3-d mask of shape (1,?,?)')
             if self.source=='sstrey_sfc_7d':
                 self.mask=1-self.mask # Switch the 1's and 0's
-        if self.data_source in ['hadgem2esajhog']:
-            self.calendar='360_day'
-        else:
-            self.calendar='gregorian'
         if self.verbose:
             print(self)
         
@@ -2470,10 +2482,6 @@ class DataConverter(object):
         data sources with different input formats.
 
         """
-        # Set time constraint for current time block
-        time1,time2=block_times(self,verbose=self.verbose)
-        time_constraint=set_time_constraint(time1,time2,calendar=self.calendar,verbose=self.verbose)
-        #
         # Set input file name(s)
         if self.source in ['erainterim_plev_6h']:
             # Input files are in format .../YYYY/MM/DD/ggapYYYYMMDDHH00.nc
@@ -2548,12 +2556,34 @@ class DataConverter(object):
         elif self.source in ['hadgem2esajhog_plev_d']:
             if self.var_name=='zg':
                 self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_day_HadGEM2-ES_piControl_r1i1p1_*.nc')
+        elif self.source[:4]=='igcm':
+            self.filein1=os.path.join(self.basedir,self.source,'raw','IGCM.nc')
         elif self.source in ['glorys12v1_zlev_d']:
             self.filein1=os.path.join(self.basedir,self.source,'raw','NEMO_GR_PHY_001_030_'+str(self.year)+str(self.month).zfill(2)+'*.nc')
         elif self.source in ['glorys12v1eq1_zlev_d','glorys12v1aeq1_zlev_d']:
             self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_'+str(self.level)+'_'+str(self.year)+str(self.month).zfill(2)+'*.nc')
         else:
             raise UserWarning('Data source not recognised.')
+        #
+        # Set time constraint for current time block
+        time1,time2=block_times(self,verbose=self.verbose)
+        if fnmatch.filter([self.source],'igcm????_*_d'):
+            # Set base time for IGCM integrations
+            # In raw output from BGFLUX time=1 corresponds to 00 UTC on 1 Jan
+            #   of first year of run (calendar years are meaningless at this point)
+            # Set this arbitrarily so that time=1 maps to 00 UTC 1 Jan 3000
+            # So the basetime is time=0 corresponds to 00 UTC on 30 Dec 2999
+            #  in a 360_day calendar
+            igcmbasetime=cftime.Datetime360Day(3000,1,1)-datetime.timedelta(days=1)
+            print('igcmbasetime: {0!s}'.format(igcmbasetime))
+            xx=time1-igcmbasetime
+            time1a=xx.days
+            xx=time2-igcmbasetime
+            time2a=xx.days
+            print('time1a,time2a: {0!s}, {1!s}'.format(time1a,time2a))
+            time_constraint=iris.Constraint(time=lambda cell: time1a<=cell.point<=time2a)
+        else:
+            time_constraint=set_time_constraint(time1,time2,calendar=self.calendar,verbose=self.verbose)
         #
         # Set level constraint (set to False if none)
         if self.data_source in ['erainterim'] and self.level_type=='sfc':
@@ -2566,6 +2596,8 @@ class DataConverter(object):
             level_constraint=iris.Constraint(Level=self.level)
         elif self.data_source in ['hadgem2esajhog'] and self.level_type=='plev':
             level_constraint=iris.Constraint(air_pressure=self.level)
+        elif fnmatch.filter([self.data_source],'igcm????') and self.level_type=='plev':
+            level_constraint=iris.Constraint(pressure=self.level)
         elif self.data_source in ['glorys12v1'] and self.level_type=='zlev':
             leveltol=0.01
             level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
@@ -2574,7 +2606,7 @@ class DataConverter(object):
             level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
         elif self.data_source in ['era5betatrp2'] and self.level_type=='plev':
             level_constraint=iris.Constraint(air_pressure=self.level)
-        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5uks_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5glo_sfc_h','era5trp2_plev_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d']:
+        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5uks_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5glo_sfc_h','era5trp2_plev_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d'] or fnmatch.filter([self.source],'igcm????_sfc_d') or fnmatch.filter([self.source],'igcm????_toa_d'):
             level_constraint=False
         else:
             raise ToDoError('Set an instruction for level_constraint.')
@@ -2623,6 +2655,12 @@ class DataConverter(object):
         elif self.data_source in ['hadgem2esajhog']:
             if self.var_name in ['zg']:
                 self.raw_name=self.var_name
+        elif self.data_source[:4]=='igcm':
+            igcm_raw_names={ 'uwnd':'U', 'vwnd':'V', 'div':'DIV', 'psi':'PSI', 'ta':'TEMP', 'shum':'Q', 'psfc':'PS', 'mslp':'PSRED', 'olr':'TULW', 'lhfu':'SLHFLX', 'pptconv':'PCN', 'pptls':'PLS', 'ppt':'PTOT', 'swrsfcdown':'SDSW', 'lwrsfcdown':'SDLW', 'lwrsfcup':'SURFACE_UPWARD_', 'tsfc':'ST', 'cllowfrac':'LOWCLD', 'clmedfrac':'MIDCLD', 'clhifrac':'HIGCLD', 'clconvfrac':'CONCLD',}
+            if self.var_name in igcm_raw_names.keys():
+                self.raw_name=igcm_raw_names[self.var_name]
+            else:
+                raise UserWarning('Set raw_name for this variable.')
         elif self.data_source in ['olrinterp',]:
             self.raw_name='olr'
         elif self.data_source in ['cmap',]:
@@ -2683,8 +2721,10 @@ class DataConverter(object):
                     ds[self.raw_name].to_netcdf(file_tmp)
                     xx=iris.load(file_tmp,constraints=var_constraint & level_constraint & time_constraint,callback=clean_callback)
                 else:
+                    # Load with full constraints on variable name, level and time
                     xx=iris.load(self.filein1,constraints=var_constraint & level_constraint & time_constraint,callback=clean_callback)
             else:
+                # Load with constraints on variable name and time, but not level
                 xx=iris.load(self.filein1,constraints=var_constraint & time_constraint,callback=clean_callback)
         #
         # Convert time coordinate to standard for erainterim
@@ -2723,6 +2763,19 @@ class DataConverter(object):
         elif self.source in ['era5betatrp2_plev_h']:
             for cubec in xx:
                 cubec=standardise_time_coord_units(cubec,tunits='hours',roundtimevals=True)
+        #
+        # Create time coordinate from raw time for igcm data
+        if fnmatch.filter([self.source],'igcm????_*_d'):
+            for cubec in xx:
+                tc=cubec.coord('time')
+                times_val=tc.points
+                time_units=cf_units.Unit('days since '+str(igcmbasetime),calendar='360_day')
+                print('time_units: {0!s}'.format(time_units))
+                time_coord=iris.coords.DimCoord(times_val,standard_name='time',units=time_units)
+                print('times_val: {0!s}'.format(times_val))
+                print('time_coord: {0!s}'.format(time_coord))
+                cubec.remove_coord('time')
+                cubec.add_dim_coord(time_coord,0)
         #
         # Number of cubes in cubelist should be 1 except if source in list below
         if self.source not in ['hadgem2esajhog_plev_d','erainterim_plev_6h','erainterim_sfc_6h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d']:
@@ -2931,6 +2984,18 @@ class DataConverter(object):
             # Time stamp
             change_time_stamp_from_12_to_00(self,verbose=self.verbose)
         #
+        # igcm data
+        if self.source[:4]=='igcm':
+            # Units in BGFLUX output are non-standard and are rejected by iris.
+            # Reset them here
+            igcm_units={ 'uwnd':'m s-1', 'vwnd':'m s-1', 'div':'s-1', 'psi':'m2 s-1', 'ta':'degC', 'shum':'g kg-1', 'psfc':'hPa', 'mslp':'hPa', 'olr':'W m-2', 'lhfu':'W m-2', 'pptconv':'mm d-1', 'pptls':'mm d-1', 'ppt':'mm d-1', 'swrsfcdown':'W m-2', 'lwrsfcdown':'W m-2', 'lwrsfcup':'W m-2', 'tsfc':'K', 'cllowfrac':'1', 'clmedfrac':'1', 'clhifrac':'1', 'clconvfrac':'1', }
+            if self.var_name in igcm_units.keys():
+                self.cube.units=igcm_units[self.var_name]
+            else:
+                raise UserWarning('Set units for this variable.')
+            if self.level_type=='sfc':
+                # Reset value of surface coordinate from 0 to 1
+                self.cube.coord('surface').points=[1.0,]
         #
         # Final step. Convert cube data to 'single' precision for saving
         self.cube=create_cube(conv_float32(self.cube.data),self.cube)
@@ -9053,9 +9118,10 @@ class WheelerKiladis(object):
         Hovmoller self.data_hov. Note this is an array of complex
         numbers which cannot be saved to a netcdf file (but could save
         real and imaginary parts separately if needed). So just save
-        the absolute values (magnitudes of the complex numbers) in
-        self.data_hovfftWKabs to a netcdf file for reference, but
-        retain the full complex number array for future work.
+        the absolute values (magnitudes of the complex numbers, i.e.,
+        sqrt{real^2 +imag^2}) in self.data_hovfftWKabs to a netcdf
+        file for reference, but retain the full complex number array
+        for future work.
 
         Notes on ouput from np.fft.fft2 and rearrangement of this
         output here to be consistent with Wheeler-Kiladis diagrams.
@@ -9491,6 +9557,29 @@ class WheelerKiladis(object):
         if x2max>1e19:
             raise UserWarning('Have not successfully overwritten all values.')
         return x2
+
+    def f_background(self):
+        """
+        Create a smoothed background field of the 2-D FFT in (omega,kk).
+        
+        Inputs:
+
+        self.<background_params> : dictionary of background parameters.
+        
+        Outputs:
+        
+        Sets attributes self.data_hovfftWKbg, the smoothed background
+        field. Same dimensions as self.data_hovfftWKabs, from which it
+        is calculated.
+
+        dddddddddddddddddddddddddddddd
+
+        """
+        self.nfreqsmooth=self.descriptor['background_params']['nfreqsmooth']
+        print('nfreqsmooth: {0.nfreqsmooth!s}'.format(self))
+        xx1=self.data_hovfftWKabs.rolling_window('integer_harmonic_in_time',iris.analysis.MEAN,self.nfreqsmooth)
+        pdb.set_trace()
+        
 
     def f_filter(self):
         """

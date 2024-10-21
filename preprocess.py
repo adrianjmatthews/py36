@@ -19,11 +19,14 @@ BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 FILE_MASK=False # Default value
 
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='cmap_sfc_5d'
-VAR_NAME='uwnd'; LEVEL=1000; SOURCE='era5betatrp2_plev_h'
+#VAR_NAME='ta'; LEVEL=1000; SOURCE='era5betatrp2_plev_h'
 #VAR_NAME='vwnd'; LEVEL=1; SOURCE='era5glo_sfc_h'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='erainterim_sfc_d'
 #VAR_NAME='zg'; LEVEL=850; SOURCE='erainterim_plev_6h'
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'
+#VAR_NAME='shum'; LEVEL=850; SOURCE='igcm0001_plev_d'
+VAR_NAME='mslp'; LEVEL=1; SOURCE='igcm0001_sfc_d'
+#VAR_NAME='olr'; LEVEL=0; SOURCE='igcm0001_toa_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07bmcw_sfc_30m'
 #VAR_NAME='zg'; LEVEL=200; SOURCE='ncepdoe_plev_d'
 #VAR_NAME='psfc'; LEVEL=1; SOURCE='ncepdoe_sfc_d'
@@ -39,11 +42,11 @@ VAR_NAME='uwnd'; LEVEL=1000; SOURCE='era5betatrp2_plev_h'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_3h'
 #VAR_NAME='swtheta'; LEVEL=1062.44; SOURCE='glorys12v1aeq1_zlev_d'
 
-YEAR=2001
+YEAR=3001
 #YEAR=range(2003,2020+1)
 
-#MONTH=-999 # if outfile_frequency is 'year'
-MONTH=1
+MONTH=-999 # if outfile_frequency is 'year'
+#MONTH=2
 #MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
 
 PLOT=False
