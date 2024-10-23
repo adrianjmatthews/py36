@@ -39,6 +39,8 @@ sdomains['trp']={'lon1':-180, 'lon2':180, 'lat1':-30, 'lat2':30, 'desc':'Tropics
 sdomains['ewa']={'lon1':-20, 'lon2':30, 'lat1':0, 'lat2':60, 'desc':'Europe and West Africa'}
 sdomains['glo']={'lon1':0, 'lon2':359.9999, 'lat1':-90, 'lat2':90, 'desc':'Global'}
 sdomains['tr2']={'lon1':0, 'lon2':359.9999, 'lat1':-20, 'lat2':20, 'desc':'Tropics 20S-20N'}
+sdomains['uks']={'lon1':-5, 'lon2':5, 'lat1':45, 'lat2':55, 'desc':'UK South and France'}
+sdomains['trp2']={'lon1':0, 'lon2':359.9999, 'lat1':-22, 'lat2':22, 'desc':'Tropics'}
 
 # season_months
 season_months={'djf':[12,1,2], 'mam':[3,4,5], 'jja':[6,7,8], 'son':[9,10,11], 'n2a':[11,12,1,2,3,4], 'm2o':[5,6,7,8,9,10], 'jan':[1], 'feb':[2], 'mar':[3], 'apr':[4], 'may':[5], 'jun':[6], 'jul':[7], 'aug':[8], 'sep':[9], 'oct':[10], 'nov':[11], 'dec':[12]}
@@ -175,3 +177,7 @@ erainterim_abkmalf={ 1: (0.00, 0.00000),
                     59: (0.07, 0.99402),
                     60: (0.00, 0.99763),
                     61: (0.00, 1.00000)}
+
+# IGCM variables
+igcm_raw_names={ 'uwnd':'U', 'vwnd':'V', 'vrt':'VORT', 'div':'DIV', 'omega':'OMEGA', 'psi':'PSI', 'ta':'TEMP', 'zg':'GEOPOT', 'shum':'Q', 'dtadtdiab':'DIHEAT', 'psfc':'PS', 'mslp':'PSRED', 'olr':'TULW', 'lhfu':'SLHFLX', 'shfu':'SSHFLX', 'pptconv':'PCN', 'pptls':'PLS', 'ppt':'PTOT', 'swrsfcdown':'SDSW', 'swrtoanetdown':'TOP_NET_DOWNWAR', 'lwrsfcdown':'SDLW', 'lwrsfcup':'SURFACE_UPWARD_', 'albedosfc':'ALBEDO', 'tsfc':'ST', 'tsoil':'SOILT', 'cllowfrac':'LOWCLD', 'clmedfrac':'MIDCLD', 'clhifrac':'HIGCLD', 'clconvfrac':'CONCLD', 'soilmo':'SOILMST', 'taumag':'SSTRESS', 'shumsfc':'SQ', 'snowdep':'SNOWDTH', }
+igcm_units={ 'uwnd':'m s-1', 'vwnd':'m s-1', 'vrt':'s-1', 'div':'s-1', 'omega':'hPa hr-1', 'psi':'m2 s-1', 'ta':'degC', 'zg':'m', 'shum':'g kg-1', 'dtadtdiab':'K d-1', 'psfc':'hPa', 'mslp':'hPa', 'olr':'W m-2', 'lhfu':'W m-2', 'shfu':'W m-2', 'pptconv':'mm d-1', 'pptls':'mm d-1', 'ppt':'mm d-1', 'swrsfcdown':'W m-2', 'swrtoanetdown':'W m-2', 'lwrsfcdown':'W m-2', 'lwrsfcup':'W m-2', 'albedosfc':'1', 'tsfc':'K', 'tsoil':'K', 'cllowfrac':'1', 'clmedfrac':'1', 'clhifrac':'1', 'clconvfrac':'1', 'soilmo':'m', 'taumag':'N m-2', 'shumsfc':'1', 'snowdep':'m', }
