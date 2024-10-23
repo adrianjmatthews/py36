@@ -89,6 +89,7 @@ h2b='--------------------------->>>\n'
 #   cube1.rename(cube2.name())
 #   cube1.var_name=cube2.var_name
 var_name2long_name={
+    'albedosfc':'surface_albedo',
     'bsiso1-1':'BSISO_1-1_index',
     'bsiso1-2':'BSISO_1-2_index',
     'bsiso1_amp':'BSISO_1_amplitude',
@@ -111,6 +112,7 @@ var_name2long_name={
     'div_lambda':'divergence_of_wind_partitioned_eastward_component',
     'div_phi':'divergence_of_wind_partitioned_northward_component',
     'domegady_duwnddp':'meridional_derivative_of_lagrangian_tendency_of_air_pressure_times_pressure_derivative_of_zonal_wind',
+    'dtadtdiab':'tendency_of_air_temperature_due_to_diabatic_processes',
     'dummy':'dummy_variable',
     'dvrtdt':'tendency_of_atmosphere_relative_vorticity',
     'duwnddx':'zonal_derivative_of_eastward_wind',
@@ -187,7 +189,10 @@ var_name2long_name={
     'shfd':'surface_downward_sensible_heat_flux',
     'shfu':'surface_upward_sensible_heat_flux',
     'shum':'specific_humidity',
+    'shumsfc':'surface_specific_humidity',
+    'snowdep':'lwe_thickness_of_surface_snow_amount',
     'source_dvrtdt':'total_source_of_tendency_of_atmosphere_relative_vorticity',
+    'soilmo':'lwe_thickness_of_soil_moisture_content',
     'ss':'integer_zonal_wavenumber',
     'ssft':'sea_surface_foundation_temperature',
     'sst':'sea_surface_temperature',
@@ -198,12 +203,15 @@ var_name2long_name={
     'swrsfcnetdown':'surface_net_downward_shortwave_flux',
     'swrsfcdown':'surface_downwelling_shortwave_flux_in_air',
     'swrsfcup':'surface_upwelling_shortwave_flux_in_air',
+    'swrtoanetdown':'toa_net_downward_shortwave_flux',
     'ta':'air_temperature',
     'taux':'surface_downward_eastward_stress',
     'tauy':'surface_downward_northward_stress',
+    'taumag':'magnitude_of_surface_downward_stress',
     'theta':'air_potential_temperature',
     'tsc':'sea_water_conservative_temperature',
     'tsfc':'surface_temperature',
+    'tsoil':'soil_temperature',
     'ucur':'eastward_sea_water_velocity',
     'uwnd':'eastward_wind',
     'uwndchi':'irrotational_component_of_eastward_wind',
@@ -2656,9 +2664,8 @@ class DataConverter(object):
             if self.var_name in ['zg']:
                 self.raw_name=self.var_name
         elif self.data_source[:4]=='igcm':
-            igcm_raw_names={ 'uwnd':'U', 'vwnd':'V', 'div':'DIV', 'psi':'PSI', 'ta':'TEMP', 'shum':'Q', 'psfc':'PS', 'mslp':'PSRED', 'olr':'TULW', 'lhfu':'SLHFLX', 'pptconv':'PCN', 'pptls':'PLS', 'ppt':'PTOT', 'swrsfcdown':'SDSW', 'lwrsfcdown':'SDLW', 'lwrsfcup':'SURFACE_UPWARD_', 'tsfc':'ST', 'cllowfrac':'LOWCLD', 'clmedfrac':'MIDCLD', 'clhifrac':'HIGCLD', 'clconvfrac':'CONCLD',}
-            if self.var_name in igcm_raw_names.keys():
-                self.raw_name=igcm_raw_names[self.var_name]
+            if self.var_name in info.igcm_raw_names.keys():
+                self.raw_name=info.igcm_raw_names[self.var_name]
             else:
                 raise UserWarning('Set raw_name for this variable.')
         elif self.data_source in ['olrinterp',]:
@@ -2988,9 +2995,8 @@ class DataConverter(object):
         if self.source[:4]=='igcm':
             # Units in BGFLUX output are non-standard and are rejected by iris.
             # Reset them here
-            igcm_units={ 'uwnd':'m s-1', 'vwnd':'m s-1', 'div':'s-1', 'psi':'m2 s-1', 'ta':'degC', 'shum':'g kg-1', 'psfc':'hPa', 'mslp':'hPa', 'olr':'W m-2', 'lhfu':'W m-2', 'pptconv':'mm d-1', 'pptls':'mm d-1', 'ppt':'mm d-1', 'swrsfcdown':'W m-2', 'lwrsfcdown':'W m-2', 'lwrsfcup':'W m-2', 'tsfc':'K', 'cllowfrac':'1', 'clmedfrac':'1', 'clhifrac':'1', 'clconvfrac':'1', }
-            if self.var_name in igcm_units.keys():
-                self.cube.units=igcm_units[self.var_name]
+            if self.var_name in info.igcm_units.keys():
+                self.cube.units=info.igcm_units[self.var_name]
             else:
                 raise UserWarning('Set units for this variable.')
             if self.level_type=='sfc':
