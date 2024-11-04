@@ -14,28 +14,32 @@ import data_analysis as da
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-ARCHIVE=False
+ARCHIVE=True
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_3h'
-VAR_NAME='res_dvrtdt'; LEVEL=975; SOURCE='era5gloerai_plev_3h'
+VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07btrmrgp1_sfc_3h'
+#VAR_NAME='res_dvrtdt'; LEVEL=975; SOURCE='era5gloerai_plev_3h'
 
-FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
+FILEPRE='_rac' # e.g., '', '_rac', '_rac_minus_l30_n241'
 
-TIME1=cftime.DatetimeGregorian(1998,1,1)
+#TIME1=cftime.DatetimeGregorian(1998,1,1)
 #TIME2=TIME1+datetime.timedelta(21*365+6-1+272)-datetime.timedelta(seconds=1) # 29 Sep 2019 TRMM precip 
 #TIME2=TIME1+datetime.timedelta(23*365+6-1)-datetime.timedelta(seconds=1) # 30 Dec 2020 TRMM precip 
 #TIME2=TIME1+datetime.timedelta(23*365+280-1)-datetime.timedelta(seconds=1) # 30 Sep 2021 TRMM precip 
 #TIME2=TIME1+datetime.timedelta(21*365+6-1)-datetime.timedelta(seconds=1) # 31 Dec 2018 erainterim
-TIME2=TIME1+datetime.timedelta(25*365+6-1)-datetime.timedelta(seconds=1) # 30 Dec 2022 era5
+#TIME2=TIME1+datetime.timedelta(25*365+6-1)-datetime.timedelta(seconds=1) # 30 Dec 2022 era5
+#
+TIME1=cftime.DatetimeGregorian(2000,7,1)
+#TIME2=TIME1+datetime.timedelta(23*365+68-1)-datetime.timedelta(seconds=1) # 31 Aug 2023 imergv07b
+TIME2=TIME1+datetime.timedelta(23*365+190-1)-datetime.timedelta(seconds=1) # 31 Dec 2023 imergv07b
 
-#LAT1=-2.625; LAT2=-LAT1
+LAT1=-2.625; LAT2=-LAT1
 #LAT1=-10; LAT2=-LAT1
 #LAT1=-15; LAT2=-LAT1
 #LAT1=-15; LAT2=15
 #LAT1='-00.3508'
 #LAT1=2.625; LAT2=7.375
-LAT2=LAT1
+#LAT2=LAT1
 # Option to use symmetric or antisymmetric component in latitude
 BAND1_SYM=False # False, 'sym', or 'antisym'
 
@@ -43,14 +47,19 @@ HOVMOLLER_PARAMS={'cosine_tapering':False, 'cosine_tapering_fraction':0.1}
 
 #WAVE_TYPE='none'; WAVE_PARAMS={}
 
-#WAVE_TYPE='EK'; WAVE_PARAMS={'cphasex_min':5.0, 'cphasex_max':30.0, 'cphasex_units':'m s-1', 'ss_min':1, 'ss_max':14, 'freq_min':0.0333333/8, 'freq_max':0.4/8, 'freq_units':'cycles per 3h'} # TRMM precip
+WAVE_TYPE='EK'; WAVE_PARAMS={'cphasex_min':5.0, 'cphasex_max':30.0, 'cphasex_units':'m s-1', 'ss_min':1, 'ss_max':14, 'freq_min':0.0333333/8, 'freq_max':0.4/8, 'freq_units':'cycles per 3h'} # TRMM precip
 #WAVE_TYPE='ER'; WAVE_PARAMS={'nn':1, 'H_min':2.5, 'H_max':90.0, 'H_units':'m', 'ss_min':-10, 'ss_max':-1, 'freq_min':0.01666667/8, 'freq_max':0.4/8, 'freq_units':'cycles per 3h'} # TRMM precip
 
 #WAVE_TYPE='EK'; WAVE_PARAMS={'cphasex_min':5.0, 'cphasex_max':30.0, 'cphasex_units':'m s-1', 'ss_min':1, 'ss_max':14, 'freq_min':0.0333333/4, 'freq_max':0.4/4, 'freq_units':'cycles per 6h'} # erainterim
 #WAVE_TYPE='ER'; WAVE_PARAMS={'nn':1, 'H_min':2.5, 'H_max':90.0, 'H_units':'m', 'ss_min':-10, 'ss_max':-1, 'freq_min':0.01666667/4, 'freq_max':0.4/4, 'freq_units':'cycles per 6h'} # erainterim
-WAVE_TYPE='ER'; WAVE_PARAMS={'nn':1, 'H_min':2.5, 'H_max':90.0, 'H_units':'m', 'ss_min':-10, 'ss_max':-1, 'freq_min':0.01666667/8, 'freq_max':0.4/8, 'freq_units':'cycles per 3h'} # era5gloerai_plev_3h
+#WAVE_TYPE='ER'; WAVE_PARAMS={'nn':1, 'H_min':2.5, 'H_max':90.0, 'H_units':'m', 'ss_min':-10, 'ss_max':-1, 'freq_min':0.01666667/8, 'freq_max':0.4/8, 'freq_units':'cycles per 3h'} # era5gloerai_plev_3h
 
-CLEAN_CALLBACK=False # Set to true for TRMM data, not erainterim.
+BACKGROUND_PARAMS={'nfreqsmooth':21, 'ssmax':60, 'nfiltfrequency':15, 'nfiltwavenumber':60}
+
+CLEAN_CALLBACK=True # Set to true for TRMM data, not erainterim.
+
+FILTER=False # Flag to do equatorial wave wavenumber-frequency filtering
+BACKGROUND=True # Flag to calculate background spectrum for display
 
 PLOT=False
 
@@ -75,23 +84,29 @@ descriptor['band1_sym']=BAND1_SYM
 descriptor['hovmoller_params']=HOVMOLLER_PARAMS
 descriptor['wave_type']=WAVE_TYPE
 descriptor['wave_params']=WAVE_PARAMS
+descriptor['background_params']=BACKGROUND_PARAMS
 descriptor['clean_callback']=CLEAN_CALLBACK
 
 # Create instance of WheelerKiladis object
 aa=da.WheelerKiladis(**descriptor)
 
-# 'calculate' and write 2-D Hovmoller as single cube, or 'read' pre-existing,
-# or create 'analytical' test Hovmoller
-aa.f_hovmoller(mode='calculate')
+if FILTER:
+    # 'calculate' and write 2-D Hovmoller as single cube, or 'read' pre-existing,
+    # or create 'analytical' test Hovmoller
+    aa.f_hovmoller(mode='calculate')
+    
+    # Calculate 2-D FFT
+    aa.f_fft()
+    
+    # Filter for selected wave
+    #aa.f_filter()
+    
+    # Calculate inverse 2-D FFT of wave-filtered data
+    #aa.f_ifft()
 
-# Calculate 2-D FFT
-aa.f_fft()
-
-# Filter for selected wave
-aa.f_filter()
-
-# Calculate inverse 2-D FFT of wave-filtered data
-aa.f_ifft()
+if BACKGROUND:
+    # Calculate smoothed background from previously calculated power spectrum
+    aa.f_background()
 
 if PLOT:
     print('# Plot')

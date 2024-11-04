@@ -9565,27 +9565,201 @@ class WheelerKiladis(object):
         return x2
 
     def f_background(self):
-        """
-        Create a smoothed background field of the 2-D FFT in (omega,kk).
+        """Create a smoothed background field of the 2-D FFT in (omega,kk),
+        and calculate anomalies from this background.
         
         Inputs:
 
-        self.<background_params> : dictionary of background parameters.
+        self.data_hovfftWKabs : read in this previously calculated
+        power spectrum. This should be calculated from anomaly data
+        (i.e., rac), not total data, otherwise the annual cycle and
+        its harmonics will distort the results.
+
+        self.<background_params> : dictionary of background
+        parameters. These are:
+
+        'nfreqsmooth' : an integer (typical value 21). The raw
+        wavenumber-frequency power spectrum is calculated from a data
+        set that is typically ~25 years long, with ~3 hourly data,
+        hence ~25*365*8 = 70,000 time points. Hence, there are
+        ~70,000/2 = 35,000 frequency bins in the initial power
+        spectrum. This is very noisy and needs to be
+        averaged. Averaging is into coarser frequency bins, of length
+        nfreqsmooth.
+
+        'ssmax' : an integer (typical value 50). The longitude grid
+        that the initial input data is on may be ~0.5 degrees
+        longitude, hence ~720 longitude bins. This leads to zonal
+        wavenumbers between -360 and +360. The useful information on
+        equatorial waves is within zonal wavenumber ~-20 to +20, so
+        the wavenumber-frequency spectrum is truncated betweeen
+        -ssmax:ssmax.
+
+        'nfiltfrequency' and 'nfiltwavenumber' : integers, typically
+        15 and 60 respectively. These are the number of times the
+        1-2-1 filter is recursively applied in frequency and
+        wavenumber space, to calculate the background spectrum.
         
         Outputs:
         
-        Sets attributes self.data_hovfftWKbg, the smoothed background
-        field. Same dimensions as self.data_hovfftWKabs, from which it
-        is calculated.
+        self.data_hovfftWKabsred : reduced version of the input power
+        spectrum. Only over a specified range of zonal wavenumbers
+        (ssmin to ssmax), and averaged (binned) over nfreqsmooth
+        frequency bins.
 
-        dddddddddddddddddddddddddddddd
+        self.data_hovfftWKbg : smoothed background field. Same
+        dimensions as self.data_hovfftWKabsred, from which it is
+        calculated. Has been recursively 1-2-1 filtered nfiltfrequency
+        times in frequency space, and nfiltwavenumber times in zonal
+        wavenumber space.
+
+        self.data_hovfftWKanom : anomalous wavenumber-frequency power
+        spectrum. The (reduced) input power spectrum divided by the
+        background spectrum.
 
         """
-        self.nfreqsmooth=self.descriptor['background_params']['nfreqsmooth']
-        print('nfreqsmooth: {0.nfreqsmooth!s}'.format(self))
-        xx1=self.data_hovfftWKabs.rolling_window('integer_harmonic_in_time',iris.analysis.MEAN,self.nfreqsmooth)
-        pdb.set_trace()
-        
+        # Read in previously calculated power spectrum
+        print('file_hovfftWKabs: {0.file_hovfftWKabs!s}'.format(self))
+        self.data_hovfftWKabs=iris.load_cube(self.file_hovfftWKabs)
+        # Calculate 'reduced' input power spectrum
+        #   Subset power spectrum to just include zonal wavenumber range of interest
+        xx0=self.data_hovfftWKabs
+        ssmax=self.background_params['ssmax']
+        ssmin=-ssmax
+        print('ssmin,ssmax: {0!s}, {1!s}'.format(ssmin,ssmax))
+        ss_constraint=iris.Constraint(integer_zonal_wavenumber=lambda cell: ssmin<=cell.point<=ssmax)
+        nfreqsmooth=self.background_params['nfreqsmooth']
+        nfreq1=xx0.shape[0]
+        nbin=int(nfreq1/nfreqsmooth)
+        print('nbin,nfreq1,nfreqsmooth: {0!s}, {1!s}, {2!s}'.format(nbin,nfreq1,nfreqsmooth))
+        harmmin=0
+        harmmax=nbin*nfreqsmooth-1
+        print('harmmin,harmmax: {0!s}, {1!s}'.format(harmmin,harmmax))
+        harm_constraint=iris.Constraint(integer_harmonic_in_time=lambda cell: harmmin<=cell.point<=harmmax)
+        xx1=xx0.extract(ss_constraint & harm_constraint)
+        xx2=xx1.data
+        nfreq2=xx2.shape[0]
+        print('nfreq2: {0!s}'.format(nfreq2))
+        #   Average (bin) over nfreqsmooth frequency bins to reduce length of 
+        #   frequency axis to manageable size
+        print('xx2.shape: {0!s}'.format(xx2.shape))
+        xx3=xx2.reshape(-1,nfreqsmooth,xx2.shape[1])
+        print('xx3.shape: {0!s}'.format(xx3.shape))
+        xx4=xx3.mean(axis=1)
+        print('xx4.shape: {0!s}'.format(xx4.shape))
+        #   Create new cube of this reduced power spectra array
+        def average_coord(coord,coord_type):
+            #print('coord: {0!s}'.format(coord))
+            hh2=coord.points
+            print('hh2.shape: {0!s}'.format(hh2.shape))
+            hh3=hh2.reshape(-1,nfreqsmooth)
+            print('hh3.shape: {0!s}'.format(hh3.shape))
+            hh4=hh3.mean(axis=1)
+            print('hh4.shape: {0!s}'.format(hh4.shape))
+            if coord_type=='dim':
+                coord2=iris.coords.DimCoord(hh4,var_name=coord.var_name,long_name=coord.long_name,units=coord.units)
+            elif coord_type=='aux':
+                coord2=iris.coords.AuxCoord(hh4,var_name=coord.var_name,long_name=coord.long_name,units=coord.units)
+            else:
+                raise UserWarning('Invalid coord_type.')
+            #print('coord2: {0!s}'.format(coord2))
+            return coord2
+        harm_coord=xx1.coord('integer_harmonic_in_time')
+        harm_coord2=average_coord(harm_coord,'dim')
+        freq_coord=xx1.coord('frequency')
+        freq_coord2=average_coord(freq_coord,'aux')
+        omegaf_coord=xx1.coord('angular_frequency')
+        omegaf_coord2=average_coord(omegaf_coord,'aux')
+        xx1.remove_coord('frequency')
+        xx1.remove_coord('angular_frequency')
+        xx5=create_cube(xx4,xx1,new_axis=harm_coord2)
+        xx5.add_aux_coord(freq_coord2,data_dims=0)
+        xx5.add_aux_coord(omegaf_coord2,data_dims=0)
+        #   Save iris cube of this reduced power spectra array
+        self.data_hovfftWKabsred=xx5
+        self.file_hovfftWKabsred=self.file_hovfftWKabs.replace('hovfftWKabs','hovfftWKabsred')
+        print('file_hovfftWKabsred: {0.file_hovfftWKabsred!s}'.format(self))
+        iris.save(self.data_hovfftWKabsred,self.file_hovfftWKabsred)
+        if self.archive:
+            archive_file(self,self.file_hovfftWKabsred)
+        if self.verbose==2:
+            print('write_cube: {0.file_hovfftWKabsred!s}'.format(self))
+        # Calculate smoothed background wavenumber-frequency power spectrum
+        # using a 1-2-1 filter in wavenumber and frequency space
+        def filt121(xx,axis,verbose=False):
+            # Create right and left shifted arrays to pass to 1-2-1 filter
+            if axis=='frequency':
+                # Create right shifted array
+                xxrightshift=np.roll(xx,1,axis=0)
+                # Elements [0,:] have been wrapped round from right.
+                # Rewrite with original elements [0,:]
+                xxrightshift[0,:]=xx[0,:]
+                # Create left shifted array
+                xxleftshift=np.roll(xx,-1,axis=0)
+                # Elements [-1,:] have been wrapped round from left.
+                # Rewrite with original elements [-1,:]
+                xxleftshift[-1,:]=xx[-1,:]
+            elif axis=='wavenumber':
+                # Create right shifted array
+                xxrightshift=np.roll(xx,1,axis=1)
+                # Elements [:,0] have been wrapped round from right.
+                # Rewrite with original elements [:,0]
+                xxrightshift[:,0]=xx[:,0]
+                # Create left shifted array
+                xxleftshift=np.roll(xx,-1,axis=1)
+                # Elements [:,-1] have been wrapped round from left.
+                # Rewrite with original elements [:,-1]
+                xxleftshift[:,-1]=xx[:,-1]
+            else:
+                raise UserWarning('Invalid axis name.')
+            # Apply 1-2-1 filter
+            xxfilt=0.25*xxrightshift+0.5*xx+0.25*xxleftshift
+            if verbose:
+                print('xx: {0!s}'.format(xx))
+                print('xxleftshift: {0!s}'.format(xxleftshift))
+                print('xxrightshift: {0!s}'.format(xxrightshift))
+                print('xxfilt: {0!s}'.format(xxfilt))
+            return xxfilt
+        #xxtest=np.array([[0,1,2,3],[4,5,6,7],[8,9,10,11]])
+        #xxfilt=filt121(xxtest,'frequency',verbose=True)
+        xx6=copy.deepcopy(xx4)
+        #   Recursive filter over frequency
+        nfiltfrequency=self.background_params['nfiltfrequency']
+        print('nfiltfrequency: {0!s}'.format(nfiltfrequency))
+        for ifiltfrequency in range(nfiltfrequency):
+            print('ifiltfrequency: {0!s}'.format(ifiltfrequency))
+            xx6=filt121(xx6,'frequency',verbose=False)
+        #   Recursive filter over wavenumber
+        nfiltwavenumber=self.background_params['nfiltwavenumber']
+        print('nfiltwavenumber: {0!s}'.format(nfiltwavenumber))
+        for ifiltwavenumber in range(nfiltwavenumber):
+            print('ifiltwavenumber: {0!s}'.format(ifiltwavenumber))
+            xx6=filt121(xx6,'wavenumber',verbose=False)
+        #   Create and cube of filtered wavenumber-frequency spectrum (background)
+        xx7=create_cube(xx6,xx5)
+        cm=iris.coords.CellMethod('point',coords=['integer_harmonic_in_time','integer_zonal_wavenumber'],comments='1-2-1 wavenumber-frequency filtering. Parameters: {0.background_params!s}'.format(self))
+        xx7.add_cell_method(cm)
+        self.data_hovfftWKabsredbg=xx7
+        self.file_hovfftWKabsredbg=self.file_hovfftWKabs.replace('hovfftWKabs','hovfftWKabsredbg')
+        print('file_hovfftWKabsredbg: {0.file_hovfftWKabsredbg!s}'.format(self))
+        iris.save(self.data_hovfftWKabsredbg,self.file_hovfftWKabsredbg)
+        if self.archive:
+            archive_file(self,self.file_hovfftWKabsredbg)
+        if self.verbose==2:
+            print('write_cube: {0.file_hovfftWKabsredbg!s}'.format(self))
+        # Create anomaly spectrum by dividing power spectrum by background spectrum
+        xx8=xx4/xx6
+        xx9=create_cube(xx8,xx5)
+        cm=iris.coords.CellMethod('point',coords=['integer_harmonic_in_time','integer_zonal_wavenumber'],comments='Anomaly spectrum. Divided by background. Background from 1-2-1 wavenumber-frequency filtering. Parameters: {0.background_params!s}'.format(self))
+        xx9.add_cell_method(cm)
+        self.data_hovfftWKabsredanom=xx9
+        self.file_hovfftWKabsredanom=self.file_hovfftWKabs.replace('hovfftWKabs','hovfftWKabsredanom')
+        print('file_hovfftWKabsredanom: {0.file_hovfftWKabsredanom!s}'.format(self))
+        iris.save(self.data_hovfftWKabsredanom,self.file_hovfftWKabsredanom)
+        if self.archive:
+            archive_file(self,self.file_hovfftWKabsredanom)
+        if self.verbose==2:
+            print('write_cube: {0.file_hovfftWKabsredanom!s}'.format(self))
 
     def f_filter(self):
         """
