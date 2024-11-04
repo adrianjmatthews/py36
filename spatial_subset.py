@@ -30,16 +30,18 @@ SUBDIR='std' # 'std': input data with time axis
 #VAR_NAME='vwndptap'; LEVEL=50; SOURCE='ncepncar_plev_d'
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrinterp_toa_d'
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'
-VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_3h'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergmcw_sfc_30m'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_3h'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07btrmrgp1_sfc_3h'
+VAR_NAME='uwnd'; LEVEL=250; SOURCE='igcm0001_plev_d'
 
 # Compulsory band1
 BAND1_NAME='latitude' # Dimension to average over: 'latitude' or 'longitude'
 #BAND1_VAL1=-2.625 # TRMM precip for CCKW trajectories
-BAND1_VAL1=-10 # TRMM precip for CCKW trajectories
+#BAND1_VAL1=-10 # TRMM precip for CCKW trajectories
 #BAND1_VAL1=-15 # TRMM precip for CCER trajectories
 #BAND1_VAL1='74.7364'
 #BAND1_VAL1='-0.875'
+BAND1_VAL1=-5
 BAND1_VAL2=-BAND1_VAL1
 # Option to calculate symmetric or antisymmetric component in BAND1
 BAND1_SYM=False # False, 'sym', or 'antisym'
@@ -52,10 +54,13 @@ BAND2_VAL1=100.375
 BAND2_VAL2=100.375
 
 if SUBDIR=='std':
-    FILEPRE='' # e.g., '', '_rac', '_rac_b20_200_n241', '_rac_rm5_n5'
-    YEAR=range(1998,1998+1)
-    #MONTH=[-999] # Dummy value if outfile_frequency is 'year'
-    MONTH=range(1,1+1) # If outfile_frequency is less than 'year' 
+    FILEPRE='_rac' # e.g., '', '_rac', '_rac_b20_200_n241', '_rac_rm5_n5'
+    YEAR=3030
+    #YEAR=range(2001,2023+1)
+    #YEAR=range(3030,3034+1)
+    MONTH=[-999] # Dummy value if outfile_frequency is 'year'
+    #MONTH=7
+    #MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
 elif SUBDIR=='processed':
     FILEPRE='_'+TDOMAINID+'_lag' # e.g., TDOMAINID of time mean data.
 else:
