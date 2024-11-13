@@ -9029,15 +9029,12 @@ class WheelerKiladis(object):
         """
         if mode=='calculate':
             print('Creating single cube 2-D Hovmoller.')
-            if self.calendar=='gregorian':
-                pass
-            elif self.calendar=='360_day':
-                raise ToDoError('Need to think how this will work with 360_day calendar.')
-            else:
+            if self.calendar not in ['gregorian','360_day']:
                 raise UserWarning('Invalid calendar.')
             time_constraint=set_time_constraint(self.time1,self.time2,calendar=self.calendar,verbose=self.verbose)
             xx1=self.data_in.extract(time_constraint)
             self.data_hov=xx1.concatenate_cube()
+            self.data_hov=iris.util.squeeze(self.data_hov)
             time_coord=self.data_hov.coord('time')
             print(time_coord[0])
             print(time_coord[-1])
@@ -9050,7 +9047,7 @@ class WheelerKiladis(object):
             self.data_hov=iris.load_cube(self.file_hov)
         elif mode=='analytical':
             print('Creating analytical test Hovmoller')
-            # This requires observed Hovmoller to have been previously
+            # This requires Hovmoller to have been previously
             # calculated and saved. That is read in here, and overwritten
             # with a single propagating wave to test FFT and rearrangement
             # code later
@@ -9217,7 +9214,7 @@ class WheelerKiladis(object):
         if self.data_hov.coords()[0].name()!='time':
             raise UserWarning('Dimension 0 must be time.')
         if self.data_hov.coords()[1].name()!='longitude':
-            raise UserWarning('Dimension 0 must be longitude.')
+            raise UserWarning('Dimension 1 must be longitude.')
         # Check there are an even number of times and longitudes
         tcoord=self.data_hov.coord('time')
         if divmod(self.nt,2)[1]==0:
