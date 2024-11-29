@@ -16,27 +16,36 @@ BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 ARCHIVE=True
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p2_sfc_3h'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07btrmrgp2_sfc_3h'
+VAR_NAME='ppt'; LEVEL=1; SOURCE='igcm0002_sfc_3h'
 
-FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
+FILEPRE='_rac' # e.g., '', '_rac', '_rac_minus_l30_n241'
 
-TIME1=cftime.DatetimeGregorian(1998,1,1)
+#TIME1=cftime.DatetimeGregorian(1998,1,1)
 #TIME2=TIME1+datetime.timedelta(21*365+6-1+272)-datetime.timedelta(seconds=1) # 29 Sep 2019 TRMM precip 
 #TIME2=TIME1+datetime.timedelta(23*365+6-1)-datetime.timedelta(seconds=1) # 30 Dec 2020 TRMM precip 
-TIME2=TIME1+datetime.timedelta(23*365+280-1)-datetime.timedelta(seconds=1) # 30 Sep 2021 TRMM precip 
+#TIME2=TIME1+datetime.timedelta(23*365+280-1)-datetime.timedelta(seconds=1) # 30 Sep 2021 TRMM precip 
+#
+#TIME1=cftime.DatetimeGregorian(2000,7,1)
+#TIME2=TIME1+datetime.timedelta(23*365+68-1)-datetime.timedelta(seconds=1) # 31 Aug 2023 imergv07b
+#TIME2=TIME1+datetime.timedelta(23*365+190-1)-datetime.timedelta(seconds=1) # 31 Dec 2023 imergv07b
 
-LAT1=-2.625; LAT2=-LAT1
+TIME1=cftime.Datetime360Day(3005,1,1,0,0)
+TIME2=cftime.Datetime360Day(3019,12,30,23,59) # igcm
+
+#LAT1=-2.625; LAT2=-LAT1
 #LAT1=-10; LAT2=-LAT1
-#LAT1=-15; LAT2=-LAT1
+LAT1=-5; LAT2=-LAT1
 #LAT1=-15; LAT2=15
 
 # Option to use symmetric or antisymmetric component in latitude
 BAND1_SYM=False # False, 'sym', or 'antisym'
 
 WAVE_TYPE='EK'; 
-EVENT_PARAMS={'threshold':0.15 , 'threshold_units':'mm hr-1' , 'traj_min_time_length':12 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.5 , 'prune_threshold2':0.25} # EK for data averaged 2.625 degS-N
-#EVENT_PARAMS={'threshold':0.15 , 'threshold_units':'mm hr-1' , 'traj_min_time_length':12 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.5 , 'prune_threshold2':0.25} # EK for data averaged 10 degS-N
+#EVENT_PARAMS={'threshold':0.15 , 'threshold_units':'mm hr-1' , 'traj_min_time_length':12 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.5 , 'prune_threshold2':0.25} # EK for data averaged 2.625 degS-N
+#EVENT_PARAMS={'threshold':0.15*2.625/10 , 'threshold_units':'mm hr-1' , 'traj_min_time_length':12 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.5*2.625/10 , 'prune_threshold2':0.25*2.625/10} # EK for data averaged 10 degS-N
 #EVENT_PARAMS={'threshold':0.05 , 'threshold_units':'mm hr-1' , 'traj_min_time_length':12 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.0 , 'prune_threshold2':0.0} # ER for data averaged 15S-15N
+EVENT_PARAMS={'threshold':3.0 , 'threshold_units':'mm d-1' , 'traj_min_time_length':3 , 'traj_min_time_length_units':'h' , 'prune_threshold1':0.0 , 'prune_threshold2':0.0} # EK for igcm0002 data averaged 5S-5N
 
 VERBOSE=2
 

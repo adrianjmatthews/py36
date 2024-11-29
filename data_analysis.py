@@ -264,11 +264,11 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5trp2','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','era5uks','era5betatrp2','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07bmcw','imergv07atrm','imergv07btrm','imergv07btrmrg','imergv07btrmrgp1','imergv07btrmrgp2','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','igcm0001','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','glorys12v1aeq1','cmap']
+    valid_data_sources=['era5trp','era5trp2','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','era5uks','era5betatrp2','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07bmcw','imergv07atrm','imergv07btrm','imergv07btrmrg','imergv07btrmrgp1','imergv07btrmrgp2','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','igcm0001','igcm0002','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','glorys12v1aeq1','cmap']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
-    if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','igcm0001_plev_d','igcm0001_sfc_d','igcm0001_toa_d','cmap_sfc_5d','cmap_sfc_d']:
+    if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','igcm0001_plev_d','igcm0001_sfc_d','igcm0001_toa_d','igcm0002_plev_3h','igcm0002_sfc_3h','igcm0002_toa_3h','cmap_sfc_5d','cmap_sfc_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
     elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergv07btrm_sfc_3h','imergv07btrmrg_sfc_3h','imergv07btrmrgp1_sfc_3h','imergv07btrmrgp2_sfc_3h','imergv07btrmrgp1_sfc_d','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','era5glo_sfc_h','era5glo_sfc_d','era5gloerai_sfc_d','era5uks_plev_h','era5trp2_plev_h','era5betatrp2_plev_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d']:
@@ -1624,6 +1624,44 @@ def f_cube_step_time(cube_in,tstep,tcoord_name='time',verbose=True):
 
 #==========================================================================
 
+def time_resolution_from_source_frequency(frequency,verbose=True):
+    """Find time resolution from frequency string.
+
+    Input: frequency is the string from the source attribute, e.g.,
+    '3h' for 3-hourly, 'd' for day.
+
+    From this, calculate and return the tuple (units,ktime,deltat),
+    where
+
+    units is a string: e.g., 'h' for hours, 'd' for days.
+
+    ktime is an integer: e.g., 3 for '3h' data, 1 for 'd' data
+
+    deltalt is the time resolution in seconds: e.g., 10800 for '3h'
+    data, 86400 for 'd' data.
+
+    """
+    units=frequency[-1]
+    if len(frequency)==1:
+        ktime=1
+    else:
+        ktime=int(frequency[:-1])
+    if units=='d':
+        deltat=ktime*86400
+    elif units=='h':
+        deltat=ktime*3600
+    elif units=='m':
+        deltat=ktime*60
+    else:
+        raise UserWarning('units not recognised.')
+    if verbose:
+        print('time_resolution_from_source_frequency')
+        print('frequency: {0!s}'.format(frequency))
+        print('units,ktime,deltat: {0!s}, {1!s}, {2!s}'.format(units,ktime,deltat))
+    return units,ktime,deltat
+
+#==========================================================================
+
 def check_datetime_in_season(dt,season,verbose=False):
 
     """Check if datetime is in specified season.
@@ -2585,9 +2623,9 @@ class DataConverter(object):
             igcmbasetime=cftime.Datetime360Day(3000,1,1)-datetime.timedelta(days=1)
             print('igcmbasetime: {0!s}'.format(igcmbasetime))
             xx=time1-igcmbasetime
-            time1a=xx.days
+            time1a=xx.days+xx.seconds/86400
             xx=time2-igcmbasetime
-            time2a=xx.days
+            time2a=xx.days+xx.seconds/86400
             print('time1a,time2a: {0!s}, {1!s}'.format(time1a,time2a))
             time_constraint=iris.Constraint(time=lambda cell: time1a<=cell.point<=time2a)
         else:
@@ -10188,6 +10226,7 @@ class CCEWLagrangian(object):
            hr-1).
 
         """
+        planet_circum=Planet().circum
         def clamp(n,minn,maxn):
             """Clamp n within range minn<=n<=maxn."""
             if n<minn:
@@ -10251,14 +10290,19 @@ class CCEWLagrangian(object):
             # self.event_params['traj_min_time_length']
             # Convert this to number of time indices that a trajectory
             # must cover to be accepted
-            self.traj_min_time_length_indices=divmod(self.event_params['traj_min_time_length'],int(self.frequency[:-1]))[0]+1
+            if len(self.frequency)==1:
+                intfreq=1
+            else:
+                intfreq=int(self.frequency[:-1])
+            print('intfreq: {0!s}'.format(intfreq))
+            self.traj_min_time_length_indices=divmod(self.event_params['traj_min_time_length'],intfreq)[0]+1
             print('traj_min_time_length_indices: {0!s}'.format(self.traj_min_time_length_indices))
         else:
             raise UserWarning('Units of frequency of input data and min lifetime must match.')
         # Set nevent_max to more events than you expect to find. nevent_max
         # is just there to stop an endless loop in case detection of 
         # reaching last time in data fails.
-        nevent_max=10000
+        nevent_max=20000
         # Search through copy of data_hovmax to find trajectories.
         #
         # If propagation_direction is 'eastwards',
@@ -10309,12 +10353,58 @@ class CCEWLagrangian(object):
                     break
                 if hovmax1.data[time_indexp1,lon_index]!=0:
                     raise UserWarning("Two consecutive in time 1's found at same longitude.")
-                # Find the following 1 in the grid point to the east/west of
+                # Find the following 1 in the grid point immediately to the east/west of
                 # the current grid point.
+                # This must be found in the following n_time_check time steps
+                # What is n_time_check?
+                # Let the x-resolution be deltax (m)
+                # For Kelvin wave, the slowest waves propagate eastward at cphasex_min (m s-1)
+                # Time taken for this wave to reach next grid point is
+                # t1 = deltax / cphasex_min (s)
+                # Let deltat be time resolution (s)
+                # Hence n_time_check = int(t1/deltat)
+                # n_time_check should be a small integer
+                # 
+
+
+                # For 1 degree longitude data:
                 # It must be found in the following 6 hours for an EK wave or 18 hours for an ER wave
                 # (Factor of 3 is because speed of ER wave is 3 x less than for EK wave
+                # Reasoning. 
+                #
                 # Note these hardwired numbers are dependent on the Hovmoller being on a 1 degree grid
                 # BAD CODING.
+                # Set longitude resolution of data_source in degrees
+                if lonunits=='degrees':
+                    deltalon=loncoord.points[1]-loncoord.points[0]
+                    deltax=deltalon*(planet_circum/360) # m
+                else:
+                    raise UserWarning('lonunits not recognised.')
+                print('data_source,deltalon,deltax: {0!s}, {1!s}, {2!s}'.format(self.data_source,deltalon,deltax))
+                timeres=time_resolution_from_source_frequency(self.frequency)
+                deltat=timeres[2]
+                if self.wave_type=='EK':
+                    cphasex_min=5 # m s-1
+                elif self.wave_type=='ER':
+                    cphasex_min=5/3 # m s-1
+                else:
+                    raise UserWarning('Invalid wave_type.')
+                t1=deltax/cphasex_min
+                print('cphasex_min,t1: {0!s}, {1!s}'.format(cphasex_min,t1))
+                at=t1/deltat
+                print('Need to cover at seconds: {0!s}'.format(at))
+                n_time_check=int(at)+1+1
+                # In line above, the +1 is to round up to nearest integer
+                # The second +1 is a fence posts - fence panels thing.
+                # e.g, if time step is 3 hours and need to cover 6 hours, 
+                # then 6/3 = 2 (fence panels)
+                # so need 2+1=3 (fence posts)
+                print('n_time_check: {0!s}'.format(n_time_check))
+                # Old hardwired values below. check new code matches these
+                #EK n_time_check=1+2 # for '3h' data 3 timesteps covers 6 hours (t=0,3,6 hr)
+                #ER n_time_check=1+2*3 # for '3h' data 7 timesteps covers 18 hours (t=0,3,6,9,12,15,18 hr)
+                if self.frequency!='3h':
+                    raise UserWarning('Check here that n_time_check is what you think it should be.')
                 if self.propagation_direction=='eastwards':
                     lon_index+=1
                     if lon_index==self.nlon:
