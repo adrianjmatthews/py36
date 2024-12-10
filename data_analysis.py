@@ -10276,10 +10276,6 @@ class CCEWLagrangian(object):
         loncoord=self.data_hovmax.coord('longitude')
         lonunits=loncoord.units
         dataunits=self.data_hovWKfilt.units
-        # Initialise
-        self.trajectories={}
-        kevent=0
-        ktraj_include=0
         # Set minimum allowed lifetime of trajectory to be included in
         # data base (directory of directories)
         # Although this was a requirement in Baranowski et al. (2016a)
@@ -10316,6 +10312,53 @@ class CCEWLagrangian(object):
         # its propagation path to the Lagrangian data base, and overwrite
         # it in the (copy of the) Eulerian data base with zeros. Then 
         # repeat until all the trajectories have been found.
+        #
+        # The remaining points in each trajectory are found by the following.
+        # Find the following 1 in the grid point immediately to the east/west of
+        # the current grid point.
+        # This must be found in the following n_time_check time steps
+        # What is n_time_check?
+        # Let the x-resolution be deltax (m)
+        # For Kelvin wave, the slowest waves propagate eastward at cphasex_min (m s-1)
+        # Time taken for this wave to reach next grid point is
+        # t1 = deltax / cphasex_min (s)
+        # Let deltat be time resolution (s)
+        # Hence n_time_check = int(t1/deltat)
+        # n_time_check should be a small integer
+        #
+        # Set longitude resolution of data_source in degrees
+        if lonunits=='degrees':
+            deltalon=loncoord.points[1]-loncoord.points[0]
+            deltax=deltalon*(planet_circum/360) # m
+        else:
+            raise UserWarning('lonunits not recognised.')
+        print('data_source,deltalon,deltax: {0!s}, {1!s}, {2!s}'.format(self.data_source,deltalon,deltax))
+        timeres=time_resolution_from_source_frequency(self.frequency)
+        deltat=timeres[2]
+        if self.wave_type=='EK':
+            cphasex_min=5 # m s-1
+        elif self.wave_type=='ER':
+            cphasex_min=5/3 # m s-1
+        else:
+            raise UserWarning('Invalid wave_type.')
+        t1=deltax/cphasex_min
+        print('cphasex_min,t1: {0!s}, {1!s}'.format(cphasex_min,t1))
+        at=t1/deltat
+        print('Need to cover at timesteps: {0!s}'.format(at))
+        n_time_check=int(at)+1+1
+        # In line above, the first +1 is to round up to nearest integer
+        # The second +1 is a fence posts and fence panels thing.
+        # e.g, if time step is 3 hours and need to cover 6 hours, 
+        # then 6/3 = 2 (fence panels)
+        # so need 2+1=3 (fence posts)
+        print('n_time_check: {0!s}'.format(n_time_check))
+        if self.frequency!='3h':
+            raise UserWarning('Have only manually checked this for 3h resolution data. Check here that n_time_check is what you think it should be.')
+        #
+        # Initialise
+        self.trajectories={}
+        kevent=0
+        ktraj_include=0
         reached_last_time=False
         time_index_start=0
         while kevent<nevent_max and not reached_last_time:
@@ -10353,58 +10396,6 @@ class CCEWLagrangian(object):
                     break
                 if hovmax1.data[time_indexp1,lon_index]!=0:
                     raise UserWarning("Two consecutive in time 1's found at same longitude.")
-                # Find the following 1 in the grid point immediately to the east/west of
-                # the current grid point.
-                # This must be found in the following n_time_check time steps
-                # What is n_time_check?
-                # Let the x-resolution be deltax (m)
-                # For Kelvin wave, the slowest waves propagate eastward at cphasex_min (m s-1)
-                # Time taken for this wave to reach next grid point is
-                # t1 = deltax / cphasex_min (s)
-                # Let deltat be time resolution (s)
-                # Hence n_time_check = int(t1/deltat)
-                # n_time_check should be a small integer
-                # 
-
-
-                # For 1 degree longitude data:
-                # It must be found in the following 6 hours for an EK wave or 18 hours for an ER wave
-                # (Factor of 3 is because speed of ER wave is 3 x less than for EK wave
-                # Reasoning. 
-                #
-                # Note these hardwired numbers are dependent on the Hovmoller being on a 1 degree grid
-                # BAD CODING.
-                # Set longitude resolution of data_source in degrees
-                if lonunits=='degrees':
-                    deltalon=loncoord.points[1]-loncoord.points[0]
-                    deltax=deltalon*(planet_circum/360) # m
-                else:
-                    raise UserWarning('lonunits not recognised.')
-                print('data_source,deltalon,deltax: {0!s}, {1!s}, {2!s}'.format(self.data_source,deltalon,deltax))
-                timeres=time_resolution_from_source_frequency(self.frequency)
-                deltat=timeres[2]
-                if self.wave_type=='EK':
-                    cphasex_min=5 # m s-1
-                elif self.wave_type=='ER':
-                    cphasex_min=5/3 # m s-1
-                else:
-                    raise UserWarning('Invalid wave_type.')
-                t1=deltax/cphasex_min
-                print('cphasex_min,t1: {0!s}, {1!s}'.format(cphasex_min,t1))
-                at=t1/deltat
-                print('Need to cover at seconds: {0!s}'.format(at))
-                n_time_check=int(at)+1+1
-                # In line above, the +1 is to round up to nearest integer
-                # The second +1 is a fence posts - fence panels thing.
-                # e.g, if time step is 3 hours and need to cover 6 hours, 
-                # then 6/3 = 2 (fence panels)
-                # so need 2+1=3 (fence posts)
-                print('n_time_check: {0!s}'.format(n_time_check))
-                # Old hardwired values below. check new code matches these
-                #EK n_time_check=1+2 # for '3h' data 3 timesteps covers 6 hours (t=0,3,6 hr)
-                #ER n_time_check=1+2*3 # for '3h' data 7 timesteps covers 18 hours (t=0,3,6,9,12,15,18 hr)
-                if self.frequency!='3h':
-                    raise UserWarning('Check here that n_time_check is what you think it should be.')
                 if self.propagation_direction=='eastwards':
                     lon_index+=1
                     if lon_index==self.nlon:
@@ -10415,15 +10406,6 @@ class CCEWLagrangian(object):
                         lon_index=self.nlon-1 # longitude is periodic
                 else:
                     raise UserWarning('Invalid propagation_direction.')
-                if self.frequency=='3h':
-                    if self.wave_type=='EK':
-                        n_time_check=1+2 # 3 timesteps covers 6 hours (t=0,3,6 hr)
-                    elif self.wave_type=='ER':
-                        n_time_check=1+2*3 # 7 timesteps covers 18 hours (t=0,3,6,9,12,15,18 hr)
-                    else:
-                        raise UserWarning('Invalid wave_type.')
-                else:
-                    raise ToDoError('Code up for other time resolutions.')
                 found_a_1=False
                 #print('Start of loop at time_index,lon_index: {0!s},{1!s}'.format(time_index,lon_index))
                 for i_time_check in range(n_time_check):
