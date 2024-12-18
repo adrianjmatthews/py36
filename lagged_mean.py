@@ -17,16 +17,16 @@ BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 ARCHIVE=True
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-#VAR_NAME='uwnd'; LEVEL=975; SOURCE='era5mcw_plev_h'; TDOMAINID='CCEK102E98-18-00UTC-and-M0002b'
-#VAR_NAME='uwnd'; 
-LEVEL=200; SOURCE='era5gloeraiER2_plev_3h'; TDOMAINID='CCER75Elat-15-15-98-20-0.05-00UTC'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergmcw_sfc_30m'; TDOMAINID='CCEK106E01-19-0.4-00UTC'
+#VAR_NAME='uwnd'; LEVEL=850; SOURCE='era5gloeraiER1_plev_3h'; TDOMAINID='CCER75Elat-15-15-00-22-0.05-00UTC'
+#VAR_NAME='uwnd'; LEVEL=850; SOURCE='erainterimEK1_plev_6h'; TDOMAINID='CCEK75Elat-10-10-98-18-0.3-6h'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07btrmrgp1_sfc_d'; TDOMAINID='CCER75Elat-15-15-00-23-0.05-00UTC'
 #VAR_NAME='zg'; LEVEL=200; SOURCE='ncepdoe_plev_d'; TDOMAINID='rmm001a-n2a5'
 #VAR_NAME='vwndptap'; LEVEL=850; SOURCE='ncepncar_plev_d'; TDOMAINID='rmm001djf3'
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrinterp_toa_d'; TDOMAINID='rmm001djf3'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_d'; TDOMAINID='CCER75Elat-15-15-98-20-0.05-00UTC'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_d'; TDOMAINID='CCER'+str(LONC)+'Elat-15-15-98-20-0.05-00UTC'
+VAR_NAME='ppt'; LEVEL=1; SOURCE='igcm0002_sfc_3h'; TDOMAINID='CCEK75Elat-5-5-05-19-5.0-3h-360day'
 
-FILEPRE='' # e.g., '', '_rac', '_l30_n241'
+FILEPRE='_rac' # e.g., '', '_rac', '_l30_n241'
 
 # Usually will calculate time mean from e.g., daily data. Set DATA_FROM_ANNCYCLE to False for this.
 # To calculate time mean from annual cycle (i.e., to get a mean background state for selected dates)
@@ -42,7 +42,7 @@ METHOD=2
 #
 # If using method 2, LAGS is a 2- (or 3-) tuple of start timedelta, end timedelta, with
 #    optional step timedelta
-LAGS=( datetime.timedelta(days=-9), datetime.timedelta(days=9), datetime.timedelta(days=1) )
+LAGS=( datetime.timedelta(days=-2), datetime.timedelta(days=2), datetime.timedelta(days=1) )
 
 # Set lazy load to false to force hard load of entire data set.
 # Memory hungry but can lead to significant speed up. NB should not need to use this now with method 2

@@ -1885,6 +1885,11 @@ class TimeDomain(object):
             a=a.split(',')
             datetimes_row=[]
             for t1 in a:
+                yearc=int(t1[:4])
+                monthc=int(t1[5:7])
+                dayc=int(t1[8:10])
+                hourc=int(t1[11:13])
+                minutec=int(t1[14:16])
                 # Convert decimal seconds, e.g., 0.0 from the ascii format
                 # to integer seconds and integer microseconds for the
                 # datetime object
@@ -1904,11 +1909,16 @@ class TimeDomain(object):
                         found_colon=True
                 second='%02d' % int(t1a[index_colon+1:index_decimal_point])
                 microsecond='%06d' % (1000000*int(t1a[index_decimal_point+1:]))
-                t1b=t1a[:index_colon+1]+second+':'+microsecond
+                secondc=int(second)
+                microsecondc=int(microsecond)
+                #print(yearc,monthc,dayc,hourc,minutec,secondc,microsecondc)
+                #t1b=t1a[:index_colon+1]+second+':'+microsecond
                 # Convert string time to a datetime object and append
-                pdb.set_trace()
-                xx=datetime.datetime.strptime(t1b,self._format2datetime)
-                xx=create_DatetimeGregorian(xx)
+                #xx=datetime.datetime.strptime(t1b,self._format2datetime)
+                if self.idx[-7:]=='-360day':
+                    xx=cftime.Datetime360Day(yearc,monthc,dayc,hourc,minutec,secondc,microsecondc)
+                else:
+                    xx=cftime.DatetimeGregorian(yearc,monthc,dayc,hourc,minutec,secondc,microsecondc)
                 datetimes_row.append(xx)
             # Append this row of datetime objects to master list
             datetimes.append(datetimes_row)
@@ -3487,9 +3497,14 @@ class TimeDomStats(object):
             self.nlags=len(tcoord.points)
             print('nlags: {0.nlags!s}'.format(self))
             lag_units=cf_units.Unit(timelag_units,calendar=self.calendar)
-            lag_first=cftime.DatetimeGregorian(1000,1,1)+delta_beg
+            if self.calendar=='gregorian':
+                lag_first=cftime.DatetimeGregorian(1000,1,1)+delta_beg
+            elif self.calendar=='360_day':
+                lag_first=cftime.Datetime360Day(1000,1,1)+delta_beg
+            else:
+                raise UserWarning('Calendar not recognised.')
             lag_vals=[lag_units.date2num(lag_first+xx*self.timedelta).round(8) for xx in range(self.nlags)]
-            lag_coord=iris.coords.DimCoord(lag_vals,standard_name='time',units=timelag_units)
+            lag_coord=iris.coords.DimCoord(lag_vals,standard_name='time',units=lag_units)
             print('lag_coord: {0!s}'.format(lag_coord))
             # Find time coordinate index for recreation of cube later
             dim_coord_names=[xx.var_name for xx in x2.dim_coords]
@@ -10761,6 +10776,10 @@ class CCEWLagrangian(object):
             idx=idx+'-'+self.season
         else:
             pass
+        if self.calendar=='360_day':
+            # Add '-360day' to end of time domain name
+            # This is used subsequently in class TimeDomain for getting calendar back
+            idx=idx+'-360day'
         print('idx: {0!s}'.format(idx))
         header1='# CC'+self.wave_type+'W arrival times at basepoint.'
         if self.round_to_nearest_time:
