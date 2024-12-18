@@ -1906,6 +1906,7 @@ class TimeDomain(object):
                 microsecond='%06d' % (1000000*int(t1a[index_decimal_point+1:]))
                 t1b=t1a[:index_colon+1]+second+':'+microsecond
                 # Convert string time to a datetime object and append
+                pdb.set_trace()
                 xx=datetime.datetime.strptime(t1b,self._format2datetime)
                 xx=create_DatetimeGregorian(xx)
                 datetimes_row.append(xx)
@@ -1969,17 +1970,31 @@ class TimeDomain(object):
             if isinstance(row,list):
                 # 'event' type
                 for t1 in row:
-                    t1a=create_DatetimeGregorian(t1)
-                    decimal_second=str(t1a.second+float(t1a.microsecond)/1e6)
-                    xx=cftime.DatetimeGregorian.strftime(t1a,self._format2ascii)+':'+decimal_second+', '
+                    if t1.calendar=='gregorian':
+                        t1a=create_DatetimeGregorian(t1)
+                        decimal_second=str(t1a.second+float(t1a.microsecond)/1e6)
+                        xx=cftime.DatetimeGregorian.strftime(t1a,self._format2ascii)+':'+decimal_second+', '
+                    elif t1.calendar=='360_day':
+                        t1a=create_Datetime360Day(t1)
+                        decimal_second=str(t1a.second+float(t1a.microsecond)/1e6)
+                        xx=cftime.Datetime360Day.strftime(t1a,self._format2ascii)+':'+decimal_second+', '
+                    else:
+                        raise UserWarning('Calendar not recognised.')
                     lines_row+=xx
                 # Remove the final ', ' from the last time
                 lines_row=lines_row[:-2]
             else:
                 # 'single' type
-                t1=create_DatetimeGregorian(row)
-                decimal_second=str(t1.second+float(t1.microsecond)/1e6)
-                xx=cftime.DatetimeGregorian.strftime(t1,self._format2ascii)+':'+decimal_second
+                if row.calendar=='gregorian':
+                    t1=create_DatetimeGregorian(row)
+                    decimal_second=str(t1.second+float(t1.microsecond)/1e6)
+                    xx=cftime.DatetimeGregorian.strftime(t1,self._format2ascii)+':'+decimal_second
+                elif row.calendar=='360_day':
+                    t1=create_Datetime360Day(row)
+                    decimal_second=str(t1.second+float(t1.microsecond)/1e6)
+                    xx=cftime.Datetime360Day.strftime(t1,self._format2ascii)+':'+decimal_second
+                else:
+                    raise UserWarning('Calendar not recognised.')
                 lines_row+=xx
             # Add newline character
             lines_row+='\n'
@@ -10790,22 +10805,26 @@ class CCEWLagrangian(object):
                 if self.round_to_nearest_time=='d':
                     if self.calendar=='gregorian':
                         xx=cftime.DatetimeGregorian(timec.year,timec.month,timec.day)
-                        if timec.hour>=12:
-                            xx=xx+datetime.timedelta(days=1)
-                        timec=xx
+                    elif self.calendar=='360_day':
+                        xx=cftime.Datetime360Day(timec.year,timec.month,timec.day)
                     else:
-                        raise ToDoError('Code up for non-Gregorian calendar.')
+                        raise UserWarning('Calendar not recognised.')
+                    if timec.hour>=12:
+                        xx=xx+datetime.timedelta(days=1)
+                    timec=xx
                 elif self.round_to_nearest_time=='6h':
+                    deltahour=6
+                    x1,x2=divmod(timec.hour,deltahour)
                     if self.calendar=='gregorian':
-                        deltahour=6
-                        x1,x2=divmod(timec.hour,deltahour)
                         xx=cftime.DatetimeGregorian(timec.year,timec.month,timec.day,x1*deltahour) # round down to previous 6h
-                        if x2>=deltahour/2:
-                            xx=xx+datetime.timedelta(hours=deltahour) # round up to next 6h
-                        print('timec,xx: {0!s}, {1!s}'.format(timec,xx))
-                        timec=xx
+                    elif self.calendar=='360_day':
+                        xx=cftime.Datetime360Day(timec.year,timec.month,timec.day,x1*deltahour) # round down to previous 6h
                     else:
-                        raise ToDoError('Code up for non-Gregorian calendar.')
+                        raise UserWarning('Calendar not recognised.')
+                    if x2>=deltahour/2:
+                        xx=xx+datetime.timedelta(hours=deltahour) # round up to next 6h
+                    print('timec,xx: {0!s}, {1!s}'.format(timec,xx))
+                    timec=xx
                 if amp_flag and check_datetime_in_season(timec,self.season,verbose=self.verbose):
                     print('Including: keyc,lon1,lonc,lon2,time1,timec,time2: {0!s}, {1!s}, {2!s}, {3!s}, {4!s}, {5!s}, {6!s}'.format(keyc,lon1,self.lonc,lon2,time1,timec,time2))
                     crossing_times.append(timec)
@@ -10827,8 +10846,10 @@ class CCEWLagrangian(object):
         # Create list of paired (start_time,end_time) at (00UTC,23:59:59UTC)
         if self.calendar=='gregorian':
             crossing_times2=[[cftime.DatetimeGregorian(xx.year,xx.month,xx.day),cftime.DatetimeGregorian(xx.year,xx.month,xx.day,23,59,59)] for xx in crossing_times]
+        elif self.calendar=='360_day':
+            crossing_times2=[[cftime.Datetime360Day(xx.year,xx.month,xx.day),cftime.Datetime360Day(xx.year,xx.month,xx.day,23,59,59)] for xx in crossing_times]
         else:
-            raise ToDoError('Code up for non-Gregorian calendar.')
+            raise UserWarning('Calendar not recognised.')
         # Create time domain
         tdomain=TimeDomain(idx)
         tdomain.header=(header1,header2)
