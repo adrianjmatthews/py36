@@ -2638,7 +2638,7 @@ class DataConverter(object):
         #
         # Set time constraint for current time block
         time1,time2=block_times(self,verbose=self.verbose)
-        if fnmatch.filter([self.source],'igcm????_*_d'):
+        if fnmatch.filter([self.source],'igcm????_*_*'):
             # Set base time for IGCM integrations
             # In raw output from BGFLUX time=1 corresponds to 00 UTC on 1 Jan
             #   of first year of run (calendar years are meaningless at this point)
@@ -2677,7 +2677,7 @@ class DataConverter(object):
             level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
         elif self.data_source in ['era5betatrp2'] and self.level_type=='plev':
             level_constraint=iris.Constraint(air_pressure=self.level)
-        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5uks_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5glo_sfc_h','era5trp2_plev_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d'] or fnmatch.filter([self.source],'igcm????_sfc_d') or fnmatch.filter([self.source],'igcm????_toa_d'):
+        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5uks_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5glo_sfc_h','era5trp2_plev_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d'] or fnmatch.filter([self.source],'igcm????_sfc_*') or fnmatch.filter([self.source],'igcm????_toa_*'):
             level_constraint=False
         else:
             raise ToDoError('Set an instruction for level_constraint.')
@@ -2835,7 +2835,7 @@ class DataConverter(object):
                 cubec=standardise_time_coord_units(cubec,tunits='hours',roundtimevals=True)
         #
         # Create time coordinate from raw time for igcm data
-        if fnmatch.filter([self.source],'igcm????_*_d'):
+        if fnmatch.filter([self.source],'igcm????_*_*'):
             for cubec in xx:
                 tc=cubec.coord('time')
                 times_val=tc.points
