@@ -12,23 +12,25 @@ import data_analysis as da
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-ARCHIVE=True
+ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 SUBDIR='std'
 
 #VAR_NAME='div'; LEVEL=850; SOURCE1='ncepdoe_plev_6h'; SOURCE2='ncepdoe_plev_d'
 #VAR_NAME='uwnd'; LEVEL=850; SOURCE1='erainterim_plev_6h'; SOURCE2='erainterim_plev_d'
-VAR_NAME='uwnd'; LEVEL=950; SOURCE1='era5gloerai_plev_h'; SOURCE2='era5gloerai_plev_3h'
+#VAR_NAME='vwnd'; LEVEL=1; SOURCE1='era5glo_sfc_h'; SOURCE2='era5glo_sfc_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE1='trmm3b42v7p1_sfc_3h'; SOURCE2='trmm3b42v7p1_sfc_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE1='imergv07btrm_sfc_30m'; SOURCE2='imergv07btrm_sfc_3h'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE1='imergv07btrmrgp1_sfc_3h'; SOURCE2='imergv07btrmrgp1_sfc_d'
+VAR_NAME='ppt'; LEVEL=1; SOURCE1='igcm0002_sfc_3h'; SOURCE2='igcm0002_sfc_d'
 
-#YEAR=2023
+YEAR=3005
 #YEAR=range(2001,2022+1)
-#MONTH=[-999] # Dummy value if outfile_frequency is 'year'
-#MONTH=7
-MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
+
+MONTH=[-999] # Dummy value if outfile_frequency is 'year'
+#MONTH=9
+#MONTH=range(1,6+1) # If outfile_frequency is less than 'year' 
 
 PLOT=False
 
