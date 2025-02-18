@@ -13,7 +13,7 @@ BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-SOURCE='erainterimEK1_plev_6h'
+SOURCE='igcm0002_plev_3h'
 LEVEL_BELOW=875; LEVEL=850; LEVEL_ABOVE=825
 
 FILEPRE='' # '', '_rac', etc.
@@ -22,12 +22,14 @@ FILEPREANNCYCLE=False
 #FILEPREANNCYCLE='_ac_smooth_expanded_1998_2018' # if decomposing into annual cycle and perturbation
 
 # Only use SOURCE2 if decomposing into filtered and remainder. Use SOURCE2 for the remainder.
-#SOURCE2=False
-SOURCE2='erainterimNEK1_plev_6h'
+SOURCE2=False
+#SOURCE2='era5gloeraiNER1_plev_3h'
 
-#YEAR=1998
-YEAR=range(1999,2018+1)
+YEAR=3005
+#YEAR=range(3005,3049+1)
+
 MONTH=[-999] # Dummy value if outfile_frequency is 'year'
+#MONTH=1
 #MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
 
 PLOT=False
@@ -51,16 +53,16 @@ descriptor['source2']=SOURCE2
 aa=da.CubeDiagnostics(**descriptor)
 
 # Lazy read data (select which is needed)
-#aa.f_read_data('uwnd',LEVEL_BELOW)
-#aa.f_read_data('uwnd',LEVEL)
-#aa.f_read_data('uwnd',LEVEL_ABOVE)
-#aa.f_read_data('vwnd',LEVEL_BELOW)
-#aa.f_read_data('vwnd',LEVEL)
-#aa.f_read_data('vwnd',LEVEL_ABOVE)
-#aa.f_read_data('vrt',LEVEL_BELOW)
+aa.f_read_data('uwnd',LEVEL_BELOW)
+aa.f_read_data('uwnd',LEVEL)
+aa.f_read_data('uwnd',LEVEL_ABOVE)
+aa.f_read_data('vwnd',LEVEL_BELOW)
+aa.f_read_data('vwnd',LEVEL)
+aa.f_read_data('vwnd',LEVEL_ABOVE)
+aa.f_read_data('vrt',LEVEL_BELOW)
 aa.f_read_data('vrt',LEVEL)
-#aa.f_read_data('vrt',LEVEL_ABOVE)
-#aa.f_read_data('omega',LEVEL)
+aa.f_read_data('vrt',LEVEL_ABOVE)
+aa.f_read_data('omega',LEVEL)
 aa.f_read_data('div',LEVEL)
 
 # Read annual cycle data if needed
@@ -69,8 +71,10 @@ aa.f_read_data('div',LEVEL)
 #aa.f_read_anncycle('div',LEVEL,verbose=VERBOSE)
 
 # Read remainder data if needed
-aa.f_read_data_source2('vrt',LEVEL,verbose=VERBOSE)
-aa.f_read_data_source2('div',LEVEL,verbose=VERBOSE)
+#aa.f_read_data_source2('vrt',LEVEL,verbose=VERBOSE)
+#aa.f_read_data_source2('div',LEVEL,verbose=VERBOSE)
+#aa.f_read_data_source2('uwnd',LEVEL,verbose=VERBOSE)
+#aa.f_read_data_source2('vwnd',LEVEL,verbose=VERBOSE)
 
 iter_year=da.iter_generator(YEAR)
 iter_month=da.iter_generator(MONTH)
@@ -81,7 +85,7 @@ for year in iter_year:
         aa.month=month
         #
         # Calculate all vorticity budget terms (usual function to call)
-        #aa.f_vrtbudget(LEVEL_BELOW,LEVEL,LEVEL_ABOVE)
+        aa.f_vrtbudget(LEVEL_BELOW,LEVEL,LEVEL_ABOVE)
         #
         # Only calculate m_vrt_div term, for diagnostic purposes
         #aa.f_m_vrt_div(LEVEL)
@@ -98,11 +102,13 @@ for year in iter_year:
         #aa.f_m_vwnd_dvrtdy_annpert(LEVEL)
         #
         # Calculate individual terms decomposed into perturbation and remainder combinations
-        aa.f_m_vrt_div_pertremainder(LEVEL)
+        #aa.f_m_vrt_div_pertremainder(LEVEL)
+        #aa.f_m_uwnd_dvrtdx_pertremainder(LEVEL)
+        #aa.f_m_vwnd_dvrtdy_pertremainder(LEVEL)
         pass
 
 if PLOT:
-    x1=aa.duwnddx
+    x1=aa.m_uwndbar_dvrtdxprime
     tcoord=x1.coord('time')
     time1=tcoord.units.num2date(tcoord.points[-1])
     time_constraint=iris.Constraint(time=time1)
