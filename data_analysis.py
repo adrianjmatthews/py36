@@ -194,6 +194,7 @@ var_name2long_name={
     'source_dvrtdt':'total_source_of_tendency_of_atmosphere_relative_vorticity',
     'soilmo':'lwe_thickness_of_soil_moisture_content',
     'ss':'integer_zonal_wavenumber',
+    'sshag':'sea_surface_height_above_geoid',
     'sshnte':'non_tidal_elevation_of_sea_surface_height',
     'ssft':'sea_surface_foundation_temperature',
     'sst':'sea_surface_temperature',
@@ -3083,6 +3084,15 @@ class DataConverter(object):
                 self.cube.units=info.igcm_units[self.var_name]
             else:
                 raise UserWarning('Set units for this variable.')
+            if self.var_name=='omega':
+                # omega is in hPa hr-1. Change to Pa s-1 (SI) units.
+                # This is needed for later use in vrtbudget.py.
+                # 1 Pa s-1 = 36 hPa hr-1
+                # Divide by 36 to convert hPa hr-1 to Pa s-1
+                x1=self.cube.data/36
+                x2=create_cube(x1,self.cube)
+                x2.units='Pa s-1'
+                self.cube=x2
             if self.level_type=='sfc':
                 # Reset value of surface coordinate from 0 to 1
                 self.cube.coord('surface').points=[1.0,]
@@ -7221,6 +7231,9 @@ class CubeDiagnostics(object):
         self.vrt_level_above=x9.concatenate_cube()
         self.omega_level=x10.concatenate_cube()
         self.div_level=x11.concatenate_cube()
+        # Check that uwnd, vwnd, vrt, div and omega have SI units
+        if not (x2.units=='m s-1' and x5.units=='m s-1' and x8.units=='s-1' and x10.units=='Pa s-1' and x11.units=='s-1'):
+            raise UserWarning('Need all input variables to have SI units.')
         #
         # Find value of south2north
         self.south2north=f_south2north(self.uwnd_level,verbose=self.verbose)
