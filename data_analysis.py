@@ -716,7 +716,7 @@ def block_times(aa,verbose=False,outfile_frequency_override=False):
     constraint on time for extracting data.
 
     If outfile_frequency is 'year', start and end times are 00 UTC on
-    1 Jan of current year, and 1 second before 00 UTC on 1 Jan the
+    1 Jan of current year, and 1 minute before 00 UTC on 1 Jan the
     following year.
 
     If outfile_frequency is 'month', start and end times are 00 UTC on
@@ -727,7 +727,7 @@ def block_times(aa,verbose=False,outfile_frequency_override=False):
     block_times acts as if outfile_frequency is 'year'.
 
     """
-    timedelta_second=datetime.timedelta(seconds=1)
+    timedelta_minute=datetime.timedelta(seconds=60)
     if aa.calendar not in ['gregorian','360_day']:
         raise UserWarning('calendar not valid.')
     if outfile_frequency_override and outfile_frequency_override!='year':
@@ -735,20 +735,20 @@ def block_times(aa,verbose=False,outfile_frequency_override=False):
     if aa.outfile_frequency=='year' or outfile_frequency_override=='year':
         if aa.calendar=='gregorian':
             time1=cftime.DatetimeGregorian(aa.year,1,1) # 00:00:00 on 1 Jan
-            time2=cftime.DatetimeGregorian(aa.year,12,31,23,59,59) # 23:59:59 on 31 Dec
+            time2=cftime.DatetimeGregorian(aa.year,12,31,23,59,0) # 23:59:00 on 31 Dec
         elif aa.calendar=='360_day':
             time1=cftime.Datetime360Day(aa.year,1,1) # 00:00:00 on 1 Jan
-            time2=cftime.Datetime360Day(aa.year,12,30,23,59,59) # 23:59:59 on 30 Dec
+            time2=cftime.Datetime360Day(aa.year,12,30,23,59,0) # 23:59:00 on 30 Dec
     elif aa.outfile_frequency=='month':
         if aa.calendar=='gregorian':
             time1=cftime.DatetimeGregorian(aa.year,aa.month,1) # 00:00:00 on 1st of month
             if aa.month!=12:
-                time2=cftime.DatetimeGregorian(aa.year,aa.month+1,1)-timedelta_second # 23:59:59 on last of month
+                time2=cftime.DatetimeGregorian(aa.year,aa.month+1,1)-timedelta_minute # 23:59:00 on last of month
             else:
-                time2=cftime.DatetimeGregorian(aa.year+1,1,1)-timedelta_second  # 23:59:59 on last of month
+                time2=cftime.DatetimeGregorian(aa.year+1,1,1)-timedelta_minute  # 23:59:00 on last of month
         elif aa.calendar=='360_day':
             time1=cftime.Datetime360Day(aa.year,aa.month,1) # 00:00:00 on 1st of month
-            time2=cftime.Datetime360Day(aa.year,aa.month,30,23,59,59) # 23:59:59 on 30th of month
+            time2=cftime.Datetime360Day(aa.year,aa.month,30,23,59,00) # 23:59:00 on 30th of month
     else:
         raise ToDoError("Need to write code for other outfile_frequency.")
     if verbose:
@@ -1205,7 +1205,7 @@ def set_time_constraint(time1,time2,calendar='gregorian',verbose=False):
     else:
         # Set time constraint to be equal to time1 +/- small increment to
         # allow for rounding errors in time coordinates
-        timedelta1=datetime.timedelta(seconds=1)
+        timedelta1=datetime.timedelta(minutes=1)
         time_constraint=iris.Constraint(time=lambda cell: time1a-timedelta1<=cell.point<=time1a+timedelta1)
     if verbose:
         ss=h2a+'set_time_constraint \n'+\
@@ -7232,7 +7232,7 @@ class CubeDiagnostics(object):
         self.omega_level=x10.concatenate_cube()
         self.div_level=x11.concatenate_cube()
         # Check that uwnd, vwnd, vrt, div and omega have SI units
-        if not (x2.units=='m s-1' and x5.units=='m s-1' and x8.units=='s-1' and x10.units=='Pa s-1' and x11.units=='s-1'):
+        if not (x2[0].units=='m s-1' and x5[0].units=='m s-1' and x8[0].units=='s-1' and x10[0].units=='Pa s-1' and x11[0].units=='s-1'):
             raise UserWarning('Need all input variables to have SI units.')
         #
         # Find value of south2north
