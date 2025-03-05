@@ -908,16 +908,21 @@ def truncate(cube_in,truncation):
 
 #==========================================================================
 
-def inverse_laplacian(cube_in):
-    """Calculate inverse Laplacian of an iris cube.
+def laplacian(cube_in,inverse=False):
+    """Calculate either Laplacian or inverse Laplacian of an iris cube.
 
     Inputs:
 
     <cube_in> is an iris cube.
 
+    <inverse> is Boolean. If False, calculate the Laplacian. If True,
+    calculate the inverse Laplacian.
+
     Outputs:
 
-    Return <cube_out>, the inverse Laplacian.
+    Return <cube_out>, the Laplacian or inverse Laplacian.
+
+    I think the key code in the middle here came at the suggestion of Andrew Dawson?
     """
 
     # Find value of south2north
@@ -932,14 +937,21 @@ def inverse_laplacian(cube_in):
     # Transform your scalar field to spectral domain, you can't use metadata here
     scalar_field, shape_info = prep_data(cube_in.data, "tyx")
     scalar_field_spec = S.grdtospec(scalar_field)
-    # Compute the inverse Laplacian
-    ilap_spec = spharm.spharm._spherepack.invlap(scalar_field_spec, S.rsphere)
-    ilap = recover_data(S.spectogrd(ilap_spec), shape_info)
-    ilap_cube = uwnd.copy()
-    ilap_cube.data = ilap
-    ilap_cube.rename("inverse_laplacian")
-    print(ilap_cube)
-    cube_out=ilap_cube
+    if inverse:
+        print('Compute the inverse Laplacian.')
+        lap_spec = spharm.spharm._spherepack.invlap(scalar_field_spec, S.rsphere)
+    else:
+        print('Compute the Laplacian.')
+        lap_spec = spharm.spharm._spherepack.lap(scalar_field_spec, S.rsphere)
+    lap = recover_data(S.spectogrd(lap_spec), shape_info)
+    lap_cube = uwnd.copy()
+    lap_cube.data = lap
+    if inverse:
+        lap_cube.rename("inverse_laplacian")
+    else:
+        lap_cube.rename("laplacian")
+    print(lap_cube)
+    cube_out=lap_cube
     if south2north:
         # Output of windspharm method.  Latitude runs north to south
         # Reverse latitude direction (to be consistent with input cube)
@@ -7480,18 +7492,18 @@ class CubeDiagnostics(object):
             print('Calculating hyperdiffusion source term kappa_deln_vrt.')
             print('ndel, kappa: {0!s}, {1!s}'.format(ndel,kappa))
             # Check that ndel is a positive, even integer
-            if not(isinstance(ndel,int) and ndel>0 and divmod(ndel,2)[1]=0):
+            if not(isinstance(ndel,int) and ndel>0 and divmod(ndel,2)[1]==0):
                 raise UserWarning('ndel must be a positive, even integer.')
             # Hyperdiffusion is of the form + kappa \nabla^{ndel} vrt
             # Laplacian is of the form \nabla^2 vrt
             # So in hyperdiffusion a Laplacian is run ndel/2 times on vorticity
             nlaplacian=divmod(ndel,2)[0]
             print('nlaplacian: {0!s}'.format(nlaplacian))
-            x50=self.vrt_level
+            x50=copy.deepcopy(self.vrt_level)
             for ii in range(nlaplacian):
                 kk=ii+1
                 print('Running Laplacian for kk time: {0!s}'.format(kk))
-                x50=ww.laplacian(x50)
+                x50=laplacian(x50)
             kappa_deln_vrt=kappa*x50
             # Attributes
             var_name='kappa_deln_vrt'
@@ -8527,7 +8539,7 @@ class CubeDiagnostics(object):
             self.omega.convert_units('Pa s-1')
             print('Final units {0!s}'.format(self.omega.units))
         # Calculate mu and save
-        self.mu=-1*inverse_laplacian(self.omega)
+        self.mu=-1*laplacian(self.omega,inverse=True)
         var_name='mu'
         long_name=var_name2long_name[var_name]
         self.mu.rename(long_name) # not a standard_name
