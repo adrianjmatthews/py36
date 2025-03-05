@@ -124,6 +124,7 @@ var_name2long_name={
     'ff':'coriolis_parameter',
     'ffeqbeta':'coriolis_parameter_on_equatorial_beta_plane',
     'harm':'integer_harmonic_in_time',
+    'kappa_deln_vrt':'tendency_of_relative_vorticity_due_to_hyperdiffusion',
     'ke':'specific_kinetic_energy_of_air',
     'kk':'wavenumber_in_eastward_direction',
     'lat':'latitude',
@@ -266,14 +267,14 @@ def source_info(aa):
     aa.level_type=xx[1]
     aa.frequency=xx[2]
     # Check data_source attribute is valid
-    valid_data_sources=['era5trp','era5trp2','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','era5uks','era5betatrp2','era5betamcw','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07bmcw','imergv07atrm','imergv07btrm','imergv07btrmrg','imergv07btrmrgp1','imergv07btrmrgp2','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','igcm0001','igcm0002','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','glorys12v1aeq1','cmap']
+    valid_data_sources=['era5trp','era5trp2','era5plp','era5bar','era5mcw','era5ewa','era5glo','era5gloerai','era5gloeraiER1','era5gloeraiNER1','era5gloeraiER2','era5gloeraiER3','era5uks','era5betatrp2','era5betamcw','erainterim','erainterimEK1','erainterimNEK1','erainterimNEK1T42','erainterimEK2','erainterimEK3','erainterimER1','erainterimER2','imergplp','imergmcw','imergv07amcw','imergv07bmcw','imergv07atrm','imergv07btrm','imergv07btrmrg','imergv07btrmrgp1','imergv07btrmrgp2','imergv07atrmp1','imergmts','imergmt2','imergnpl','imergnp2','imergtrm','imergtrmp1','ncepdoe','ncepdoegg','ncepncar','olrcdr','olrinterp','ostial4nrttrp','ostial4reptrp','sg579m031oi01','sg534m031oi01','sg532m031oi01','sg620m031oi01','sg613m031oi01','sgallm031oi01','sstrey','trmm3b42v7','trmm3b42v7p1','trmm3b42v7p2','trmm3b42v7p3','trmm3b42v7p4','tropflux','hadgem2esajhog','igcm0001','igcm0002','glorys12v1','glorys12v1eq1','glorys12v1eq1erai','glorys12v1aeq1','glorys12v1a','cmap']
     if aa.data_source not in valid_data_sources:
         raise UserWarning('data_source {0.data_source!s} not valid'.format(aa))
     # Set outfile_frequency attribute depending on source information
     if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','igcm0001_plev_d','igcm0001_sfc_d','igcm0001_toa_d','igcm0002_plev_3h','igcm0002_sfc_3h','igcm0002_toa_3h','igcm0002_plev_d','igcm0002_sfc_d','igcm0002_toa_d','cmap_sfc_5d','cmap_sfc_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergv07btrm_sfc_3h','imergv07btrmrg_sfc_3h','imergv07btrmrgp1_sfc_3h','imergv07btrmrgp2_sfc_3h','imergv07btrmrgp1_sfc_d','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','era5glo_sfc_h','era5glo_sfc_d','era5gloerai_sfc_d','era5uks_plev_h','era5trp2_plev_h','era5betatrp2_plev_h','era5betamcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergv07btrm_sfc_3h','imergv07btrmrg_sfc_3h','imergv07btrmrgp1_sfc_3h','imergv07btrmrgp2_sfc_3h','imergv07btrmrgp1_sfc_d','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','era5glo_sfc_h','era5glo_sfc_d','era5gloerai_sfc_d','era5uks_plev_h','era5trp2_plev_h','era5betatrp2_plev_h','era5betamcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d','glorys12v1a_sfc_d']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -2633,7 +2634,7 @@ class DataConverter(object):
             self.filein1=os.path.join(self.basedir,self.source,'raw','IGCM.nc')
         elif self.source in ['glorys12v1_zlev_d']:
             self.filein1=os.path.join(self.basedir,self.source,'raw','NEMO_GR_PHY_001_030_'+str(self.year)+str(self.month).zfill(2)+'*.nc')
-        elif self.source in ['glorys12v1eq1_zlev_d','glorys12v1aeq1_zlev_d']:
+        elif self.source in ['glorys12v1eq1_zlev_d','glorys12v1aeq1_zlev_d','glorys12v1a_sfc_d']:
             self.filein1=os.path.join(self.basedir,self.source,'raw',self.var_name+'_'+str(self.level)+'_'+str(self.year)+str(self.month).zfill(2)+'*.nc')
         else:
             raise UserWarning('Data source not recognised.')
@@ -2677,7 +2678,7 @@ class DataConverter(object):
             level_constraint=iris.Constraint(depth=lambda cell: self.level-leveltol<=cell<=self.level+leveltol)
         elif self.data_source in ['era5betatrp2'] and self.level_type=='plev':
             level_constraint=iris.Constraint(air_pressure=self.level)
-        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5uks_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5glo_sfc_h','era5trp2_plev_h','era5betamcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d'] or fnmatch.filter([self.source],'igcm????_sfc_*') or fnmatch.filter([self.source],'igcm????_toa_*'):
+        elif self.source in ['ncepdoe_sfc_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sstrey_sfc_7d','imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','trmm3b42v7_sfc_3h','tropflux_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5ewa_plev_h','era5glo_plev_h','era5uks_plev_h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5glo_sfc_h','era5trp2_plev_h','era5betamcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','cmap_sfc_5d','glorys12v1a_sfc_d'] or fnmatch.filter([self.source],'igcm????_sfc_*') or fnmatch.filter([self.source],'igcm????_toa_*'):
             level_constraint=False
         else:
             raise ToDoError('Set an instruction for level_constraint.')
@@ -2757,7 +2758,7 @@ class DataConverter(object):
                 self.raw_name='lwr'
             elif self.var_name in ['taux','tauy']:
                 self.raw_name=self.var_name
-        elif self.data_source in ['glorys12v1','glorys12v1eq1','glorys12v1aeq1']:
+        elif self.data_source in ['glorys12v1','glorys12v1eq1','glorys12v1aeq1','glorys12v1a']:
             if self.var_name=='swtheta':
                 self.raw_name='thetao'
             elif self.var_name=='swsal':
@@ -2766,6 +2767,8 @@ class DataConverter(object):
                 self.raw_name='uo'
             elif self.var_name=='vcur':
                 self.raw_name='vo'
+            elif self.var_name=='sshag':
+                self.raw_name='zos'
         #
         # Load cube using a constraint on var_name because if there is a
         # long_name attribute in the netcdf file this will take precendence
@@ -2849,7 +2852,7 @@ class DataConverter(object):
                 cubec.add_dim_coord(latcoord1,1)
         #
         # Convert time coordinate to standard for selected data sets
-        if self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1aeq1_zlev_d','cmap_sfc_5d']:
+        if self.source in ['ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1aeq1_zlev_d','glorys12v1a_sfc_d','cmap_sfc_5d']:
             for cubec in xx:
                 cubec=standardise_time_coord_units(cubec,tunits='days')
         elif self.source in ['era5betatrp2_plev_h','era5betamcw_sfc_h']:
@@ -5751,7 +5754,7 @@ class AnnualCycle(object):
             print('npts_missing,npts',npts_missing,npts)
             print('frac_missing,frac_crit',frac_missing,self.frac_crit)
             if (frac_missing>self.frac_crit):
-                if self.source in ['glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1aeq1_zlev_d']:
+                if self.source in ['glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1aeq1_zlev_d','glorys12v1a_sfc_d']:
                     print('Letting this go as likely due to land points.')
                 else:
                     raise UserWarning('Warning: Too many missing points. Rethink algorithm.')
@@ -7152,7 +7155,7 @@ class CubeDiagnostics(object):
                 'vwndptap max: {6!s}\n'+h1b
             print(ss.format(self,vwnd_min,vwnd_max,ta_min,ta_max,vwndptap_min,vwndptap_max))
 
-    def f_vrtbudget(self,level_below,level,level_above):
+    def f_vrtbudget(self,level_below,level,level_above,flag_hypdiff=False,ndel=6,kappa=3e8):
         """Calculate and save terms in vorticity budget at pressure level.
 
         Assumes input data has already been loaded for current time
@@ -7196,9 +7199,18 @@ class CubeDiagnostics(object):
         self.m_domegadx_dvwnddp (-d omega/dx * dv/dp)
         self.domegady_duwnddp (d omega/dy * du/dp)
 
+        if flag_hypdiff is True, calculates an extra source term from
+        hyperdiffusion: kappa_deln_vrt. This is only relevant to some
+        model output, e.g., from IGCM. Uses values of ndel (positive,
+        even integer, typically 6 or 8) and diffusion constant kappa
+        to calculate the hyperdiffusion term. If flag_hypdiff is
+        False, no hyperdiffusion term is calculated and the values of
+        ndel and kappa are not used.
+
         self.source_dvrtdt (-u d zeta/dx -v d zeta/dy -omega d zeta/dp
                             -zeta D -fD -beta v
                            - d omega/dx * dv/dp +d omega/dy * du/dp)
+                           (+ hyperdiffusion term is calculated)
 
         self.res_dvrtdt : d zeta/dt = source + residual
                           residual = d zeta/dt - source
@@ -7463,8 +7475,42 @@ class CubeDiagnostics(object):
         if self.archive:
             archive_file(self,fileout)
         #
+        ### Calculate hyperdiffusion source term if requested
+        if flag_hypdiff:
+            print('Calculating hyperdiffusion source term kappa_deln_vrt.')
+            print('ndel, kappa: {0!s}, {1!s}'.format(ndel,kappa))
+            # Check that ndel is a positive, even integer
+            if not(isinstance(ndel,int) and ndel>0 and divmod(ndel,2)[1]=0):
+                raise UserWarning('ndel must be a positive, even integer.')
+            # Hyperdiffusion is of the form + kappa \nabla^{ndel} vrt
+            # Laplacian is of the form \nabla^2 vrt
+            # So in hyperdiffusion a Laplacian is run ndel/2 times on vorticity
+            nlaplacian=divmod(ndel,2)[0]
+            print('nlaplacian: {0!s}'.format(nlaplacian))
+            x50=self.vrt_level
+            for ii in range(nlaplacian):
+                kk=ii+1
+                print('Running Laplacian for kk time: {0!s}'.format(kk))
+                x50=ww.laplacian(x50)
+            kappa_deln_vrt=kappa*x50
+            # Attributes
+            var_name='kappa_deln_vrt'
+            long_name=var_name2long_name[var_name]
+            kappa_deln_vrt.rename(long_name) # not a standard_name
+            kappa_deln_vrt.var_name=var_name
+            kappa_deln_vrt.units=vrt_tendency_units
+            self.kappa_deln_vrt=kappa_deln_vrt
+            fileout=self.file_data_out.replace('VAR_NAME',var_name)
+            fileout=replace_wildcard_with_time(self,fileout)
+            print('fileout: {0!s}'.format(fileout))
+            iris.save(self.kappa_deln_vrt,fileout)
+            if self.archive:
+                archive_file(self,fileout)
+        #
         ### Calculate source_dvrtdt (total source)
         source_dvrtdt=self.m_uwnd_dvrtdx+self.m_vwnd_dvrtdy+self.m_omega_dvrtdp+self.m_vrt_div+self.m_ff_div+self.m_beta_vwnd+self.m_domegadx_dvwnddp+self.domegady_duwnddp
+        if flag_hypdiff:
+            source_dvrtdt=source_dvrtdt+self.kappa_deln_vrt
         source_dvrtdt.data=conv_float32(source_dvrtdt.data)
         # Attributes
         var_name='source_dvrtdt'

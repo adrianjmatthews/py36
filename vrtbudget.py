@@ -85,7 +85,7 @@ for year in iter_year:
         aa.month=month
         #
         # Calculate all vorticity budget terms (usual function to call)
-        aa.f_vrtbudget(LEVEL_BELOW,LEVEL,LEVEL_ABOVE)
+        aa.f_vrtbudget(LEVEL_BELOW,LEVEL,LEVEL_ABOVE,flag_hypdiff=True,ndel=6,kappa=3e8)
         #
         # Only calculate m_vrt_div term, for diagnostic purposes
         #aa.f_m_vrt_div(LEVEL)
