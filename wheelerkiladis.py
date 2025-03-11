@@ -14,13 +14,14 @@ import data_analysis as da
 BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 #BASEDIR=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-ARCHIVE=True
+ARCHIVE=False
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07btrmrgp1_sfc_3h'
-#VAR_NAME='res_dvrtdt'; LEVEL=975; SOURCE='era5gloerai_plev_3h'
+VAR_NAME='uwnd'; LEVEL=875; SOURCE='igcm0002_plev_3h'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07btrmrgp1_sfc_3h'
+#VAR_NAME='uwnd'; LEVEL=850; SOURCE='era5gloerai_plev_3h'
 
-FILEPRE='_rac' # e.g., '', '_rac', '_rac_minus_l30_n241'
+FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
 
 #TIME1=cftime.DatetimeGregorian(1998,1,1)
 #TIME2=TIME1+datetime.timedelta(21*365+6-1+272)-datetime.timedelta(seconds=1) # 29 Sep 2019 TRMM precip 
@@ -29,17 +30,21 @@ FILEPRE='_rac' # e.g., '', '_rac', '_rac_minus_l30_n241'
 #TIME2=TIME1+datetime.timedelta(21*365+6-1)-datetime.timedelta(seconds=1) # 31 Dec 2018 erainterim
 #TIME2=TIME1+datetime.timedelta(25*365+6-1)-datetime.timedelta(seconds=1) # 30 Dec 2022 era5
 #
-TIME1=cftime.DatetimeGregorian(2000,7,1)
+#TIME1=cftime.DatetimeGregorian(2000,7,1)
 #TIME2=TIME1+datetime.timedelta(23*365+68-1)-datetime.timedelta(seconds=1) # 31 Aug 2023 imergv07b
-TIME2=TIME1+datetime.timedelta(23*365+190-1)-datetime.timedelta(seconds=1) # 31 Dec 2023 imergv07b
+#TIME2=TIME1+datetime.timedelta(23*365+190-1)-datetime.timedelta(seconds=1) # 31 Dec 2023 imergv07b
 
-LAT1=-2.625; LAT2=-LAT1
+TIME1=cftime.Datetime360Day(3005,1,1,0,0) # igcm
+TIME2=cftime.Datetime360Day(3049,12,30,23,59)
+
+#LAT1=-2.625; LAT2=-LAT1
 #LAT1=-10; LAT2=-LAT1
-#LAT1=-15; LAT2=-LAT1
+#LAT1=-5; LAT2=-LAT1
 #LAT1=-15; LAT2=15
 #LAT1='-00.3508'
+LAT1='71.1578'
 #LAT1=2.625; LAT2=7.375
-#LAT2=LAT1
+LAT2=LAT1
 # Option to use symmetric or antisymmetric component in latitude
 BAND1_SYM=False # False, 'sym', or 'antisym'
 
@@ -47,19 +52,22 @@ HOVMOLLER_PARAMS={'cosine_tapering':False, 'cosine_tapering_fraction':0.1}
 
 #WAVE_TYPE='none'; WAVE_PARAMS={}
 
-WAVE_TYPE='EK'; WAVE_PARAMS={'cphasex_min':5.0, 'cphasex_max':30.0, 'cphasex_units':'m s-1', 'ss_min':1, 'ss_max':14, 'freq_min':0.0333333/8, 'freq_max':0.4/8, 'freq_units':'cycles per 3h'} # TRMM precip
+#WAVE_TYPE='EK'; WAVE_PARAMS={'cphasex_min':5.0, 'cphasex_max':30.0, 'cphasex_units':'m s-1', 'ss_min':1, 'ss_max':14, 'freq_min':0.0333333/1, 'freq_max':0.4/1, 'freq_units':'cycles per d'} # TRMM precip
+
+#WAVE_TYPE='EK'; WAVE_PARAMS={'cphasex_min':5.0, 'cphasex_max':30.0, 'cphasex_units':'m s-1', 'ss_min':1, 'ss_max':14, 'freq_min':0.0333333/8, 'freq_max':0.4/8, 'freq_units':'cycles per 3h'} # TRMM precip
 #WAVE_TYPE='ER'; WAVE_PARAMS={'nn':1, 'H_min':2.5, 'H_max':90.0, 'H_units':'m', 'ss_min':-10, 'ss_max':-1, 'freq_min':0.01666667/8, 'freq_max':0.4/8, 'freq_units':'cycles per 3h'} # TRMM precip
 
 #WAVE_TYPE='EK'; WAVE_PARAMS={'cphasex_min':5.0, 'cphasex_max':30.0, 'cphasex_units':'m s-1', 'ss_min':1, 'ss_max':14, 'freq_min':0.0333333/4, 'freq_max':0.4/4, 'freq_units':'cycles per 6h'} # erainterim
 #WAVE_TYPE='ER'; WAVE_PARAMS={'nn':1, 'H_min':2.5, 'H_max':90.0, 'H_units':'m', 'ss_min':-10, 'ss_max':-1, 'freq_min':0.01666667/4, 'freq_max':0.4/4, 'freq_units':'cycles per 6h'} # erainterim
 #WAVE_TYPE='ER'; WAVE_PARAMS={'nn':1, 'H_min':2.5, 'H_max':90.0, 'H_units':'m', 'ss_min':-10, 'ss_max':-1, 'freq_min':0.01666667/8, 'freq_max':0.4/8, 'freq_units':'cycles per 3h'} # era5gloerai_plev_3h
+WAVE_TYPE='EK'; WAVE_PARAMS={'cphasex_min':5.0, 'cphasex_max':30.0, 'cphasex_units':'m s-1', 'ss_min':1, 'ss_max':14, 'freq_min':0.0333333/8, 'freq_max':0.4/8, 'freq_units':'cycles per 3h'} # era5gloerai_plev_3h, igcm0002_plev_3h
 
 BACKGROUND_PARAMS={'nfreqsmooth':21, 'ssmax':60, 'nfiltfrequency':15, 'nfiltwavenumber':60}
 
 CLEAN_CALLBACK=True # Set to true for TRMM data, not erainterim.
 
-FILTER=False # Flag to do equatorial wave wavenumber-frequency filtering
-BACKGROUND=True # Flag to calculate background spectrum for display
+FILTER=True # Flag to do equatorial wave wavenumber-frequency filtering
+BACKGROUND=False # Flag to calculate background spectrum for display
 
 PLOT=False
 
@@ -99,10 +107,10 @@ if FILTER:
     aa.f_fft()
     
     # Filter for selected wave
-    #aa.f_filter()
+    aa.f_filter()
     
     # Calculate inverse 2-D FFT of wave-filtered data
-    #aa.f_ifft()
+    aa.f_ifft()
 
 if BACKGROUND:
     # Calculate smoothed background from previously calculated power spectrum
