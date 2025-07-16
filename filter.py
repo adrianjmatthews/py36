@@ -16,20 +16,21 @@ ARCHIVE=True
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
 #VAR_NAME='vrt'; LEVEL=850; SOURCE='erainterim_plev_d'
+VAR_NAME='uwnd'; LEVEL=850; SOURCE='era5betatrp2erai_plev_d'
 #VAR_NAME='vrt'; LEVEL=850; SOURCE='ncepdoe_plev_d'
 #VAR_NAME='ta'; LEVEL=50; SOURCE='ncepncar_plev_d'
 #VAR_NAME='wndspd'; LEVEL=1; SOURCE='ncepncar_sfc_d'
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrinterp_toa_d'
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'
 #VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7_sfc_d'
-VAR_NAME='swtheta'; LEVEL=0.494; SOURCE='glorys12v1eq1erai_zlev_d'
+#VAR_NAME='swtheta'; LEVEL=0.494; SOURCE='glorys12v1eq1erai_zlev_d'
 
 FILTER='b20_200_n241' # 'rm5_n5' 'h20_n241' 'b20_200_n241' etc.
 
 FILEPRE='_rac' # e.g., '', '_rac',
 SUBTRACT=False
 
-YEAR=range(2004,2019+1)
+YEAR=range(2001,2024+1)
 #MONTH=-999 # Dummy value if outfile_frequency is 'year'
 MONTH=range(1,12+1) # If outfile_frequency is less than 'year' 
 
