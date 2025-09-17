@@ -2137,6 +2137,14 @@ class TimeDomain(object):
                 time2=cftime.DatetimeGregorian(2020,12,31)
                 time_constraint=set_time_constraint(time1,time2,calendar='gregorian')
                 amp_threshold=1
+            elif counter=='009':
+                # As '001', but for 1 Jan 2001 to 31 Dec 2023
+                # For Natasha's CCKW-MJO extreme precipitation analysis
+                header1+='Index amplitude >=1, time range 1 Jan 2001 to 31 Dec 2023'
+                time1=cftime.DatetimeGregorian(2001,1,1)
+                time2=cftime.DatetimeGregorian(2023,12,31)
+                time_constraint=set_time_constraint(time1,time2,calendar='gregorian')
+                amp_threshold=1
             else:
                 raise UserWarning('Counter is not valid.')
             # Seasons
