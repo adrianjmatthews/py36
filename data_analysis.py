@@ -274,7 +274,7 @@ def source_info(aa):
     if aa.source in ['erainterim_sfc_d','erainterim_sfc_6h','erainterim_plev_6h','erainterimEK1_plev_6h','erainterimNEK1_plev_6h','erainterimNEK1T42_plev_6h','erainterimEK2_plev_6h','erainterimEK3_plev_6h','erainterimER1_plev_6h','erainterimER2_plev_6h','erainterim_plev_d','ncepdoe_plev_6h','ncepdoe_plev_d','ncepdoe_sfc_d','ncepdoegg_zlev_d','ncepdoe_zlev_d','ncepncar_plev_d','ncepncar_sfc_d','olrcdr_toa_d','olrinterp_toa_d','sstrey_sfc_7d','sg579m031oi01_zlev_h','sg534m031oi01_zlev_h','sg532m031oi01_zlev_h','sg620m031oi01_zlev_h','sg613m031oi01_zlev_h','sgallm031oi01_zlev_h','sstrey_sfc_d','tropflux_sfc_d','hadgem2esajhog_plev_d','igcm0001_plev_d','igcm0001_sfc_d','igcm0001_toa_d','igcm0002_plev_3h','igcm0002_sfc_3h','igcm0002_toa_3h','igcm0002_plev_d','igcm0002_sfc_d','igcm0002_toa_d','igcm0002EK1_plev_3h','cmap_sfc_5d','cmap_sfc_d']:
         aa.outfile_frequency='year'
         aa.wildcard='????'
-    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergv07btrm_sfc_3h','imergv07btrmrg_sfc_3h','imergv07btrmrgp1_sfc_3h','imergv07btrmrgp2_sfc_3h','imergv07btrmrgp1_sfc_d','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','era5glo_sfc_h','era5glo_sfc_d','era5gloerai_sfc_d','era5uks_plev_h','era5trp2_plev_h','era5betatrp2_plev_h','era5betamcw_sfc_h','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d','glorys12v1a_sfc_d']:
+    elif aa.source in ['imergplp_sfc_30m','imergmcw_sfc_30m','imergv07amcw_sfc_30m','imergv07bmcw_sfc_30m','imergmcw_sfc_dt','imergmts_sfc_30m','imergmt2_sfc_30m','imergnpl_sfc_30m','imergnp2_sfc_30m','imergtrm_sfc_30m','imergv07atrm_sfc_30m','imergv07btrm_sfc_30m','imergtrm_sfc_3h','imergv07atrm_sfc_3h','imergv07btrm_sfc_3h','imergv07btrmrg_sfc_3h','imergv07btrmrgp1_sfc_3h','imergv07btrmrgp2_sfc_3h','imergv07btrmrgp1_sfc_d','imergtrmp1_sfc_3h','imergv07atrmp1_sfc_3h','trmm3b42v7_sfc_3h','trmm3b42v7p1_sfc_3h','trmm3b42v7p2_sfc_3h','imergmcw_sfc_30m','trmm3b42v7_sfc_d','trmm3b42v7p1_sfc_d','trmm3b42v7p3_sfc_d','trmm3b42v7p4_sfc_d','era5trp_plev_h','era5plp_plev_h','era5mcw_plev_h','era5mcw_plev_d','era5ewa_plev_h','era5glo_plev_h','era5gloerai_plev_h','era5gloerai_plev_3h','era5gloeraiER1_plev_3h','era5gloeraiNER1_plev_3h','era5gloeraiER2_plev_3h','era5gloeraiER3_plev_3h','era5plp_sfc_h','era5bar_sfc_h','era5mcw_sfc_h','era5mcw_sfc_d','era5glo_sfc_h','era5glo_sfc_d','era5gloerai_sfc_d','era5uks_plev_h','era5trp2_plev_h','era5betatrp2_plev_h','era5betamcw_sfc_h','era5betamcw_sfc_d','ostial4nrttrp_sfc_d','ostial4reptrp_sfc_d','glorys12v1_zlev_d','glorys12v1eq1_zlev_d','glorys12v1eq1erai_zlev_d','glorys12v1aeq1_zlev_d','glorys12v1a_sfc_d']:
         aa.outfile_frequency='month'
         aa.wildcard='??????'
     else:
@@ -489,6 +489,7 @@ def clean_callback(cube,field,filename):
               'GRIB_typeOfLevel',
               'GRIB_units',
               'GRIB_uvRelativeToGrid',
+              'GRIB_surface',
               'Author',
               'generated',
               'lev_type_char']
@@ -2823,21 +2824,23 @@ class DataConverter(object):
                 if self.source in ['era5betamcw_sfc_h']:
                     # The new ERA5 netcdf files from the Copernicus CDS-beta server cannot
                     # be read directly using iris.
-                    # Need to read in using xarray first to a temporary file, then rewrite to netcdf.
+                    # Solution:
+                    # Read in using xarray first
+                    # Convert xarray dataarray to iris cube
+                    # Remove offending auxilliary coordinates from iris cube
+                    # Save iris cube to temporary netcdf file
+                    # Then read in as iris cube with clean callback from the
+                    #   temporary netcdf file as usual
                     ds=xr.open_dataset(self.filein1)
+                    da=ds[self.raw_name]
+                    self.standard_name=var_name2long_name[self.var_name]
+                    da.attrs['standard_name']=self.standard_name
+                    x1=da.to_iris()
+                    x1.remove_coord('expver')
+                    x1.remove_coord('realization')
                     file_tmp=os.path.join(self.basedir,self.source,'raw','tmp_from_xarray_'+self.var_name+'.nc')
                     print('file_tmp: {0!s}'.format(file_tmp))
-                    #ds[self.raw_name].to_netcdf(file_tmp)
-                    x1=ds[self.raw_name].to_iris()
-                    x2=create_cube(x1.data,x1)
-                    #
-                    # Need to strip out just data and dim coords from x1 or x2 and create a new cube from this
-                    # Then save that cube
-                    # Then read it in with a clean_callback
-                    #
-                    iris.save(x2,file_tmp)
-                    pdb.set_trace()
-                    # hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+                    iris.save(x1,file_tmp)
                     xx=iris.load(file_tmp,constraints=var_constraint & time_constraint,callback=clean_callback)
                 else:
                     xx=iris.load(self.filein1,constraints=var_constraint & time_constraint,callback=clean_callback)
@@ -10831,7 +10834,9 @@ class CCEWLagrangian(object):
             datetime of crossing lonc to time domain at full
             resolution, e.g., 3 hour resolution. If 'd', then round
             datetime to nearest day at 00 UTC. If '6h', then round
-            datetime to nearest 00, 06, 12, 18 UTC.
+            datetime to nearest 00, 06, 12, 18 UTC. If 'dfloor', then
+            floor the datetime to 00 UTC on that day, i.e, set hour
+            value to zero.
 
             'dbsubset' : Boolean. If True, create and save a new
             dictionary of trajectories. This is the subset of the
@@ -10868,6 +10873,8 @@ class CCEWLagrangian(object):
             idx=idx+'-00UTC'
         elif self.round_to_nearest_time=='6h':
             idx=idx+'-6h'
+        elif self.round_to_nearest_time=='dfloor':
+            idx=idx+'-00UTCfloor'
         elif not(self.round_to_nearest_time):
             idx=idx+'-'+self.frequency
         else:
@@ -10883,7 +10890,10 @@ class CCEWLagrangian(object):
         print('idx: {0!s}'.format(idx))
         header1='# CC'+self.wave_type+'W arrival times at basepoint.'
         if self.round_to_nearest_time:
-            header1=header1+' Rounded to nearest '+self.round_to_nearest_time
+            if self.round_to_nearest_time=='dfloor':
+                header1=header1+' Floored to 00UTC that day'
+            else:
+                header1=header1+' Rounded to nearest '+self.round_to_nearest_time
         header1=header1+'\n'
         header2='# Basepoint '+str(self.lonc)+'E. '+str(self.time1.year)+'-'+str(self.time2.year)+'.'
         if self.threshold:
@@ -10943,6 +10953,14 @@ class CCEWLagrangian(object):
                     if x2>=deltahour/2:
                         xx=xx+datetime.timedelta(hours=deltahour) # round up to next 6h
                     print('timec,xx: {0!s}, {1!s}'.format(timec,xx))
+                    timec=xx
+                elif self.round_to_nearest_time=='dfloor':
+                    if self.calendar=='gregorian':
+                        xx=cftime.DatetimeGregorian(timec.year,timec.month,timec.day)
+                    elif self.calendar=='360_day':
+                        xx=cftime.Datetime360Day(timec.year,timec.month,timec.day)
+                    else:
+                        raise UserWarning('Calendar not recognised.')
                     timec=xx
                 if amp_flag and check_datetime_in_season(timec,self.season,verbose=self.verbose):
                     print('Including: keyc,lon1,lonc,lon2,time1,timec,time2: {0!s}, {1!s}, {2!s}, {3!s}, {4!s}, {5!s}, {6!s}'.format(keyc,lon1,self.lonc,lon2,time1,timec,time2))
