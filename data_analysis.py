@@ -10916,8 +10916,37 @@ class CCEWLagrangian(object):
             time2=times[-1]
             npts=self.trajectories[keyc]['npts']
             data_vals=self.trajectories[keyc]['data_vals']
-            if (self.propagation_direction=='eastwards' and lon1<=self.lonc<=lon2) or (self.propagation_direction=='westwards' and lon2<=self.lonc<=lon1):
+            # lons is the list of longitudes in the current trajectory
+            # longitude typically runs from 0.00 eastwards to 359.99, ie wraps at 260
+            #   or -180.00 to +179.99, ie wraps at 180
+            # If a trajectory crosses the wrap longitude, need to code for this periodicity in longitude
+            # Create a copy of the list of longitudes, and either add or subtract 360 degrees where needed
+            flag=False
+            lons_alt=copy.copy(lons)
+            if self.propagation_direction=='eastwards':
+                for ii in range(npts):
+                    lona=lons[ii]
+                    if lona < lon1:
+                        flag=True
+                        lons_alt[ii]=lona+360
+            elif self.propagation_direction=='westwards':
+                for ii in range(npts):
+                    lona=lons[ii]
+                    if lona > lon1:
+                        flag=True
+                        lons_alt[ii]=lona-360
+            if flag:
+                print('keyc: {0!s}'.format(keyc))
+                print('lons: {0!s}'.format(lons))
+                print('lons_alt: {0!s}'.format(lons_alt))
+                # Overwrite lons with lons_alt
+                lons=lons_alt
+                lon1=lons[0]
+                lon2=lons[-1]
+            #
+            if (self.propagation_direction=='eastwards' and (lon1<=self.lonc<=lon2 or lon1<=self.lonc+360<=lon2) ) or (self.propagation_direction=='westwards' and (lon2<=self.lonc<=lon1 or lon2<=self.lonc-360<=lon1) ):
                 timec=time1
+                print('Considering: keyc,lon1,lonc,lon2,time1,timec,time2: {0!s}, {1!s}, {2!s}, {3!s}, {4!s}, {5!s}, {6!s}'.format(keyc,lon1,self.lonc,lon2,time1,timec,time2))
                 for ii in range(npts):
                     if (self.propagation_direction=='eastwards' and lons[ii]>=self.lonc) or (self.propagation_direction=='westwards' and lons[ii]<=self.lonc):
                         break
