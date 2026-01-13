@@ -15,15 +15,15 @@ BASEDIR=os.path.join(os.path.sep,'gpfs','scratch','e058','data')
 ARCHIVE=True
 BASEDIR_ARCHIVE=os.path.join(os.path.sep,'gpfs','afm','matthews','data')
 
-#VAR_NAME='vwnd'; LEVEL=975; SOURCE='era5ewa_plev_h'; TDOMAINID='fmam20'
+#VAR_NAME='div'; LEVEL=850; SOURCE='era5gloeraiNER1_plev_3h'; TDOMAINID='CCER75Elat-15-15-98-20-0.05-00UTC'
 #VAR_NAME='vrt'; LEVEL=850; SOURCE='erainterim_plev_d'; TDOMAINID='rmm006all2'
 #VAR_NAME='swpd'; LEVEL='all'; SOURCE='sg613m031oi01_zlev_h'; TDOMAINID='boballsg'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_d'; TDOMAINID='jjas98-19'
-#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergmcw_sfc_30m'; TDOMAINID='djf0102-1920'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='trmm3b42v7p1_sfc_d'; TDOMAINID='ann9820'
+#VAR_NAME='ppt'; LEVEL=1; SOURCE='imergv07btrmrgp1_sfc_3h'; TDOMAINID='ann2006'
 #VAR_NAME='vwnd'; LEVEL=850; SOURCE='erainterim_plev_d'; TDOMAINID='cckw75Epm10gt109812'
 #VAR_NAME='zg'; LEVEL=250; SOURCE='hadgem2esajhog_plev_d'; TDOMAINID='jja86-88-360day'
-VAR_NAME='zg'; LEVEL=850; SOURCE='ncepdoe_plev_d'; 
-#TDOMAINID='mam79-17'
+VAR_NAME='uwnd'; LEVEL=250; SOURCE='igcm0001_plev_d'; TDOMAINID='jja3030-3034-360day'
+#VAR_NAME='zg'; LEVEL=850; SOURCE='ncepdoe_plev_d'; TDOMAINID='mam79-17'
 #VAR_NAME='uwnd'; LEVEL=1; SOURCE='ncepncar_sfc_d'; TDOMAINID='apr9815'
 #VAR_NAME='olr'; LEVEL=0; SOURCE='olrinterp_toa_d'; TDOMAINID='rmm004djf3'
 #VAR_NAME='sst'; LEVEL=1; SOURCE='sstrey_sfc_d'; TDOMAINID='mam82-16'
@@ -35,7 +35,7 @@ FILEPRE='' # e.g., '', '_rac', '_rac_minus_l30_n241'
 #   set DATA_FROM_ANNCYCLE to a 2-tuple of (year_beg,year_end) from which annual cycle was calculated
 #   e.g., (1998,2018)
 DATA_FROM_ANNCYCLE=False
-#DATA_FROM_ANNCYCLE=(1998,2018)
+#DATA_FROM_ANNCYCLE=(1998,2018) 
 
 # Optional parameters for use in null distribution calculation
 #NMC=10; PERCENTILES_NULL=[1,2.5,5,10,20,30,50,70,80,90,95,97.5,99]; MAX_DAY_SHIFT=15
@@ -45,7 +45,7 @@ DATA_FROM_ANNCYCLE=False
 LAZY_LOAD=True
 VERBOSE=2
 
-PLOT=False
+PLOT=True
 
 #==========================================================================
 
@@ -101,4 +101,6 @@ if PLOT:
     plt.gca().coastlines()
     plt.show()
 
-    fig.savefig('/gpfs/home/e058/tmp/fig1.png')
+    imagefile='/gpfs/home/e058/tmp/fig1.png'
+    print('imagefile: {0!s}'.format(imagefile))
+    fig.savefig(imagefile)
