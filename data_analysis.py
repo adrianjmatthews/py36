@@ -10351,6 +10351,10 @@ class CCEWLagrangian(object):
 
            'lonunits': a CF units object of the longitude units.
 
+           'data_unfiltered_vals' : a list of length npts of the data
+           values at the points along the trajectory from the
+           unfiltered Hovmoller self.data_hov.
+
            'data_vals' : a list of length npts of the data values at
            the points along the trajectory from the WK-filtered
            Hovmoller self.data_hovWKfilt.
@@ -10746,11 +10750,13 @@ class CCEWLagrangian(object):
             times=[tunits.num2date(tcoord.points[xx]) for xx in time_indices]
             lon_indices=self.trajectories[keyc]['lon_indices']
             lons=[loncoord.points[xx] for xx in lon_indices]
+            data_unfiltered_vals=[self.data_hov.data[time_indices[xx],lon_indices[xx]] for xx in range(npts)]
             data_vals=[self.data_hovWKfilt.data[time_indices[xx],lon_indices[xx]] for xx in range(npts)]
             self.trajectories[keyc]['npts']=npts
             self.trajectories[keyc]['times']=times
             self.trajectories[keyc]['lons']=lons
             self.trajectories[keyc]['lonunits']=lonunits
+            self.trajectories[keyc]['data_unfiltered_vals']=data_unfiltered_vals
             self.trajectories[keyc]['data_vals']=data_vals
             self.trajectories[keyc]['dataunits']=dataunits
         # Save trajectories as pickle file
